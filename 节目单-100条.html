@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>收音机节目单 · 100 条</title>
+<style>
+:root{
+  --bg:#f7f5ef; --card:#ffffff; --ink:#2c2a26; --ink2:#5b564d; --ink3:#8d867a;
+  --line:#e8e3d8; --accent:#0f8b8d; --accent2:#0b6d6f; --warm:#b06b03;
+  --sh:0 1px 2px rgba(60,50,30,.05), 0 6px 20px rgba(60,50,30,.06);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",
+  "Source Han Sans SC",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
+header{margin-bottom:22px}
+h1{font-size:26px;margin:0 0 10px;letter-spacing:.2px}
+.sub{color:var(--ink2);font-size:14px;margin:0 0 16px}
+.kpi{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 0}
+.kpi div{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:10px 14px;box-shadow:var(--sh);min-width:110px}
+.kpi b{display:block;font-size:20px;color:var(--accent2);line-height:1.2}
+.kpi span{font-size:12px;color:var(--ink3)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:18px 18px 8px;margin:16px 0;box-shadow:var(--sh);overflow:hidden}
+h2{font-size:17px;margin:0 0 6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.idx{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+  border-radius:7px;background:#e3f2f2;color:var(--accent2);font-size:12px;font-weight:700;
+  flex:none;transform:translateY(1px)}
+.cnt{margin-left:auto;font-size:12px;color:var(--ink3);font-weight:400}
+.desc{color:var(--ink2);font-size:13px;margin:0 0 12px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{ text-align:left;font-weight:600;color:var(--ink3);font-size:12px;
+  border-bottom:1px solid var(--line);padding:6px 8px;white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid #f2eee5;vertical-align:top}
+tr:last-child td{border-bottom:0}
+.num{width:34px;color:var(--ink3);font-variant-numeric:tabular-nums;text-align:right}
+.an{width:104px;color:var(--ink2);font-size:13px}
+.ep{width:56px;text-align:right;color:var(--ink2);font-variant-numeric:tabular-nums}
+.pl{width:46px;text-align:right}
+.tt{color:var(--ink);text-decoration:none;font-weight:600}
+.tt:hover{color:var(--accent)}
+.intro{color:var(--ink3);font-size:12px;line-height:1.5;margin-top:2px;
+  display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.pl a{color:var(--accent);text-decoration:none;font-size:13px}
+.note{background:#fdf9ee;border:1px solid #f0e4c8;border-radius:12px;padding:12px 14px;
+  color:#6b5a34;font-size:13px;margin:16px 0}
+.note b{color:var(--warm)}
+.st .rg{width:80px;color:var(--ink2);white-space:nowrap}
+.st .rgc{width:52px;text-align:right;color:var(--ink3)}
+.st .nl{font-size:13px;line-height:1.75;color:var(--ink2)}
+.code{background:#faf8f2;border:1px solid var(--line);border-radius:10px;padding:12px;
+  font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:#4a453c;max-height:340px;overflow:auto;white-space:pre}
+footer{color:var(--ink3);font-size:12px;text-align:center;margin-top:26px}
+@media (max-width:640px){
+  .wrap{padding:18px 12px 44px} h1{font-size:21px}
+  .card{padding:14px 12px 6px;border-radius:14px}
+  .an{display:none} th.an{display:none}
+  .intro{-webkit-line-clamp:2}
+  .ep{width:44px}
+}
+@media print{
+  body{background:#fff} .card{box-shadow:none;break-inside:avoid}
+  .pl{display:none} th.pl{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>收音机节目单 · 100 条</h1>
+  <p class="sub">全部免费、全部实测可直接播放 · 抓取于 2026-11-03 · 来源：喜马拉雅公开专辑接口</p>
+  <div class="kpi">
+    <div><b>100</b><span>条节目</span></div>
+    <div><b>18,347</b><span>集合计</span></div>
+    <div><b>255 天</b><span>不停播（≈6,116 小时）</span></div>
+    <div><b>100/100</b><span>实测 206 可播</span></div>
+  </div>
+</header>
+
+<div class="note">
+  <b>筛选口径：</b>免费（非付费、非 VIP 免费）、集数 ≥ 20、纯中文；
+  已排除 BL/耽美、言情甜宠、玄幻修仙、恐怖悬疑、儿童、音乐类。
+  每条都实测了首集直链 —— 返回 <b>206 + audio/mpeg</b> 才算入选，
+  这样固件那套 HTTP Range 断点续播直接能用。
+</div>
+
+  <section class="card">
+    <h2><span class="idx">1</span>老兵·口述与战争纪实<span class="cnt">24 条 · 4,366 集</span></h2>
+    <p class="desc">抗战、抗美援朝、解放战争、对越自卫反击、剿匪的老兵口述与战史纪实</p>
+    <table>
+      <thead><tr><th class="num">#</th><th>节目</th><th class="an">主播</th>
+      <th class="ep">集数</th><th class="pl">专辑</th></tr></thead>
+      <tbody>
+<tr><td class="num">1</td><td><a class="tt" href="https://www.ximalaya.com/album/57407681" target="_blank" rel="noopener">伟大的抗美援朝战争</a><div class="intro">军事历史演播的天花板：吟筝观澜播讲，全网最权威的抗美援朝战争史，这是你听得到的关于抗美援朝战争的最好的作品，没有之一。全新专辑上线，希望喜欢的朋友多多支持西游的阴谋：解读西游记</div></td><td class="an">吟筝观澜</td><td class="ep">484</td><td class="pl"><a href="https://www.ximalaya.com/album/57407681" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">2</td><td><a class="tt" href="https://www.ximalaya.com/album/74093538" target="_blank" rel="noopener">真实的解放战争实录</a><div class="intro">简介1946年6月26日，蒋介石撕毁国共双方于1月间达成的《停战协定》，以三十余万人的兵力，首先对中原军区部队发起大规模进攻，致使全面内战爆发。从战略防御到战略进攻，经过辽沈战</div></td><td class="an">用故事换酒</td><td class="ep">479</td><td class="pl"><a href="https://www.ximalaya.com/album/74093538" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">3</td><td><a class="tt" href="https://www.ximalaya.com/album/56360235" target="_blank" rel="noopener">对越自卫反击战琐记</a><div class="intro">向共和国军人致敬！</div></td><td class="an">江南老刘_刘国际</td><td class="ep">443</td><td class="pl"><a href="https://www.ximalaya.com/album/56360235" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">4</td><td><a class="tt" href="https://www.ximalaya.com/album/70257952" target="_blank" rel="noopener">越战老兵回忆录 老兵不死精神永存</a><div class="intro">回首那段峥嵘岁月，缅怀为国捐躯的英烈，铭记于心，爱护来之不易和平。</div></td><td class="an">清凉葫芦瓜</td><td class="ep">416</td><td class="pl"><a href="https://www.ximalaya.com/album/70257952" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">5</td><td><a class="tt" href="https://www.ximalaya.com/album/76386231" target="_blank" rel="noopener">解放战争|三大战役|咱们从头说</a><div class="intro">从共产国际，到国共合作、再到根据地建设，最后到波澜壮阔的解放战争，咱们从头到尾，有图有真像，给您从头说。</div></td><td class="an">大兵煮酒</td><td class="ep">408</td><td class="pl"><a href="https://www.ximalaya.com/album/76386231" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">6</td><td><a class="tt" href="https://www.ximalaya.com/album/78827036" target="_blank" rel="noopener">对越自卫反击战老兵回忆录（多人）</a><div class="intro">道歉及更正声明：由于主播没有做好后期的校对工作，导致音频中出现部分读音错误，对听众造成了非常不好的体验，在此，主播做出深刻的检讨和道歉。现有已知错误读音：“撒军”已经全部更正。</div></td><td class="an">多云下的蛋</td><td class="ep">373</td><td class="pl"><a href="https://www.ximalaya.com/album/78827036" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">7</td><td><a class="tt" href="https://www.ximalaya.com/album/78802370" target="_blank" rel="noopener">抗美援朝纪实|免费收听</a><div class="intro">我们的出生恰逢和平年代，不是因为没有战争，而是有人帮我们把曾经的战争与苦难都扛过去了。</div></td><td class="an">小然_震声阁</td><td class="ep">169</td><td class="pl"><a href="https://www.ximalaya.com/album/78802370" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">8</td><td><a class="tt" href="https://www.ximalaya.com/album/77914697" target="_blank" rel="noopener">中国抗日战争全纪实</a><div class="intro">    中国人民的抗日战争是二战的重要组成部分，是中华民族历史上最伟大的卫国战争，是中国人民反抗日本帝国主义侵略的正义战争，是世界反法西斯战争的重要组成部分，也是中国近代以来抗</div></td><td class="an">铁哥读书</td><td class="ep">161</td><td class="pl"><a href="https://www.ximalaya.com/album/77914697" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">9</td><td><a class="tt" href="https://www.ximalaya.com/album/72700255" target="_blank" rel="noopener">中印战争纪实|免费</a><div class="intro">1962年的中印边境自卫反击战，是在我国刚刚度过国内严重经济困难、国际上反华势力及其猖狂的情况下，被迫进行的一场影响深远的正义自卫战争。在以毛泽东主席为首的党中央英明领导下，在</div></td><td class="an">涵莫</td><td class="ep">141</td><td class="pl"><a href="https://www.ximalaya.com/album/72700255" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">10</td><td><a class="tt" href="https://www.ximalaya.com/album/42529010" target="_blank" rel="noopener">华东解放战争纪实</a><div class="intro">主播: 赵天胜</div></td><td class="an">赵天胜</td><td class="ep">129</td><td class="pl"><a href="https://www.ximalaya.com/album/42529010" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">11</td><td><a class="tt" href="https://www.ximalaya.com/album/56169260" target="_blank" rel="noopener">《抗美援朝战争纪实》</a><div class="intro">对抗美援朝历史感兴趣的话，进来听就对了~</div></td><td class="an">_冬日__</td><td class="ep">118</td><td class="pl"><a href="https://www.ximalaya.com/album/56169260" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">12</td><td><a class="tt" href="https://www.ximalaya.com/album/46572374" target="_blank" rel="noopener">华北解放战争纪实</a><div class="intro">主播: 冰城暖风</div></td><td class="an">冰城暖风</td><td class="ep">114</td><td class="pl"><a href="https://www.ximalaya.com/album/46572374" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">13</td><td><a class="tt" href="https://www.ximalaya.com/album/51772995" target="_blank" rel="noopener">解放战争的真相</a><div class="intro">抗战后享有极高威望且拥有几百万装备精良军队的蒋介石和国民党为什么败得那样快、那样惨？而只拥有几十万条破枪的和共产党为什么胜得那样快、那样精彩？这个问题，至今吸引着无数有兴趣的读</div></td><td class="an">梅间雪_</td><td class="ep">113</td><td class="pl"><a href="https://www.ximalaya.com/album/51772995" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">14</td><td><a class="tt" href="https://www.ximalaya.com/album/39246532" target="_blank" rel="noopener">抗美援朝战争全史</a><div class="intro">风烟滚滚唱英雄，四面青山侧耳听……，1950年6月25日，朝鲜内战爆发，美国随即打着联合国的旗号公然出兵干涉，并将战火烧到了中国鸭绿江边。10月25日，成立不到一年的新中国，在</div></td><td class="an">大飞飞牛</td><td class="ep">103</td><td class="pl"><a href="https://www.ximalaya.com/album/39246532" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">15</td><td><a class="tt" href="https://www.ximalaya.com/album/48296609" target="_blank" rel="noopener">西北解放战争纪实</a><div class="intro">主播: 冰城暖风</div></td><td class="an">冰城暖风</td><td class="ep">101</td><td class="pl"><a href="https://www.ximalaya.com/album/48296609" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">16</td><td><a class="tt" href="https://www.ximalaya.com/album/51374995" target="_blank" rel="noopener">竹山剿匪|红军剿匪题材小说</a><div class="intro">【作品简介】《竹山剿匪》是一部以20世纪四十年代末我中国人民解放军在浙江东部沿海山区剿匪为题材的长篇小说。书中主人公钟卫山出生在苏北农村一个贫苦的农民家庭，饥寒交迫的生活、日本</div></td><td class="an">河马说书</td><td class="ep">92</td><td class="pl"><a href="https://www.ximalaya.com/album/51374995" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">17</td><td><a class="tt" href="https://www.ximalaya.com/album/81535439" target="_blank" rel="noopener">《生死28天》|对越自卫反击战 | 高平战役纪实</a><div class="intro">《生死二十八天-四十一军对越作战高平战役纪实》本书是四十一军原纪委书记宋子佩同志在1979年&quot;自卫还击,保卫边疆&quot;对越作战胜利后,以所在部队作战经过为背景撰写的一部战争纪实作品</div></td><td class="an">城市猎人011</td><td class="ep">89</td><td class="pl"><a href="https://www.ximalaya.com/album/81535439" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">18</td><td><a class="tt" href="https://www.ximalaya.com/album/39778656" target="_blank" rel="noopener">东北解放战争纪实</a><div class="intro">《东北解放战争纪实》以详实的史料，严谨的逻辑，客观的态度，为我们展现了东北解放战争的宏大历史画卷，是一部不可多得的历史著作。在此声明，本人不利用读此书盈利，就是想让更多的朋友了</div></td><td class="an">冰城暖风</td><td class="ep">80</td><td class="pl"><a href="https://www.ximalaya.com/album/39778656" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">19</td><td><a class="tt" href="https://www.ximalaya.com/album/72190402" target="_blank" rel="noopener">老兵口述抗战史</a><div class="intro">真实还原了战争的场景，首次披露诸多不广为人知的真相. 讲述了正面战场上比较有影响的防御战.抗战时期，中国在三个战场作战：敌后战场、正面战场、印缅战场。通过很多亲临战场的老兵的讲</div></td><td class="an">云起伏牛山</td><td class="ep">80</td><td class="pl"><a href="https://www.ximalaya.com/album/72190402" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">20</td><td><a class="tt" href="https://www.ximalaya.com/album/33652969" target="_blank" rel="noopener">中国对越自卫反击战纪实</a><div class="intro">主播: 王者媛来</div></td><td class="an">王者媛来</td><td class="ep">69</td><td class="pl"><a href="https://www.ximalaya.com/album/33652969" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">21</td><td><a class="tt" href="https://www.ximalaya.com/album/72243476" target="_blank" rel="noopener">老兵口述抗战史 | 远征缅甸</a><div class="intro">【内容简介】抗战时期，中国军队在三个战场作战：敌后战场、正面战场、印缅战场。这本书，通过很多亲临印缅战场的老兵的讲述和回忆，串起这场战争的进程。1941年12月，日军偷袭珍珠港</div></td><td class="an">雷锋做事不留名</td><td class="ep">66</td><td class="pl"><a href="https://www.ximalaya.com/album/72243476" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">22</td><td><a class="tt" href="https://www.ximalaya.com/album/41094873" target="_blank" rel="noopener">对越自卫反击战之老山作战纪实</a><div class="intro">四十师老山作战纪实</div></td><td class="an">我爱老山兰</td><td class="ep">59</td><td class="pl"><a href="https://www.ximalaya.com/album/41094873" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">23</td><td><a class="tt" href="https://www.ximalaya.com/album/49993249" target="_blank" rel="noopener">英雄121师对越自卫反击战回忆录</a><div class="intro">真实讲述中国人民解放军陆军第41军121师指战员在1979年中越边境自卫还击战中的战斗经历，传承爱国主义精神，促进中华民族伟大复兴。</div></td><td class="an">云玺有声</td><td class="ep">44</td><td class="pl"><a href="https://www.ximalaya.com/album/49993249" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">24</td><td><a class="tt" href="https://www.ximalaya.com/album/45773460" target="_blank" rel="noopener">雨音朗诵参战老兵特辑</a><div class="intro">坦克兵说：有声音的历史 有份量的声音不慧战友说：这样的文章，这样的朗诵，是浸入骨髓的感动！</div></td><td class="an">雨音朗诵</td><td class="ep">35</td><td class="pl"><a href="https://www.ximalaya.com/album/45773460" target="_blank" rel="noopener">收听</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2><span class="idx">2</span>部队·参军入伍<span class="cnt">18 条 · 3,948 集</span></h2>
+    <p class="desc">新兵连、侦察兵、连队生活、军嫂、转业退伍</p>
+    <table>
+      <thead><tr><th class="num">#</th><th>节目</th><th class="an">主播</th>
+      <th class="ep">集数</th><th class="pl">专辑</th></tr></thead>
+      <tbody>
+<tr><td class="num">25</td><td><a class="tt" href="https://www.ximalaya.com/album/73434990" target="_blank" rel="noopener">【抗战侦察兵】</a><div class="intro">侦察兵来到了1933年的长城罗文峪，英勇的二十九军正在和日寇浴血厮杀。侦察兵带着在现代军队中练就的过人身手，投入到充满热血和激情的抗日战争中来。一次次残酷的战争，一回回决定中国</div></td><td class="an">吾声涯</td><td class="ep">1,543</td><td class="pl"><a href="https://www.ximalaya.com/album/73434990" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">26</td><td><a class="tt" href="https://www.ximalaya.com/album/56658212" target="_blank" rel="noopener">老兵油子</a><div class="intro">抗日烽火惨烈，百战老兵油子！</div></td><td class="an">江南老刘_刘国际</td><td class="ep">539</td><td class="pl"><a href="https://www.ximalaya.com/album/56658212" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">27</td><td><a class="tt" href="https://www.ximalaya.com/album/60604421" target="_blank" rel="noopener">【战争小说】绝杀、苍狼刺，冷海作品合集，军旅&amp;战争&amp;VIP免费</a><div class="intro">主播: Cv妙爵风</div></td><td class="an">Cv妙爵风</td><td class="ep">339</td><td class="pl"><a href="https://www.ximalaya.com/album/60604421" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">28</td><td><a class="tt" href="https://www.ximalaya.com/album/30328568" target="_blank" rel="noopener">精兵—免费畅听侦察兵的烽火岁月</a><div class="intro">大型长篇小说《精兵》，以史诗的手法，一百多万字的容量，全景式的展现了中国侦察兵的前世今生，讲述了一个家庭三代军人的成长历程与悲欢离合。小说在铁血军事网发表后，搜狐网、起点中文网</div></td><td class="an">声者挑夫</td><td class="ep">314</td><td class="pl"><a href="https://www.ximalaya.com/album/30328568" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">29</td><td><a class="tt" href="https://www.ximalaya.com/album/59610110" target="_blank" rel="noopener">北疆剿匪记</a><div class="intro">北疆剿匪斗争故事。土匪黑话，组织，生活缩影。</div></td><td class="an">小镇今天</td><td class="ep">169</td><td class="pl"><a href="https://www.ximalaya.com/album/59610110" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">30</td><td><a class="tt" href="https://www.ximalaya.com/album/72066780" target="_blank" rel="noopener">乌龙山剿匪记——惊险剿匪小说</a><div class="intro">以解放初期“湘西大剿匪”为背景，描写一支解放军剿匪小分队与盘踞在乌龙山地区几股土匪进行艰苦卓绝斗争的故事。小说人物众多、形象鲜明，成功塑造了剿匪小分队队长“东北虎”刘玉堂、侦察</div></td><td class="an">大好河山95</td><td class="ep">150</td><td class="pl"><a href="https://www.ximalaya.com/album/72066780" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">31</td><td><a class="tt" href="https://www.ximalaya.com/album/46561017" target="_blank" rel="noopener">东湖洼之晨|军旅题材小说集（免费小说）</a><div class="intro">【内容简介】这部小说选，是作者数十年的精粹之作。描写了各类性格色彩人物，展现了南北地域风情，故事情节平实而接地气，表现手法丰富而不拘一格，语言灵动而有张力，是时代行进中留下的一</div></td><td class="an">云起潇潇</td><td class="ep">120</td><td class="pl"><a href="https://www.ximalaya.com/album/46561017" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">32</td><td><a class="tt" href="https://www.ximalaya.com/album/65846453" target="_blank" rel="noopener">细述对越自卫反击战</a><div class="intro">犯我中华者，虽远必诛！中国军魂，烈风犹在！对越自卫反击战，亦称中越边境自卫还击战，是1979年2～3月，中国人民解放军边防部队对在中越边境挑衅和入侵的越南军队进行的自卫还击作战</div></td><td class="an">安锦雯</td><td class="ep">116</td><td class="pl"><a href="https://www.ximalaya.com/album/65846453" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">33</td><td><a class="tt" href="https://www.ximalaya.com/album/84240000" target="_blank" rel="noopener">长篇军旅小说《边界》</a><div class="intro">长篇小说《边界》讲述了在改革开放初期错综复杂的时代大环境里，一群年轻军人的飒爽风貌、热血奋斗、内心挣扎以及他们对待爱情的态度。他们在现实边界上奉献驻守，在思想边界上游走选择，每</div></td><td class="an">冰河小舟</td><td class="ep">100</td><td class="pl"><a href="https://www.ximalaya.com/album/84240000" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">34</td><td><a class="tt" href="https://www.ximalaya.com/album/70149491" target="_blank" rel="noopener">朝鲜战争 | 抗美援朝高层决策</a><div class="intro">【与本专辑相关的】韩国人眼中的朝鲜战争（点击即可收听）有任何疑问，欢迎留言或者私信反馈，本人会及时更正。同时也欢迎订阅点赞收藏转发~ 制作不易，欢迎5星好评~ 【内容简介】朝鲜</div></td><td class="an">雷锋做事不留名</td><td class="ep">97</td><td class="pl"><a href="https://www.ximalaya.com/album/70149491" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">35</td><td><a class="tt" href="https://www.ximalaya.com/album/72122382" target="_blank" rel="noopener">毛岸英在朝鲜战场 | 抗美援朝 保家卫国</a><div class="intro">【内容简介】上世纪中叶，朝鲜半岛燃起熊熊战火，新中国面临唇亡齿寒之虞，千钧一发之危。铁骨铮铮的毛主席毅然作出了选择：抗美援朝、保家卫国！铁血男儿毛岸英，以非军人身份主动请缨，奔</div></td><td class="an">雷锋做事不留名</td><td class="ep">94</td><td class="pl"><a href="https://www.ximalaya.com/album/72122382" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">36</td><td><a class="tt" href="https://www.ximalaya.com/album/69680838" target="_blank" rel="noopener">抗日战争 | 太原会战纪实</a><div class="intro">有任何疑问，欢迎留言或者私信反馈，本人会及时更正。同时也欢迎订阅点赞收藏转发~ 制作不易，欢迎5星好评~ 【内容简介】太原会战（1937年9月~11月），是抗战爆发后中国第2战</div></td><td class="an">雷锋做事不留名</td><td class="ep">86</td><td class="pl"><a href="https://www.ximalaya.com/album/69680838" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">37</td><td><a class="tt" href="https://www.ximalaya.com/album/114204355" target="_blank" rel="noopener">难忘岁月——我的军旅生涯</a><div class="intro">历经抗美援朝、西藏平叛、中印边境自卫反击战。不管是在朝鲜的冰天雪地站岗放哨，还是面临西藏平叛时的高寒缺氧，险恶环境，或者中印边境自卫反击战，头顶弹片飞舞，脚下枪声不断，和平年代</div></td><td class="an">落雪飞花Jane</td><td class="ep">84</td><td class="pl"><a href="https://www.ximalaya.com/album/114204355" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">38</td><td><a class="tt" href="https://www.ximalaya.com/album/16243044" target="_blank" rel="noopener">兵营之侦察连</a><div class="intro">山东是孔孟的故乡，也是大军事家孙子和诸葛亮的故乡，也是水浒108将的叛逆之地。抗战爆发时，在不少内地省份出现大批汉奸的时候，山东的农民却揭竿而起，与小日本殊死搏斗。孔孟的仁义忠</div></td><td class="an">博爱有声</td><td class="ep">61</td><td class="pl"><a href="https://www.ximalaya.com/album/16243044" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">39</td><td><a class="tt" href="https://www.ximalaya.com/album/16385416" target="_blank" rel="noopener">当兵的那些年</a><div class="intro">这是一部非常好听的有声小说，听过的感觉非常不错，故事扑朔迷离，情节跌宕起伏，构成的虚幻故事。?为了提供更多优秀的有声作品，请多多宣传和推荐本书，这是一种支持与鼓励！有声小说的未</div></td><td class="an">长征有声</td><td class="ep">58</td><td class="pl"><a href="https://www.ximalaya.com/album/16385416" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">40</td><td><a class="tt" href="https://www.ximalaya.com/album/55947596" target="_blank" rel="noopener">部队生活那些事儿</a><div class="intro">作者用真实的身份描述自己在1990年至1993年武警四川第一支队的各种奇闻轶事故事，其中包括：参军入伍、新兵连、队列训练、紧急集合、射击训练、吃货的故事、押解任务、部队术语、军</div></td><td class="an">阿飙_</td><td class="ep">34</td><td class="pl"><a href="https://www.ximalaya.com/album/55947596" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">41</td><td><a class="tt" href="https://www.ximalaya.com/album/9248081" target="_blank" rel="noopener">军旅反腐力作--壁下录 作者：西元 主播：莫语嫣芸</a><div class="intro">西元的《壁下录》是一部军旅反腐力作，很容易让人想到近期热播的电视剧《人民的名义》。不过，与影视作品塑造人物、揭示矛盾的方法不同，西元在小说中引入对人性问题的观察：为什么日常生活</div></td><td class="an">莫语嫣芸</td><td class="ep">24</td><td class="pl"><a href="https://www.ximalaya.com/album/9248081" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">42</td><td><a class="tt" href="https://www.ximalaya.com/album/12341671" target="_blank" rel="noopener">解放战争之中南大剿匪</a><div class="intro">记述了解放军第四野战军暨中南军区所属部队进行剿匪斗争的过程，描述了建国初期历史年代一些鲜为人知、离奇曲折而又惊心动魄的战斗情景。写作中不拘泥于一人一事，力求资料性、知识性、趣味</div></td><td class="an">香港Voice</td><td class="ep">20</td><td class="pl"><a href="https://www.ximalaya.com/album/12341671" target="_blank" rel="noopener">收听</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2><span class="idx">3</span>铁路·三线·兵团·北大荒<span class="cnt">13 条 · 1,511 集</span></h2>
+    <p class="desc">铁道兵与成昆铁路、新疆生产建设兵团、北大荒知青农场</p>
+    <table>
+      <thead><tr><th class="num">#</th><th>节目</th><th class="an">主播</th>
+      <th class="ep">集数</th><th class="pl">专辑</th></tr></thead>
+      <tbody>
+<tr><td class="num">43</td><td><a class="tt" href="https://www.ximalaya.com/album/74745680" target="_blank" rel="noopener">北大荒留守知青口述实录 | 大国粮仓</a><div class="intro">【内容简介】上山下乡运动（简称上山下乡）是指在@期间，为了消灭“三大差别”，毛主席号召“知识青年到农村去，接受贫下中农的再教育，很有必要”之后，大量的城市知识青年大规模地离开城</div></td><td class="an">雷锋做事不留名</td><td class="ep">284</td><td class="pl"><a href="https://www.ximalaya.com/album/74745680" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">44</td><td><a class="tt" href="https://www.ximalaya.com/album/72355093" target="_blank" rel="noopener">【完】漠南情--内蒙古生产建设兵团写真（免费）</a><div class="intro">本书以详尽的史料（包括各级党政机关发布的文件、统计资料、媒体报道及众多当事人的回忆录），比较全面的记述了内蒙古生产建设兵团从建立到解体的整个过程，可以使人们能够从更高的层次和更</div></td><td class="an">大卫_云龙</td><td class="ep">176</td><td class="pl"><a href="https://www.ximalaya.com/album/72355093" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">45</td><td><a class="tt" href="https://www.ximalaya.com/album/46192614" target="_blank" rel="noopener">情系荆襄|如火如荼的三线建设</a><div class="intro">【内容简介】五十年来，荆襄集团开采输送了数千万吨的磷矿石，生产了数百万吨的磷肥制品及磷化产品，为农业经济的发展发挥了重要的作用。虽然荆襄集团不存在了，但荆襄集团对支援和巩固我国</div></td><td class="an">一叶轻舟xy</td><td class="ep">164</td><td class="pl"><a href="https://www.ximalaya.com/album/46192614" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">46</td><td><a class="tt" href="https://www.ximalaya.com/album/38217725" target="_blank" rel="noopener">不忘历史 | 光荣啊！铁道兵</a><div class="intro">本书由上海大学出版社独家授权录制本社其他精品历史作品请看——青帮大亨【内容简介】20世纪60年代末，核战争阴云笼罩中华大地。1969年春，上海1000名热血青年响应毛主席关于“</div></td><td class="an">新安昱</td><td class="ep">144</td><td class="pl"><a href="https://www.ximalaya.com/album/38217725" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">47</td><td><a class="tt" href="https://www.ximalaya.com/album/83727118" target="_blank" rel="noopener">【免费】新疆生产建设兵团简史|庆祝兵团成立70周年</a><div class="intro">屯垦废，则边疆乱；屯垦兴，则边疆宁。1954年党中央决定组建新疆生产建设兵团。70年来，一代又一代兵团人扎根沙漠周边、风头水尾，在戈壁荒漠上兴建家园，开创共和国屯垦戍边伟业，为</div></td><td class="an">山中看蕊</td><td class="ep">136</td><td class="pl"><a href="https://www.ximalaya.com/album/83727118" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">48</td><td><a class="tt" href="https://www.ximalaya.com/album/81989831" target="_blank" rel="noopener">大成昆 | 全景展现新老成昆铁路修建历程，弘扬成昆精神|中国现当代文学|纪实</a><div class="intro">《大成昆》是首部全景展现新老成昆铁路修建历程，溯源、弘扬成昆精神的报告文学作品。1970年7月，成昆铁路建成通车。这条钢铁巨龙，越江河、跨峡谷，穿过高烈度地震区，把天堑变通途，</div></td><td class="an">喜马拉雅小红花</td><td class="ep">133</td><td class="pl"><a href="https://www.ximalaya.com/album/81989831" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">49</td><td><a class="tt" href="https://www.ximalaya.com/album/84085738" target="_blank" rel="noopener">【免费】阿娜河畔|阿舍长篇小说|新疆兵团的农垦史诗</a><div class="intro">阿娜河即新疆塔里木河，这本小说讲述了新疆生产建设兵团在塔里木河下游垦荒建农场的故事。主播免费演播，纯属为爱发光，希望更多的人读到并喜欢这本好书！</div></td><td class="an">山中看蕊</td><td class="ep">122</td><td class="pl"><a href="https://www.ximalaya.com/album/84085738" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">50</td><td><a class="tt" href="https://www.ximalaya.com/album/92886802" target="_blank" rel="noopener">免费｜风雪十年北大荒｜写实回忆｜知青|都市生活</a><div class="intro">这本回忆录具有纪实性、知识性的双重特色，以复杂的情感和朴实无华的文字，在特有的语境中讲述了“文革”的心酸、“血统论”的高压、“可教育好子女”的无奈、“上大学”的心痛、无尽的考验</div></td><td class="an">奕伶留声</td><td class="ep">97</td><td class="pl"><a href="https://www.ximalaya.com/album/92886802" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">51</td><td><a class="tt" href="https://www.ximalaya.com/album/78277527" target="_blank" rel="noopener">西望凉山|免费慢更版 |多播 |治愈 |铁路</a><div class="intro">永久免费，评分9.9.本剧由银河剧社倾情演出。欢迎收听。出版物《西望凉山》是由铁路作家王尔秀著，四川出版集团出版。 本书描写了成昆铁路大凉山铁路段女工刘华，从看守女工成长为成都</div></td><td class="an">声价者银河剧社</td><td class="ep">80</td><td class="pl"><a href="https://www.ximalaya.com/album/78277527" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">52</td><td><a class="tt" href="https://www.ximalaya.com/album/49679717" target="_blank" rel="noopener">《老风口》新疆兵团历史小说</a><div class="intro">作家张者，本名张波，北大法律学硕士。曾任新华社、《南方周末》等多家新闻媒体记者。先后在《收获》《人民文学》《十月》《大家》等文学刊物发表作品，有中篇小说“老家系列”“西部系列”</div></td><td class="an">安塞里慕</td><td class="ep">77</td><td class="pl"><a href="https://www.ximalaya.com/album/49679717" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">53</td><td><a class="tt" href="https://www.ximalaya.com/album/20505729" target="_blank" rel="noopener">军垦沙龙</a><div class="intro">全球最火的区块链项目，手机免费挖pi币，注册链接――http://stxd13999732173.piworker.com/?from=timeline</div></td><td class="an">申屠向东_天山居士</td><td class="ep">47</td><td class="pl"><a href="https://www.ximalaya.com/album/20505729" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">54</td><td><a class="tt" href="https://www.ximalaya.com/album/11778552" target="_blank" rel="noopener">青春无悔-云南支边生活纪实节选</a><div class="intro">50年前的中国，有一场史无前例的上下乡运动，当时整整一代年轻人被称作“知识青年”，他们热情豪迈、义无反顾地奔赴农村边疆的广阔天地，走上了独特的人生之路。 从那时到如今，50年的</div></td><td class="an">阿墨m</td><td class="ep">35</td><td class="pl"><a href="https://www.ximalaya.com/album/11778552" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">55</td><td><a class="tt" href="https://www.ximalaya.com/album/41273410" target="_blank" rel="noopener">新疆生产建设兵团今昔</a><div class="intro">主播: 朗读者艾冰</div></td><td class="an">朗读者艾冰</td><td class="ep">16</td><td class="pl"><a href="https://www.ximalaya.com/album/41273410" target="_blank" rel="noopener">收听</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2><span class="idx">4</span>70/80 年代·知青·改革开放<span class="cnt">22 条 · 4,173 集</span></h2>
+    <p class="desc">七十年代、八十年代、上山下乡、工厂与大院、改革开放口述</p>
+    <table>
+      <thead><tr><th class="num">#</th><th>节目</th><th class="an">主播</th>
+      <th class="ep">集数</th><th class="pl">专辑</th></tr></thead>
+      <tbody>
+<tr><td class="num">56</td><td><a class="tt" href="https://www.ximalaya.com/album/74600702" target="_blank" rel="noopener">听知青的故事</a><div class="intro">岁月如烟，白驹过隙。命途多舛，已近古稀。回首往事，心绪难平。蹉跎岁月，刻骨铭心。弱冠之年，背井离乡。碧玉年华，青春流浪。广袤黑土，有我汗淌。不解荒缘，经历难忘。</div></td><td class="an">北方70</td><td class="ep">891</td><td class="pl"><a href="https://www.ximalaya.com/album/74600702" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">57</td><td><a class="tt" href="https://www.ximalaya.com/album/68803054" target="_blank" rel="noopener">知青-往事的记忆｜怀旧佳作｜原创精品</a><div class="intro">原创知青纪实文学合集，讲述发生在二十世纪六十年代知识青年上山下乡和七十年代大返城后的真实生活，用长达十余载的命运跨度，通过笑泪交融的独特讲述方式生动地描绘了当年的知青生活。</div></td><td class="an">启呈文化</td><td class="ep">491</td><td class="pl"><a href="https://www.ximalaya.com/album/68803054" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">58</td><td><a class="tt" href="https://www.ximalaya.com/album/79933919" target="_blank" rel="noopener">八十年代大案要案侦破纪实</a><div class="intro">八十年代，经历了拨乱反正，正值改革开放的初期，随着经济搞活、人员流动，罪恶也蜂拥而至、纷至沓来，一大批黑道走险的赌徒开始粉墨登场。在久远的记忆中，接连闪现出这些穷凶极恶之徒：辽</div></td><td class="an">肖东之声</td><td class="ep">367</td><td class="pl"><a href="https://www.ximalaya.com/album/79933919" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">59</td><td><a class="tt" href="https://www.ximalaya.com/album/124771839" target="_blank" rel="noopener">北大荒知青回忆录</a><div class="intro">黑龙江生产建设兵团四师33团坐落在东北边陲小镇-迎春镇。当时的邮箱叫铁字401。先后有4000多名北京、上海、天津、哈尔滨、齐齐哈尔，还有浙江桐乡等地的知青来到854农场参加建</div></td><td class="an">夏慕云</td><td class="ep">339</td><td class="pl"><a href="https://www.ximalaya.com/album/124771839" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">60</td><td><a class="tt" href="https://www.ximalaya.com/album/68802253" target="_blank" rel="noopener">知青-七星泡农场</a><div class="intro">笔者是知青。每个知青上山下乡的经历就是一幅波澜壮阔的历史画卷。这幅画卷是由无数个像素构成的。每个像素细小若无，平淡无奇，单色彩、不生动，有它不多、无它不少。但是，倘若失去了这些</div></td><td class="an">启呈文化</td><td class="ep">281</td><td class="pl"><a href="https://www.ximalaya.com/album/68802253" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">61</td><td><a class="tt" href="https://www.ximalaya.com/album/70049986" target="_blank" rel="noopener">《七十年代》（北岛 李陀）</a><div class="intro">本书辑选了三十篇对“七十年代”的追忆文章。徐冰北岛徐浩渊陈丹青朱伟高默波张郎郎阿城王安忆朱正琳鲍昆阿坚李零唐晓峰赵越胜严力黄子平蔡翔范迁邓刚阎连科许成钢陈建华王小妮唐晓渡宝嘉翟</div></td><td class="an">生活很美好</td><td class="ep">280</td><td class="pl"><a href="https://www.ximalaya.com/album/70049986" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">62</td><td><a class="tt" href="https://www.ximalaya.com/album/75299233" target="_blank" rel="noopener">一个女知青的插队史</a><div class="intro">本书记述作者当年的插队经历，以及如何从一名女知青成为一名获得“师德标兵”和“教学能手”称号的女教师，并且加入党组织，之后又培养女儿考入国外知名大学。由此，为自己的女儿那一代年轻</div></td><td class="an">爱笑的英花</td><td class="ep">202</td><td class="pl"><a href="https://www.ximalaya.com/album/75299233" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">63</td><td><a class="tt" href="https://www.ximalaya.com/album/75138904" target="_blank" rel="noopener">难忘的知青岁月</a><div class="intro">【内容简介】知青是我国在特殊年代、特殊历史条件下的产物。1968年在毛泽东主席“知识青年到农村去，接受贫下中农再教育，很有必要”的号召下，在全国范围内开展了大规模的城镇知识青年</div></td><td class="an">雷锋做事不留名</td><td class="ep">193</td><td class="pl"><a href="https://www.ximalaya.com/album/75138904" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">64</td><td><a class="tt" href="https://www.ximalaya.com/album/81671798" target="_blank" rel="noopener">长篇知青小说：那里并不遥远 作者：郑德鸿</a><div class="intro">如果你是知青，这部小说将伴你回到那并不遥远的地方；如果你不是知青，这部小说将带你走进那极其遥远的地方。请听长篇小说：那里并不遥远 作者：郑德鸿　播讲：漂泊的树　　　《那里并不遥</div></td><td class="an">漂泊的树T</td><td class="ep">149</td><td class="pl"><a href="https://www.ximalaya.com/album/81671798" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">65</td><td><a class="tt" href="https://www.ximalaya.com/album/76599745" target="_blank" rel="noopener">大荒纪事｜讲述北大荒知青的故事</a><div class="intro">本书讲述了上个世纪七十年代，从各地或因上山下乡或因逃荒的人们，如何在“北大荒”农场生活的故事。书中人物是自己的同学、农场的职工、职工家属以及农场附近的农民为对象，在忠于事实的基</div></td><td class="an">爱笑的英花</td><td class="ep">146</td><td class="pl"><a href="https://www.ximalaya.com/album/76599745" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">66</td><td><a class="tt" href="https://www.ximalaya.com/album/77254014" target="_blank" rel="noopener">有声书《 苍生》八十年代农村生活｜浩然作品</a><div class="intro">       八十年代，冀东平原上的农村改革正如火如荼的进行着，一个饱经时代更迭和历史沧桑的田家庄，同样激荡在改革大潮之中，演出了许多威武雄壮、可歌可泣的历史话剧。      </div></td><td class="an">清清雨珠</td><td class="ep">134</td><td class="pl"><a href="https://www.ximalaya.com/album/77254014" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">67</td><td><a class="tt" href="https://www.ximalaya.com/album/77919285" target="_blank" rel="noopener">伟大的历程：中国改革开放40年实录</a><div class="intro">【内容简介】1978年12月,中国共产党十一届三中全会召开，正式拉开了我国改革开放的历史序幕，我党迎来具有深远意义的伟大转折。到今天，中国改革开放已走过波澜壮阔的40年历程，被</div></td><td class="an">中改院</td><td class="ep">128</td><td class="pl"><a href="https://www.ximalaya.com/album/77919285" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">68</td><td><a class="tt" href="https://www.ximalaya.com/album/15906816" target="_blank" rel="noopener">知青故事：大红柳（已完结）</a><div class="intro">那些年，知青下乡所经历的那些事。喜爱本作品欢迎转发亲朋好友免费收听奥原著作者：刘新德</div></td><td class="an">有声的春蕾</td><td class="ep">109</td><td class="pl"><a href="https://www.ximalaya.com/album/15906816" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">69</td><td><a class="tt" href="https://www.ximalaya.com/album/20080428" target="_blank" rel="noopener">改革开放40年：那些年，那些人，那些事</a><div class="intro">本节目为湖南电子音像出版社重点图书《改革开放40年：那些年，那些人，那些事》的有声版。</div></td><td class="an">湘音_快点听</td><td class="ep">103</td><td class="pl"><a href="https://www.ximalaya.com/album/20080428" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">70</td><td><a class="tt" href="https://www.ximalaya.com/album/69404719" target="_blank" rel="noopener">遥远的风铃 | 上世纪70年代怀旧温情成长系列</a><div class="intro">年代剧既视感，上世纪七十年代，一个名叫小芽的女孩刻骨铭心的成长经历。那些出身不同，故乡不同的人们在江心洲的土地上展现出的悲欢，以及历史的烙印与延续。色彩鲜明的场景，人与人之间微</div></td><td class="an">简夫人</td><td class="ep">74</td><td class="pl"><a href="https://www.ximalaya.com/album/69404719" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">71</td><td><a class="tt" href="https://www.ximalaya.com/album/57240350" target="_blank" rel="noopener">七十年代</a><div class="intro">八十年代开花九十年代结果什么事都酝酿于七十年代这个模糊而特殊的十年知识分子群体带给我们什么样的历史记忆到底什么样的人称为知识分子他们承载着什么样的责任让我们一起回到那个年代</div></td><td class="an">空山秋</td><td class="ep">61</td><td class="pl"><a href="https://www.ximalaya.com/album/57240350" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">72</td><td><a class="tt" href="https://www.ximalaya.com/album/36637689" target="_blank" rel="noopener">八十年代初破案故事《替身之谜》</a><div class="intro">一无所有的穷光蛋济身上流社会的发家史，命案，真情，人性，时代，老小说的特点是不追求离奇而因真实而离奇。其实现实能超越任何小说。小说很好，唯需要一点耐心。</div></td><td class="an">牧望师</td><td class="ep">61</td><td class="pl"><a href="https://www.ximalaya.com/album/36637689" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">73</td><td><a class="tt" href="https://www.ximalaya.com/album/88088907" target="_blank" rel="noopener">《知青岁月：北大荒的青春回忆》</a><div class="intro">那是一个热血沸腾的年代，一代青年告别都市，奔赴广袤的北大荒。他们在艰苦中磨砺意志，在劳作中收获成长，在逆境中燃烧青春。从初到北大荒的懵懂，到与这片土地血脉相连的深情；从白雪皑皑</div></td><td class="an">里程之声</td><td class="ep">46</td><td class="pl"><a href="https://www.ximalaya.com/album/88088907" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">74</td><td><a class="tt" href="https://www.ximalaya.com/album/18588941" target="_blank" rel="noopener">改革开放：40年 • 40人</a><div class="intro">纪念改革开放40周年聆听来自长春的报告：40年，40人           2018年，是改革开放40周年。40年前，党的十一届三中全会召开，中国开始了改革开放的伟大征程。40</div></td><td class="an">喜马拉雅长春</td><td class="ep">40</td><td class="pl"><a href="https://www.ximalaya.com/album/18588941" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">75</td><td><a class="tt" href="https://www.ximalaya.com/album/78017512" target="_blank" rel="noopener">陕北记忆 | 我的知青生涯</a><div class="intro">作者为20世纪60年代末，到延安插队落户的北京青年。半个世纪后，以其丰富的生活阅历、异乡人的独特视角和资深媒体人的深邃笔触，生动真实地记载了陕北人民朴实憨厚的淳朴民风、相沿成俗</div></td><td class="an">大漠演播</td><td class="ep">36</td><td class="pl"><a href="https://www.ximalaya.com/album/78017512" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">76</td><td><a class="tt" href="https://www.ximalaya.com/album/50251181" target="_blank" rel="noopener">凉城-那些人那些事那些年月|知青回忆实录</a><div class="intro">【内容简介】这是一部在内蒙古下乡20多年的天津老知青的回忆录。本部作品的前两集还没有上线的时候，我试着发了下朋友圈，当时就有旧部惊呼：哇，郑部长的小说，快更！也有朋友说，震撼，</div></td><td class="an">超级喵八岁</td><td class="ep">22</td><td class="pl"><a href="https://www.ximalaya.com/album/50251181" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">77</td><td><a class="tt" href="https://www.ximalaya.com/album/38562389" target="_blank" rel="noopener">一个70后的九十年代的经历：野外队记忆</a><div class="intro">1994年的3月，通知我10天后到队部报导要远征大凉山的那天，我正在安临县的一个美容院挣外水。那个时候通讯基本靠吼，有个传呼机已经是奢侈品了，我肯定是什么都没有了。所以给我传递</div></td><td class="an">有声主播薇薇</td><td class="ep">20</td><td class="pl"><a href="https://www.ximalaya.com/album/38562389" target="_blank" rel="noopener">收听</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card">
+    <h2><span class="idx">5</span>评书·传统长篇<span class="cnt">23 条 · 4,349 集</span></h2>
+    <p class="desc">单田芳、王玥波等传统长篇评书（含八十年代老广播剧），一部顶几个月</p>
+    <table>
+      <thead><tr><th class="num">#</th><th>节目</th><th class="an">主播</th>
+      <th class="ep">集数</th><th class="pl">专辑</th></tr></thead>
+      <tbody>
+<tr><td class="num">78</td><td><a class="tt" href="https://www.ximalaya.com/album/3820" target="_blank" rel="noopener">乱世枭雄 | 单田芳经典</a><div class="intro">清晰版本指路：乱世枭雄（单田芳经典），持续更新中《乱世枭雄》讲的是东北王张作霖和其子少帅张学良的传奇故事，是著名评书艺术家单田芳先生根据大量的历史材料和广为流传的民间传说创作而</div></td><td class="an">单田芳评书</td><td class="ep">486</td><td class="pl"><a href="https://www.ximalaya.com/album/3820" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">79</td><td><a class="tt" href="https://www.ximalaya.com/album/2677356" target="_blank" rel="noopener">白眉大侠 | 单田芳评书（喜马精制版）</a><div class="intro">《白眉大侠》讲述了宋朝四帝仁宗皇帝执政期间，以徐良、白云瑞为书胆，包括七侠、大五义、小五义、小七杰等众开封府校尉，在八王赵德芳、包拯、颜查散等清官的支持下，为保国泰民安而不顾个</div></td><td class="an">单田芳评书</td><td class="ep">401</td><td class="pl"><a href="https://www.ximalaya.com/album/2677356" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">80</td><td><a class="tt" href="https://www.ximalaya.com/album/8154162" target="_blank" rel="noopener">三侠剑 | 单田芳经典</a><div class="intro">《三侠剑》故事自“明清八义”开书，胜英年轻时因金镖误伤八弟秦天豹，与秦家结下“梁子”。后来“明清八义”解散，胜英以保镖为业，其子秦尤发誓替父报仇，勾结“太仓三鼠”杀人越货，入皇</div></td><td class="an">单田芳评书</td><td class="ep">401</td><td class="pl"><a href="https://www.ximalaya.com/album/8154162" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">81</td><td><a class="tt" href="https://www.ximalaya.com/album/8291856" target="_blank" rel="noopener">龙虎风云会 | 单田芳经典</a><div class="intro">评书《龙虎风云会》是长篇侠义评书《白眉大侠》的继续和补充，又可单独成章，并增加了公案情节。此书以房书安为主线展开故事情节。此书包括包世荣断案、白芸瑞被诬陷、囚禁八王千岁以逼迫开</div></td><td class="an">单田芳评书</td><td class="ep">321</td><td class="pl"><a href="https://www.ximalaya.com/album/8291856" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">82</td><td><a class="tt" href="https://www.ximalaya.com/album/3544" target="_blank" rel="noopener">大明演义 | 单田芳经典</a><div class="intro">《大明演义》是由: 《明英烈》(1-115)《 大明英烈》(116-226)《燕王扫北》(227-312) 这三部书剪接而成的，从朱元璋起义一直到朱棣登基。其实《大明演义》就是</div></td><td class="an">单田芳评书</td><td class="ep">313</td><td class="pl"><a href="https://www.ximalaya.com/album/3544" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">83</td><td><a class="tt" href="https://www.ximalaya.com/album/3210" target="_blank" rel="noopener">童林传 | 单田芳经典</a><div class="intro">童林传：清朝康熙年间，童林（字海川）因特殊事件被迫离家出走。他绝路逢生，不仅得到武林名士何道源、尚道明相救，练就“柳叶绵丝掌”、“子母鸡爪鸳鸯钺”等绝顶神功。下山之后，童林以他</div></td><td class="an">单田芳评书</td><td class="ep">301</td><td class="pl"><a href="https://www.ximalaya.com/album/3210" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">84</td><td><a class="tt" href="https://www.ximalaya.com/album/236374" target="_blank" rel="noopener">清官册 | 单田芳经典</a><div class="intro">此书内容讲述了清朝康熙年间施世纶办案的故事。 施世纶正直无私，不畏强暴，经常棚艮私访，敢同权贵斗争，为百姓平反冤案。他在黄天霸、贺天保等人协助下，打击贪官豪强，包括王公、贝勒、</div></td><td class="an">单田芳评书</td><td class="ep">201</td><td class="pl"><a href="https://www.ximalaya.com/album/236374" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">85</td><td><a class="tt" href="https://www.ximalaya.com/album/18945935" target="_blank" rel="noopener">曾国藩 | 单田芳经典</a><div class="intro">主播: 单田芳评书</div></td><td class="an">单田芳评书</td><td class="ep">200</td><td class="pl"><a href="https://www.ximalaya.com/album/18945935" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">86</td><td><a class="tt" href="https://www.ximalaya.com/album/2677700" target="_blank" rel="noopener">薛家将 | 单田芳经典</a><div class="intro">唐贞观年间，平西王薛仁贵奉旨进京陪王伴驾，不想遭皇叔李道宗陷害，三赴法场，险丧性命，虽最终平冤昭雪，但已心灰意冷，回家后诈死埋名，决心再不为官。时恰逢西凉六国进犯大唐，唐王李世</div></td><td class="an">单田芳评书</td><td class="ep">181</td><td class="pl"><a href="https://www.ximalaya.com/album/2677700" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">87</td><td><a class="tt" href="https://www.ximalaya.com/album/3823" target="_blank" rel="noopener">三侠五义 | 单田芳经典</a><div class="intro">清晰版本指路：三侠五义（单田芳经典），持续更新中 “三侠”是指北侠欧阳春、南侠展昭、丁氏双侠丁兆兰、丁兆蕙二人为一侠；“五义”是指窜天鼠卢方、掣地鼠韩彰、钻山鼠徐庆，翻江鼠蒋平</div></td><td class="an">单田芳评书</td><td class="ep">180</td><td class="pl"><a href="https://www.ximalaya.com/album/3823" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">88</td><td><a class="tt" href="https://www.ximalaya.com/album/9032176" target="_blank" rel="noopener">清末风云录 | 单田芳经典</a><div class="intro">主播: 单田芳评书</div></td><td class="an">单田芳评书</td><td class="ep">171</td><td class="pl"><a href="https://www.ximalaya.com/album/9032176" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">89</td><td><a class="tt" href="https://www.ximalaya.com/album/8133373" target="_blank" rel="noopener">新隋唐演义 | 单田芳经典</a><div class="intro">《隋唐演义》评书讲述的是隋王朝临末日时，以瓦岗寨为首的起义军，联络朝中被隋炀帝迫害的将领，推翻隋朝，建立唐王朝的故事。 隋朝末年，朝廷腐败，炀帝昏庸，奸相宇文化及父子把持朝政，</div></td><td class="an">单田芳评书</td><td class="ep">151</td><td class="pl"><a href="https://www.ximalaya.com/album/8133373" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">90</td><td><a class="tt" href="https://www.ximalaya.com/album/18945905" target="_blank" rel="noopener">民国英烈 | 单田芳经典</a><div class="intro">主播: 单田芳评书</div></td><td class="an">单田芳评书</td><td class="ep">150</td><td class="pl"><a href="https://www.ximalaya.com/album/18945905" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">91</td><td><a class="tt" href="https://www.ximalaya.com/album/9030336" target="_blank" rel="noopener">封神演义 | 单田芳经典</a><div class="intro">主播: 单田芳评书</div></td><td class="an">单田芳评书</td><td class="ep">142</td><td class="pl"><a href="https://www.ximalaya.com/album/9030336" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">92</td><td><a class="tt" href="https://www.ximalaya.com/album/9030508" target="_blank" rel="noopener">水浒外传 | 单田芳经典</a><div class="intro">主播: 单田芳评书</div></td><td class="an">单田芳评书</td><td class="ep">120</td><td class="pl"><a href="https://www.ximalaya.com/album/9030508" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">93</td><td><a class="tt" href="https://www.ximalaya.com/album/20665610" target="_blank" rel="noopener">三国演义（115回） | 单田芳经典</a><div class="intro">本专辑共计115回，已完结。完整电台版《三国演义》可收听专辑三国演义（125回）|单田芳经典。东汉末年，汉室衰微，历经黄巾起义、董卓之乱和群雄割据混战后，形成魏、蜀、吴三国鼎立</div></td><td class="an">单田芳评书</td><td class="ep">116</td><td class="pl"><a href="https://www.ximalaya.com/album/20665610" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">94</td><td><a class="tt" href="https://www.ximalaya.com/album/9046634" target="_blank" rel="noopener">许世友 | 单田芳经典</a><div class="intro">少林将军许世友，出生于湖北省麻城县乘马岗区（今河南省信阳市新县）。他出身贫苦农家，曾在少林寺当和尚。在土地革命时期、解放战争时期立下了赫赫战功，为中国人民的解放事业做出了不朽贡</div></td><td class="an">单田芳评书</td><td class="ep">100</td><td class="pl"><a href="https://www.ximalaya.com/album/9046634" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">95</td><td><a class="tt" href="https://www.ximalaya.com/album/236362" target="_blank" rel="noopener">太平洋大海战 | 单田芳经典</a><div class="intro">以传统评书形式说近现代大事件，以一些在经典国内历史题材常见的传统式的描述语言描写人物的口吻，什么“脑仁都疼了”、什么“七个不服八个不愤一百二十个不答应”、“摆活儿”、“拍老腔”</div></td><td class="an">单田芳评书</td><td class="ep">100</td><td class="pl"><a href="https://www.ximalaya.com/album/236362" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">96</td><td><a class="tt" href="https://www.ximalaya.com/album/9046449" target="_blank" rel="noopener">九一八风云 | 单田芳经典</a><div class="intro">主播: 单田芳评书</div></td><td class="an">单田芳评书</td><td class="ep">100</td><td class="pl"><a href="https://www.ximalaya.com/album/9046449" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">97</td><td><a class="tt" href="https://www.ximalaya.com/album/6950894" target="_blank" rel="noopener">广播剧 水浒传 八十年代老作品（完结）</a><div class="intro">上个世纪的珍贵作品，以后很难找到</div></td><td class="an">听见listening</td><td class="ep">67</td><td class="pl"><a href="https://www.ximalaya.com/album/6950894" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">98</td><td><a class="tt" href="https://www.ximalaya.com/album/9046362" target="_blank" rel="noopener">努尔哈赤 | 单田芳经典</a><div class="intro">主播: 单田芳评书</div></td><td class="an">单田芳评书</td><td class="ep">57</td><td class="pl"><a href="https://www.ximalaya.com/album/9046362" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">99</td><td><a class="tt" href="https://www.ximalaya.com/album/8713505" target="_blank" rel="noopener">雍正剑侠图（第一部）之两打杭州擂｜王玥波评书作品</a><div class="intro">王玥波评书《雍正剑侠图》系列，是王玥波线下书馆实录长篇评书，底本源自常杰淼民国连载原著《雍正剑侠十三部》。2007 年，王玥波于宣南书馆正式开讲《雍正剑侠图》系列。历经 17 </div></td><td class="an">王玥波书场</td><td class="ep">50</td><td class="pl"><a href="https://www.ximalaya.com/album/8713505" target="_blank" rel="noopener">收听</a></td></tr>
+<tr><td class="num">100</td><td><a class="tt" href="https://www.ximalaya.com/album/250524" target="_blank" rel="noopener">平原枪声 | 单田芳经典</a><div class="intro">平原枪声抗战爆发了。国民党军队节节败退，冀甫平原上，地主大户组建的会道门互相械斗，散兵游勇组织民军，草头王自封司令，而老百姓则人心惶惶。共产党员马英回到了家乡肖家镇。</div></td><td class="an">单田芳评书</td><td class="ep">40</td><td class="pl"><a href="https://www.ximalaya.com/album/250524" target="_blank" rel="noopener">收听</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+<div class="note">
+  <b>关于直链时效：</b>喜马拉雅直链会过期（几天到几周）。所以这份表是<b>选片单</b>，
+  真正加进机器时应该用专辑 id 现取直链（工程里 <code>tools/fetch_xm2.py</code> 就是这么做的），
+  不要写死。
+</div>
+
+<div class="card">
+  <h2><span class="idx">附</span>关于「从荔枝拉广播频道」</h2>
+  <p class="desc">荔枝今天<b>已经没有任何广播频道</b> —— 这是实测，不是推测。</p>
+  <table>
+    <thead><tr><th>试的路径</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td><code>/live</code> <code>/radio</code> <code>/station</code> <code>/category</code> <code>/discover</code></td><td><b>全部 404</b></td></tr>
+      <tr><td><code>m.lizhi.fm</code> 移动站</td><td>403（反爬）</td></tr>
+      <tr><td>首页 / 分类页（真浏览器渲染后）</td><td>只有「发现 · 分类 · 主播管理 · 下载 · 客服」；分类是趣味杂谈 / 奇闻轶事 / 自我成长 / 影音漫娱 / 地域特色 / 女性话题 / 文化历史 / 星座命理，内容全是 <code>/user/&lt;uid&gt;</code> 播客主播页，没有任何频道 / 频点 / 流地址</td></tr>
+    </tbody>
+  </table>
+  <p class="desc" style="margin-top:10px">荔枝 2010 年起步时是「网络电台」，2018 年后整体转成
+    <b>播客平台</b>（现在的口号是「人人都是播客」），直播只剩主播连麦，不是能长时间挂着听的广播流。
+    所以「荔枝的广播频道」这个对象今天不存在，无法拉取。</p>
+</div>
+
+  <section class="card">
+    <h2><span class="idx">附</span>机器里还没有的中文台<span class="cnt">576 个 · 实测可播</span></h2>
+    <p class="desc">工厂台表 307 条里有 259 个来自蜻蜓；这次把蜻蜓全国 1038 个台全量拉下来做差集，
+      剔掉音乐台与非汉语台后逐个实测流地址，能拉的剩 576 个。完整地址见同名 CSV。</p>
+    <table class="st">
+      <thead><tr><th class="rg">地区</th><th class="rgc">台数</th><th class="nl">电台</th></tr></thead>
+      <tbody>
+<tr><td class="rg">山东</td><td class="rgc">59</td><td class="nl">936私家车广播、FM107济宁生活广播、FM107潍坊交通广播、FM91.1邹平人民广播电台、FM92.4安丘924、FM96.1邹城之声、FM97.4济南都市广播、东营生活广播、临朐广播电视台FM102.3、临沂交通旅游广播、临沂综合广播、临淄人民广播电台、仙境之声、利津广播电视台FM106.2、即墨融媒综合广播、周村区广播电视台、城阳940、声动970、威海交通广播、寿光市融媒体中心综合广播、山东广播电视台综合广播、山东经济广播、崂山921、广饶人民广播电台FM103.9、庆云融媒综合广播、无棣人民广播电台、日照交通生活广播、曹县融媒体中心综合广播FM93.3、枣庄经济生活广播、枣庄综合广播、梁山广播电视台综合广播、济南交通广播、济南经济广播、济宁交通广播、淄博私家车广播  FM106.7、淄博综合广播、淄川1055广播、滕州广播电视台FM99.8、滨州综合广播、潍坊1008城市之声、潍坊933经济广播、潍坊982广播电台、烟台交通广播FM103、烟台综合广播FM101、牡丹之声手机广播、章丘之声、聊城交通广播、聊城经济广播、聊城综合广播、胶州875、菏泽交通广播、蒙阴人民广播电台、财富932私家车广播、都市101经济广播、金乡之声、阳信人民广播电台、青岛交通广播、青岛经济广播、高密955</td></tr>
+<tr><td class="rg">江苏</td><td class="rgc">56</td><td class="nl">886武进之声、979丹阳之声、997金陵之声、FM104镇江综合广播、FM88.8镇江交通广播、FM98.8 盐城综合广播、东海994、仪征人民广播电台 FM94.3、南通交通广播、南通私家车广播、大丰FM95.1、如东新闻综合广播、如皋汽车广播、宁听FM885、宜兴交通台、宝应人民广播电台、宿豫人民广播电台、宿迁交通广播、常州交通广播、常州新闻广播、常州经济广播、徐州交通广播、徐州广播FM105、徐州新闻综合广播、扬州YESFM949、扬州交通广播、扬州新闻广播、扬州电台江都广播、无锡交通广播、无锡梁溪之声、无锡经济广播、江苏交通广播、江苏健康广播、江苏新闻广播、江苏新闻综合广播、江苏财经广播、沛县综合广播、海门人民广播电台、淮安FM104.2、淮安交通文艺、淮安新闻综合、淮安经典992、淮安经济生活、淮安车生活广播、滨海1029、澎湃907、盐城交通广播、盐城广播FM88.2、盱眙县融媒体中心综合广播、睢宁县融媒体中心综合广播 FM93.1、赣榆区融媒体中心综合广播、连云港交通广播、通州人民广播电台、邳州人民广播电台、金湖人民广播电台、阜宁人民广播</td></tr>
+<tr><td class="rg">河南</td><td class="rgc">50</td><td class="nl">1077新乡交通广播、FM105.9项城人民广播电台、FM893周口交通广播、FM91.8郑州私家车广播、FM99.6信阳交通广播、乐享1007、光山90.1、兰考人民广播电台、南乐融媒广播、南阳交通广播、卧龙综合广播、周口综合广播、商丘交通1007、声动890信阳综合广播、安阳交通广播、巩义融媒、平顶山交通广播、开封交通旅游广播、开封祥符广播919、开封综合广播、快乐903私家车广播、怀旧好声音、新密人民广播电台、新野融媒、林州广播电台、汝州人民广播电台、汤阴融媒综合广播、洛阳交通广播、洛阳城市993、洛阳综合广播、漯河交通广播、漯河综合广播、濮阳FM1053快乐调频、濮阳交通广播、焦作交通旅游广播、登封综合广播、禹州广播电视台 FM93.4、经典916、许昌广播电视台交通广播FM92.6、许昌广播电视台综合广播、邓州广播电台、郏县886、郑州交通广播、郑州经济广播、长垣综合广播FM95.7、项城936、驻马店交通广播、驻马店综合广播、鹤壁交通广播FM99.4、鹤壁综合广播</td></tr>
+<tr><td class="rg">河北</td><td class="rgc">48</td><td class="nl">FM104.8 保定民生广播、FM106.2邢台信都融媒广播、FM98.6邢台信都融媒广播、任丘融媒体中心综合广播、动听913（宣化区融媒体中心综合广播）、唐山交通文艺、唐山经济生活广播、定州融媒体中心综合广播、崇礼综合广播、年代995、廊坊飞扬105、张家口交通广播、张家口旅游广播、怀来人民广播电台 FM95.4、承德旅游生活广播、承德综合广播、曲阳融媒FM90.4、欢乐调频、武安融媒综合广播、沧州交通广播、河北交通广播、河北农民广播、河北旅游文化广播、河北生活广播、河北综合广播、河间市融媒体中心综合广播、泊头人民广播电台、深州综合频率FM106.9、献县人民广播电台、畅行951、石家庄交通广播、磁县融媒综合广播、秦皇岛1038私家车广播、秦皇岛交通广播、经典913、肃宁融媒体中心综合广播、肥乡人民广播电台、衡水交通广播925、衡水湖城之声961、衡水综合广播、辛集融媒体中心综合广播、邢台爱在104、邢台经济生活广播、邢台综合广播、邯郸交通广播、邯郸都市生活广播、青春调频 FM105.4、鹿泉融媒体中心综合广播</td></tr>
+<tr><td class="rg">浙江</td><td class="rgc">44</td><td class="nl">1008可乐台、1022永嘉人民广播电台、96.4临安人民广播电台、FM101仙居融媒体广播、FM103.5湖州经济广播、FM105平阳电台、FM105湖州之声、FM106.5德清之声、FM106.8柯桥人民广播电台、FM89.8临海人民广播电台、FM93浙江交通之声、FM94.1绍兴交通广播、FM954龙游电台、FM96大潮之声、FM97.3太湖之声、三门广播电台、东阳城市广播、义乌交通广播、乐清人民广播电台、台州交通广播、嘉兴交通广播、天台电台FM91.1、宁波交通广播、宁波经济广播、慈溪经典车电台、新昌人民广播电台、杭州FM90.7、杭州交通91.8电台、杭州华语之声、桐乡之声、永康人民广播电台、浙江FM99.6、浙江之声、浙江经济广播、浦江人民广播电台、温岭1036电台、温州交通广播、温州经济广播、玉环广播电台、瑞安人民广播、萧山人民广播电台、西湖之声、诸暨人民广播电台、黄岩电台</td></tr>
+<tr><td class="rg">广东</td><td class="rgc">41</td><td class="nl">FM904台山人民广播电台、东源广播电台、中山电台快乐888、中山电台新锐967、佛冈电台、化州人民广播电台、吴川人民广播电台、增城电台FM89.0、广东交通之声、广东南方生活广播、广东城市之声、广东广播电视台文体广播、广东广播电视台珠江之声、广东珠江经济电台、广州GZFM88.0、广州交通广播、廉江人民广播电台、开平广播电台、恩平FM97.7、投资传媒（股市广播）、新会人民广播电台、新兴电台、普宁人民广播电台、深圳交通频率、深圳先锋898、深圳生活广播、深圳飞扬971、湛江广播电视台综合广播、潮州综合频率、澄海人民广播电台、珠海电台交通875、珠海电台先锋951、番禺电台畅快1017、肇庆高新区广播、花都广播电台、英德电台、茂名综合广播、阳江综合资讯广播、韶关综合广播、鹤山电台、龙岗广播FM99.1</td></tr>
+<tr><td class="rg">四川</td><td class="rgc">37</td><td class="nl">三台人民广播电台、乐山综合广播FM102.8、仁寿人民广播电台、内江综合广播、凉山综合广播、南充综合广播FM100.4、南江人民广播电台、双流FM1009空港之声、威远综合广播、安岳人民广播电台&quot;柠都之声&quot;FM98.0、富顺人民广播电台、巴中交通旅游广播、广元交通旅游广播、广元综合广播、广安交通旅游广播、德阳旌阳电台、德阳经济生活广播、德阳综合广播、成都FM96.5、成都电台FM946、成都经济广播、成都龙泉人民广播电台FM93.3、攀枝花综合广播、新声905、江油人民广播电台、泸州交通广播、眉山综合广播、绵竹人民广播电台、绵阳交通广播、自贡文化旅游广播、自贡综合广播、苍溪人民广播电台、西昌人民广播电台、达州综合广播、遂宁交通旅游台、阆中人民广播电台、阿坝州综合广播</td></tr>
+<tr><td class="rg">安徽</td><td class="rgc">29</td><td class="nl">包河之声电台、合肥交通广播、合肥文旅广播、固镇人民广播电台、天井湖之声FM1024、天长人民广播电台、安庆综合广播、安徽交通广播、安徽农村广播、安徽旅游广播高速之声、安徽生活广播、安徽经济广播、安徽综合广播、宣城交通1061、宣城广播电视台综合广播、宿州综合广播、怀远之声、池州综合广播、淮北交通广播、淮北综合广播、经典983电台、芜湖交通经济广播、芜湖综合广播、铜陵交通生活广播、阜阳交通广播、阜阳经济广播、阜阳综合广播、颍上FM962、黄山交通旅游广播</td></tr>
+<tr><td class="rg">湖北</td><td class="rgc">26</td><td class="nl">仙桃人民广播电台、公安人民广播电台、咸宁交通广播、天门人民广播电台、孝昌964电台、宜昌交通广播、楚天交通广播、武汉交通广播、武汉经济广播、武穴人民广播电台、江陵综合广播、湖北之声、湖北经济广播、监利人民广播电台、红安人民广播电台、荆州广播电视台90.1汽车广播、荆门综合广播、蕲春人民广播电台、襄阳之声、襄阳文化教育广播、鄂州广播电视台综合广播、长江之声、随州交通经济广播、随州综合广播、黄梅之声、黄石交通广播</td></tr>
+<tr><td class="rg">湖南</td><td class="rgc">24</td><td class="nl">1028郴州交通旅游广播、1061长沙交通广播、FM102.2亲子智慧电台、FM104.2湘潭交通广播、FM104.7澧县广播电台、FM106.8常德鼎广电台、FM88.1 益阳电台交通频道、FM97.1常德交通广播、娄底交通广播、岳阳交通广播、怀化交通广播、株洲交通广播、桃江人民广播电台、湖南交通频道、湖南金鹰955电台、湘乡广播电台龙城之声、衡阳交通经济广播、衡阳综合广播、邵阳经济广播、邵阳综合广播、郴州综合广播、长沙925电台、长沙FM101.7城市之声、靖州综合广播</td></tr>
+<tr><td class="rg">吉林</td><td class="rgc">21</td><td class="nl">1046延边旅游生活广播、1063城市生活广播、伊通人民广播电台、公主岭交通之声、吉林乡村广播、吉林交通广播、吉林健康娱乐广播、吉林市交通台 FM939、吉林市广播电视台经济广播、吉林旅游广播、吉林经济广播FM95.3AM846、吉林资讯广播、四平交通文艺台、延吉交通之声、松原大众生活广播、梅河口人民广播电台城市之声、梨树电台北方交通之声、白山交通广播FM950、长春交通之声、长春广播电视台 FM88.0、魅力FM1008</td></tr>
+<tr><td class="rg">辽宁</td><td class="rgc">20</td><td class="nl">FM97.0庄河融媒广播、凌源广播电台、大连1043、大连1067、大连交通广播、大连体育广播、大连都市广播、建平广播电视台、新民人民广播电台、普兰店FM90.8、朝阳交通广播、朝阳县人民广播电台FM104、沈阳交通广播FM98.6、沈阳生活广播、沈阳都市广播、辽宁乡村广播、辽宁交通广播FM97.5、辽宁经济广播、辽宁资讯广播fm90.6大连分台、黑山人民广播电台</td></tr>
+<tr><td class="rg">新疆</td><td class="rgc">18</td><td class="nl">乌鲁木齐974交通广播、伊犁FM99.5察布查尔、伊犁之声FM89.7、呼图壁人民广播电台、塔城人民广播电台汉语综合广播、塔城市广播电视台FM104.2、奎屯市融媒体中心综合广播、巴音郭楞广播电视台FM966综合广播、库尔勒1053梨城之声、新疆交通广播、新疆兵团第十三师调频广播、新疆昌吉 FM103.3综合广播、石河子广播电视台综合广播、第三师图木舒克市人民广播电台、第二师融媒体中心综合广播FM88.5、轮台之声、阿克苏市1029、阿克苏汉语综合广播FM94</td></tr>
+<tr><td class="rg">福建</td><td class="rgc">17</td><td class="nl">中国华艺广播公司、云霄人民广播电台、厦门892集美广播、厦门交通旅游广播、安溪人民广播电台、尤溪1066、泉州904交通之声、泉州刺桐之声、海峡之声广播电台、漳州人民广播电台交通广播、福州交通之声、福州人民广播电台左海之声、福建987私家车广播、福建交通广播、福建经济广播、诏安广播电视台综合广播、龙岩电台综合广播</td></tr>
+<tr><td class="rg">云南</td><td class="rgc">16</td><td class="nl">FM105城市资讯、云南交通之声、云南民族广播、云南私家车电台、大理电台苍洱调频、巧家人民广播电台——白鹤之声、德宏交通旅游广播、怒江广播电视台广播综合频率、文山交通广播、普洱市广播电视台交通广播、普洱市广播电视台综合广播、楚雄综合广播、玉溪交通旅游广播FM87.7、红河之声、蒙自广播电视台综合广播、西双版纳综合广播FM101.4</td></tr>
+<tr><td class="rg">山西</td><td class="rgc">15</td><td class="nl">880山西交通广播、958电台山西经济广播、FM104.1北岳之声、FM1044太原经济广播、FM107太原交通广播、FM88.7垣曲人民 广播电台、吕梁交通广播、大同交通广播、山西健康之声、山西农村广播、摩天102、晋城交通广播、长治交通广播、阳泉交通广播、阳泉综合广播</td></tr>
+<tr><td class="rg">内蒙古</td><td class="rgc">13</td><td class="nl">FM896鄂尔多斯之声、内蒙古交通之声、内蒙古绿野之声广播、内蒙古草原之声广播、包头FM105.9、包头交通广播、呼和浩特交通广播、呼和浩特综合广播、巴彦淖尔交通广播、巴彦淖尔文艺生活广播、赤峰1024、赤峰交通广播、鄂尔多斯交通文体广播</td></tr>
+<tr><td class="rg">江西</td><td class="rgc">9</td><td class="nl">九江交通广播、南康交通广播、南昌交通广播、新余交通广播、江西交通广播、江西旅游广播FM97.4、江西潮台969、江西财经广播（成功992）、赣北之声FM94.2</td></tr>
+<tr><td class="rg">贵州</td><td class="rgc">9</td><td class="nl">兴义之声、兴仁人民广播电台、凯里人民广播电台、威宁阳光945、桐梓人民广播电台—娄山之声、贵州交通广播、贵州经济广播、黔西南FM107.9综合广播、黔西南FM88.3交通旅游广播</td></tr>
+<tr><td class="rg">黑龙江</td><td class="rgc">8</td><td class="nl">哈尔滨交通广播、哈尔滨经济广播、大庆交通广播、牡丹江交通广播、鸡西交通广播、黑龙江交通广播、黑龙江高校广播、龙广都市女性台</td></tr>
+<tr><td class="rg">陕西</td><td class="rgc">6</td><td class="nl">FM100.7咸阳人民广播电台、安康交通广播、宝鸡交通旅游、西安交通广播、陕西交通广播、陕西青少广播·1055青春有我</td></tr>
+<tr><td class="rg">广西</td><td class="rgc">5</td><td class="nl">FM99.10柳州交通广播、南宁1074交通台、广西交通台、广西私家车930、桂林飞扬调频</td></tr>
+<tr><td class="rg">上海</td><td class="rgc">1</td><td class="nl">第一财经广播</td></tr>
+<tr><td class="rg">海南</td><td class="rgc">1</td><td class="nl">Live Radio海口生活广播</td></tr>
+<tr><td class="rg">重庆</td><td class="rgc">1</td><td class="nl">938重庆私家车广播</td></tr>
+<tr><td class="rg">甘肃</td><td class="rgc">1</td><td class="nl">甘肃新闻综合广播</td></tr>
+<tr><td class="rg">青海</td><td class="rgc">1</td><td class="nl">青海经济生活广播</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+<footer>节目数据：喜马拉雅公开接口逐条抓取 + 逐条实测 · 生成于 2026-11-03</footer>
+</div>
+</body>
+</html>

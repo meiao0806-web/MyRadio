@@ -1,0 +1,1940 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyRadio · 固件预览</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0d1117;--panel:#151b23;--panel2:#1b232d;--line:#26303b;
+  --txt:#e6edf3;--sub:#8b98a5;--accent:#b06b03;--cool:#01839d;--ok:#26a269;
+}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
+  font:14px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+body{display:flex;flex-direction:column;overflow:hidden}
+header{flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:12px 18px;
+  border-bottom:1px solid var(--line);background:var(--panel)}
+header .brand{font-weight:700;font-size:15px;letter-spacing:.5px}
+header .brand small{color:var(--sub);font-weight:400;margin-left:8px;font-size:12px}
+header .tabs{display:flex;gap:6px;margin-left:auto}
+header .tabs button{border:1px solid var(--line);background:transparent;color:var(--sub);
+  padding:7px 14px;border-radius:9px;font:600 13px/1 inherit;cursor:pointer}
+header .tabs button.on{background:var(--accent);border-color:var(--accent);color:#120c04}
+
+main{flex:1 1 auto;display:flex;min-height:0}
+.view{display:none;flex:1 1 auto;min-height:0;min-width:0}
+.view.on{display:flex}
+
+/* ---------- 左：设备 ---------- */
+.stage{flex:1 1 auto;display:flex;align-items:center;justify-content:center;
+  padding:20px;min-width:0;overflow:hidden}
+/* 设备整体按可用空间等比缩放：宽度不够时缩，不裁切、不变形 */
+.fitbox{flex:0 0 auto;position:relative}
+.device{display:flex;flex-direction:column;align-items:center;gap:14px;
+  transform-origin:top left}
+.case{position:relative;padding:14px 16px 12px;border-radius:16px;
+  background:linear-gradient(160deg,#2a333d,#131920 55%,#0e1319);
+  box-shadow:0 22px 46px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06);
+  border:1px solid #0a0d11}
+.screenwrap{position:relative;border-radius:5px;overflow:hidden;
+  box-shadow:0 0 0 2px #05080a,0 0 22px rgba(1,131,157,.18)}
+#screen{display:block;image-rendering:pixelated;width:832px;height:442px;background:#000}
+.glare{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(120deg,rgba(255,255,255,.05),transparent 42%)}
+
+/* ---- 1.45.0：屏幕色（真机 / 设计）与控制条 ---- */
+.panctl{display:flex;align-items:center;gap:8px;margin-left:auto}
+.panctl .lbl{font-size:12px;color:var(--sub)}
+.panctl button{border:1px solid var(--line);background:transparent;color:var(--sub);
+  padding:6px 11px;border-radius:9px;font:600 12px/1 inherit;cursor:pointer;white-space:nowrap}
+.panctl button.on{background:var(--cool);border-color:var(--cool);color:#03181d}
+.panbox{position:fixed;right:18px;top:58px;z-index:40;width:296px;padding:14px 16px 16px;
+  border-radius:14px;background:var(--panel);border:1px solid var(--line);
+  box-shadow:0 18px 44px rgba(0,0,0,.6);display:none}
+.panbox.on{display:block}
+.panbox h5{margin:0 0 10px;font:700 12px/1 inherit;color:var(--sub);letter-spacing:.4px}
+.panbox .row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.panbox .row span{flex:0 0 62px;font-size:12px;color:var(--sub)}
+.panbox .row input[type=range]{flex:1 1 auto;min-width:0;accent-color:var(--cool)}
+.panbox .row b{flex:0 0 40px;text-align:right;font:600 12px/1 ui-monospace,monospace;color:var(--txt)}
+.panbox .hint{margin-top:10px;font-size:11px;line-height:1.55;color:#6f7c8a}
+.panbox .btns{display:flex;gap:8px;margin-top:12px}
+.panbox .btns button{flex:1 1 auto;height:32px;border-radius:8px;border:1px solid var(--line);
+  background:var(--panel2);color:var(--txt);font:600 12px/1 inherit;cursor:pointer}
+.panbox .btns button.pri{background:var(--cool);border-color:var(--cool);color:#03181d}
+
+.knobrow{display:flex;align-items:center;gap:16px;margin-top:12px;width:100%}
+.knob{flex:0 0 auto;width:74px;height:74px;border-radius:50%;cursor:grab;
+  background:radial-gradient(circle at 34% 30%,#4a5764,#232c35 62%,#131a21);
+  box-shadow:0 4px 12px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12);
+  position:relative;border:1px solid #0a0d11;user-select:none}
+.knob:active{cursor:grabbing}
+.knob i{position:absolute;left:50%;top:8px;width:3px;height:15px;margin-left:-1.5px;
+  background:var(--accent);border-radius:2px;box-shadow:0 0 6px var(--accent)}
+.knob .cap{position:absolute;inset:26px;border-radius:50%;background:#182028}
+.ir{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1 1 auto;min-width:0}
+.ir button{height:40px;border-radius:8px;border:1px solid #2b3541;background:#1d252e;
+  color:var(--txt);font:600 13px/1.1 inherit;cursor:pointer;white-space:nowrap}
+.ir button:active{background:#2b3644}
+.ir .wide{grid-column:span 3}
+
+/* ---------- 右：面板 ---------- */
+.panel{flex:0 0 330px;border-left:1px solid var(--line);background:var(--panel);
+  display:flex;flex-direction:column;min-height:0}
+.panel .sec{padding:14px 16px;border-bottom:1px solid var(--line)}
+.panel .sec h4{margin:0 0 10px;font-size:12px;letter-spacing:1px;color:var(--sub);
+  font-weight:600;text-transform:uppercase}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--sub)}
+.kv b{color:var(--txt);font-weight:600;font-family:ui-monospace,Consolas,monospace}
+.panel select{width:100%;background:#0f151c;border:1px solid var(--line);color:var(--txt);
+  border-radius:8px;padding:8px 10px;font:13px/1.2 inherit;cursor:pointer}
+.list{flex:1 1 auto;overflow:auto;padding:8px 10px}
+.item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;
+  font-size:13px;cursor:pointer;color:var(--txt)}
+.item:hover{background:var(--panel2)}
+.item.cur{background:#2a2011;color:#ffd48a}
+.item .ix{width:22px;color:var(--sub);font-size:11px;font-family:ui-monospace,monospace}
+.item .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .tg{font-size:10px;color:var(--cool);border:1px solid #123a44;border-radius:5px;padding:1px 4px}
+.item .x{color:#6b7787;font-size:15px;padding:0 4px;border-radius:4px}
+.item .x:hover{color:#ff6b6b;background:#2a1a1a}
+.add{display:flex;gap:6px;padding:10px 12px;border-top:1px solid var(--line)}
+.add input{flex:1;min-width:0;background:#0f151c;border:1px solid var(--line);color:var(--txt);
+  border-radius:8px;padding:9px 10px;font:13px/1 inherit}
+.add input:focus{outline:none;border-color:var(--cool)}
+.add button{flex:0 0 46px;background:var(--cool);border:none;color:#02181d;
+  font:700 16px/1 inherit;border-radius:8px;cursor:pointer}
+.tip{color:var(--sub);font-size:12px;line-height:1.8;padding:10px 16px}
+
+/* ---------- 手机 App ---------- */
+.phonewrap{flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  gap:18px;padding:16px 18px;min-height:0}
+.phone{width:382px;height:762px;border-radius:38px;background:#0a0d11;padding:9px;
+  box-shadow:0 26px 60px rgba(0,0,0,.6),inset 0 0 0 1px #222b35;flex:0 0 auto}
+.phone iframe{width:100%;height:100%;border:none;border-radius:28px;background:#fdf6ec}
+.appnote{flex:0 0 272px;color:var(--sub);font-size:12px;line-height:1.9}
+.appnote b{color:var(--txt)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">MyRadio <small>320×170 固件预览 · 真字库 / 真台表 / 真 App 代码</small>
+    <small id="fwv" style="margin-left:8px;opacity:.85"></small></div>
+  <div class="panctl">
+    <span class="lbl">屏幕色</span>
+    <button id="panReal" class="on" title="按 ST7789 面板特性模拟：色域窄、黑位漏光、蓝偏弱">真机</button>
+    <button id="panDesign" title="RGB565 精确还原值，不代表真机观感">设计色</button>
+    <button id="panTune" title="对着真机调，把参数抄回 tools/gen_webpreview.py">标定…</button>
+  </div>
+  <div class="panbox" id="panBox">
+    <h5>面板标定（改成真机上的样子）</h5>
+    <div class="row"><span>黑位</span><input type="range" id="pBlack" min="0" max="40" step="1"><b id="vBlack"></b></div>
+    <div class="row"><span>白点</span><input type="range" id="pWhite" min="200" max="255" step="1"><b id="vWhite"></b></div>
+    <div class="row"><span>饱和度</span><input type="range" id="pSat" min="0.50" max="1.20" step="0.01"><b id="vSat"></b></div>
+    <div class="row"><span>蓝通道</span><input type="range" id="pBlue" min="0.60" max="1.10" step="0.01"><b id="vBlue"></b></div>
+    <div class="row"><span>对比度</span><input type="range" id="pCon" min="0.80" max="1.40" step="0.01"><b id="vCon"></b></div>
+    <div class="btns"><button id="panCopy" class="pri">复制参数</button><button id="panReset">恢复默认</button></div>
+    <div class="hint">对着真机调这五个数，调到「跟机器上一样」为止，点复制，把整行贴回
+      <b>tools/gen_webpreview.py</b> 的 <b>PANEL = {…}</b> 就行 —— 以后每次生成预览都是这个口径。</div>
+  </div>
+  <div class="tabs">
+    <button id="tabDev" class="on">收音机</button>
+    <button id="tabApp">手机 App</button>
+  </div>
+</header>
+
+<main>
+  <!-- ============ 设备 ============ -->
+  <section class="view on" id="viewDev">
+    <div class="stage" id="stageDev">
+     <div class="fitbox" id="fitbox">
+      <div class="device" id="device">
+        <div class="case">
+          <div class="screenwrap">
+            <canvas id="screen" width="320" height="170"></canvas>
+            <div class="glare"></div>
+          </div>
+          <div class="knobrow">
+            <div class="knob" id="knob"><i></i><div class="cap"></div></div>
+            <div class="ir">
+              <button data-ir="lkey" title="1.15.0 起不再分组，此键无功能（键位保留，老遥控器不用重学）">◀ 左键（空）</button>
+              <button data-ir="rkey" title="1.15.0 起不再分组，此键无功能（键位保留，老遥控器不用重学）">右键（空）▶</button>
+              <button data-ir="play">播放/暂停</button>
+              <button data-ir="prev">上一个节目</button>
+              <button data-ir="next">下一个节目</button>
+              <button data-ir="mute">静音</button>
+              <button data-ir="vup">音量 +</button>
+              <button data-ir="vdn">音量 −</button>
+              <button data-ir="reconnect">重连</button>
+            </div>
+          </div>
+        </div>
+        <div class="tip" style="text-align:center;padding:0">
+          滚轮 / 拖动旋钮 = 换台（收音=下一个搜到的台，一格一个）· 点一下 = 亮屏 · 双击 = 亮屏（不再静音）· 按住拖 = 音量
+        </div>
+      </div>
+     </div>
+    </div>
+
+    <aside class="panel">
+      <div class="sec">
+        <h4>当前状态</h4>
+        <div class="kv"><span>标签</span><b id="sTag">—</b></div>
+        <div class="kv"><span>台名</span><b id="sName">—</b></div>
+        <div class="kv"><span>序号</span><b id="sIdx">—</b></div>
+        <div class="kv"><span>状态</span><b id="sPs">—</b></div>
+        <div class="kv"><span>音量</span><b id="sVol">—</b></div>
+        <div class="kv"><span>信号</span><b id="sRssi">—</b></div>
+        <div class="kv"><span>停播</span><b id="sOff">—</b></div>
+      </div>
+      <div class="sec" style="padding-bottom:10px">
+        <h4>标签筛选（只筛这张列表，不影响收音机）</h4>
+        <select id="tagSel"></select>
+      </div>
+      <div class="sec" style="padding-bottom:6px"><h4>电台（可增删改序）</h4></div>
+      <div class="list" id="list"></div>
+      <div class="add">
+        <input id="addName" placeholder="台名">
+        <input id="addSrc" placeholder="蜻蜓台号/地址" style="flex:0 0 110px">
+        <button id="addBtn">＋</button>
+      </div>
+      <div class="tip">填纯数字 = 蜻蜓 FM 台号（如 339 北京新闻广播）；填 http = 任意流地址。</div>
+      <div class="tip">1.46.6 演示：<b>双击一行</b> = 标记「现在停播」（再双击取消），
+        旋钮会跳过它、屏上右下角出现「跳过N」。也行用地址栏 <code>?off=3,7</code>（1 基）。</div>
+    </aside>
+  </section>
+
+  <!-- ============ 手机 App ============ -->
+  <section class="view" id="viewApp">
+    <div class="stage" id="stageApp"></div>
+    <div class="phonewrap">
+      <div class="phone"><iframe id="appFrame"></iframe></div>
+      <div class="appnote">
+        右边这个手机界面<b>不是重画的</b>，是把固件里 <b>webapp.h</b> 的原始 HTML
+        原样塞进 iframe，再把它的 <b>fetch</b> 全接到左边的模拟器上。<br><br>
+        五个页签都能点：<b>收音机</b>（屏幕镜像是按 ui.cpp 的坐标逐格重绘的，不是截图）、
+        <b>电台</b>（可以拖左边把手排序、改标签、增删）、<b>记录</b>（收听时长）、
+        <b>体检</b>（诊断 + 一键修复）、<b>设置</b>（配网、配对码、恢复出厂）。<br><br>
+        在手机上点「下一台」，左边屏幕会同步动；拖一下台的顺序，左侧面板的台表也跟着变。
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ============================================================
+   1. 字库（由 gen_webpreview.py 从 font_cn.h 导出）
+   ============================================================ */
+const SEED = __SEEDS_JSON__;
+const WEBAPP = __WEBAPP_JSON__;
+
+/* 1.4.2 起模拟屏改成矢量绘制（canvas fillText + 系统字体），
+   不再内嵌点阵字库 —— 预览页从 ~720 KB 降到 ~100 KB，字也不再是方块锯齿。
+   真机屏幕仍是 32px 点阵（flash 里那份 font_cn.h），那是硬件限制。 */
+
+/* ============================================================
+   2. 画布（320×170 逻辑分辨率，放大显示）
+   ============================================================ */
+const W = 320, H = 170, SCALE = 2.6;
+const cv = document.getElementById('screen');
+const ctx = cv.getContext('2d');
+
+// 内部像素 = CSS 显示宽度 × dpr，再用 setTransform 缩回 320×170 逻辑坐标。
+// 这样文字是真矢量（不再是把点阵放大），视网膜屏上也是锐的。
+function resizeCanvas() {
+  const s = (parseFloat(cv.style.width) || W * SCALE) / W;
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  const k = Math.max(2, s * dpr);
+  const nw = Math.round(W * k), nh = Math.round(H * k);
+  if (cv.width === nw && cv.height === nh) return false;
+  cv.width = nw; cv.height = nh;
+  ctx.setTransform(k, 0, 0, k, 0, 0);
+  ctx.textBaseline = 'top';
+  return true;
+}
+
+// ---- 1.45.0：调色板 ----
+//  RAW = 固件 config.h 里 RGB565 值精确还原出来的 sRGB（"设计色"）。
+//        它只代表"代码里写的是什么"，不等于"屏上看到的是什么"。
+//  C   = 面板模拟之后的颜色（"真机色"），渲染全用它。逐项映射，见 panelSim()。
+//  切换：右上角「真机 / 设计色」。
+const RAW = __PALETTE_JSON__;
+const PANEL = __PANEL_JSON__;      // 默认标定值来自 gen_webpreview.py
+const PANEL0 = Object.assign({}, PANEL);
+const C = {};                      // 屏幕真正使用的颜色表，由 applyPanel() 填充
+let panReal = true;                // 默认显示真机色
+
+const s2l = v => (v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
+const l2s = v => (v <= 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+const hx = h => [parseInt(h.substr(1, 2), 16), parseInt(h.substr(3, 2), 16), parseInt(h.substr(5, 2), 16)];
+const cl = v => Math.max(0, Math.min(255, v));
+function hx2(r, g, b) {
+  const f = v => cl(Math.round(v)).toString(16).padStart(2, '0');
+  return '#' + f(r) + f(g) + f(b);
+}
+
+// 面板模型：sRGB 值 → 这块 ST7789 小屏上真正发出来的颜色
+function panelSim(hex, p) {
+  let [r, g, b] = hx(hex).map(v => s2l(v / 255));
+  // ① 色域窄：朝亮度灰点收缩（在线性域做，才是"去饱和"而不是"变暗"）
+  const L = 0.2126 * r + 0.7152 * g + 0.0722 * b, s = p.sat;
+  r = L + (r - L) * s; g = L + (g - L) * s; b = L + (b - L) * s;
+  // ② 这块屏蓝通道偏弱（用户实测：青蓝发墨绿）
+  b *= p.blue;
+  r = l2s(r) * 255; g = l2s(g) * 255; b = l2s(b) * 255;
+  // ③ 面板对比度（驱动 IC 的 γ 比 sRGB 陡），围绕中点缩放
+  const mid = (p.white + p.black) / 2, c = p.contrast;
+  r = mid + (r - mid) * c; g = mid + (g - mid) * c; b = mid + (b - mid) * c;
+  r = cl(r); g = cl(g); b = cl(b);
+  // ④ 压进面板实际能到的范围：纯黑 → black（背光漏光），纯白 → white
+  const k = (p.white - p.black) / 255;
+  return hx2(p.black + r * k, p.black + g * k, p.black + b * k);
+}
+
+function applyPanel() {
+  for (const k in RAW) C[k] = panReal ? panelSim(RAW[k], PANEL) : RAW[k];
+  const sc = document.getElementById('screen');
+  if (sc) sc.style.background = C.bg;     // 画布底色也跟上，免得边上一圈和屏内不一致
+}
+applyPanel();
+
+const FONT_CN = '"PingFang SC","Microsoft YaHei","Source Han Sans SC",system-ui,sans-serif';
+
+/* ---------- 基本图元（canvas 矢量，不再是 framebuffer 逐像素） ---------- */
+function rect(x, y, w, h, c) {
+  if (w <= 0 || h <= 0) return;
+  ctx.fillStyle = c;
+  ctx.fillRect(x, y, w, h);
+}
+function lineRect(x, y, w, h, c) {
+  ctx.strokeStyle = c; ctx.lineWidth = 1;
+  ctx.strokeRect(x + .5, y + .5, w - 1, h - 1);
+}
+function dot(cx, cy, r, c) {
+  ctx.fillStyle = c;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+}
+// 实心三角（对应 TFT_eSPI 的 fillTriangle）
+function tri(x1, y1, x2, y2, x3, y3, c) {
+  ctx.fillStyle = c;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.lineTo(x3, y3);
+  ctx.closePath(); ctx.fill();
+}
+
+/* ---------- 文字（矢量；字号对齐真机点阵的视觉大小：16 / 32 的格子） ---------- */
+// 1.38.3：三档字号，与真机字库对齐
+//   true  -> 36px（台名）        35 是 canvas 视觉等效值（点阵 36px 实际字形略小）
+//   false -> 16px（刻度数字等）
+//   20    -> 20px（顶栏 / 三个框）
+//  1.40.0：48 这一档是**粗体**——真机那边用的是微软雅黑 Bold 单独出的字库
+//  （gen_font.py 的 font48，只收 ASCII）。预览页这边用合成粗体近似，
+//  两边高度一样、字重一样，看效果就够了。
+function fontOf(big) {
+  const px = (big === true) ? 35 : (big === false) ? 15 : big;
+  const weight = (big === 48) ? 'bold ' : '';
+  return weight + px + 'px ' + FONT_CN;
+}
+function textWidth(s, big) {
+  ctx.font = fontOf(big);
+  return ctx.measureText(s).width;
+}
+function text(s, x, y, fg, bg, big) {
+  ctx.font = fontOf(big);
+  const w = ctx.measureText(s).width;
+  if (bg) {                              // 先铺底色，挡住底下不干净的内容
+    // 高度必须跟着字号走：原来写死 `big ? 32 : 16`，
+    // 48px 那一档只铺 32px 高，字的下半截会漏出上一帧的内容。
+    const h = (big === true) ? 36 : (big === false) ? 16 : big;
+    ctx.fillStyle = bg;
+    ctx.fillRect(x, y, Math.ceil(w) + 1, h);
+  }
+  ctx.fillStyle = fg;
+  ctx.textBaseline = 'top';
+  ctx.fillText(s, Math.round(x), Math.round(y));
+}
+function center(s, y, fg, bg, big) {
+  const fs = (big === true) ? 36 : (big === false) ? 16 : big;
+  text(s, Math.round((W - textWidth(s, fs)) / 2), y, fg, bg, fs);
+}
+/* 在色块里「垂直居中」写字。canvas 的 textBaseline='top' 对齐的是 em 框顶，
+   而中文字形实际比 em 框高一点——按 y 直接写会看着偏上、甚至顶出块底。
+   这里用 actualBoundingBox 量出真实字形高度再算基线。 */
+/* 在色块里「垂直居中」写字。
+   canvas 的 textBaseline='top' 对齐的是 em 框顶，中文字形实际在 y-1..y+11 之间（15px 字号实测），
+   measureText 的 actualBoundingBox 各浏览器符号不一致、这里不依赖它，直接用实测字形高。 */
+function textInBox(s, x, boxY, boxH, fg, bg, big) {
+  ctx.font = fontOf(big);
+  const m = ctx.measureText(s);
+  if (bg) { ctx.fillStyle = bg; ctx.fillRect(x, boxY, Math.ceil(m.width) + 1, boxH); }
+  ctx.fillStyle = fg;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  const gh = big ? 25 : 13;                       // 字形实际高度
+  ctx.fillText(s, Math.round(x), Math.round(boxY + (boxH - gh) / 2));
+}
+
+function badge(x, y, t, fg, bg) {
+  const w = textWidth(t, false) + 8;
+  rect(x, y, w, 20, bg);
+  textInBox(t, x + 4, y, 20, fg, bg, false);   // 垂直居中，不贴上下边
+  return x + w + 4;
+}
+
+/* ============================================================
+   3. 状态机（对应 audio.cpp / input.cpp 的行为）
+   ============================================================ */
+const ALL  = SEED.list;          // 出厂全表（台数随台表变），恢复出厂时照它还原
+const TAGS = SEED.tags || [];    // [{n,c}] 标签，只用于筛选
+// 1.15.0：固件不再分组 —— 一张表，先后就是播放顺序（有声书均匀穿插在电台之间）。
+// 标签只是「这台是什么内容」，点一下筛右边那张管理列表，不影响旋钮走哪台。
+const mkItem = (s, i) => ({ n: s.n, u: s.u, t: SEED.tagOf ? (SEED.tagOf[i] | 0) : 0 });
+
+// 1.46.36：已存的 WiFi（对应固件 /wifi.txt）。
+// 1.46.51：容量 3 -> 4，并且回包里带 max —— App 按「总格数」画空位。
+//   以前这里没有 mock，/api/wifi/list 落到 default 回 notfound，
+//   于是「已存的 WiFi」永远显示「一个都没记」，「忘掉」也没法验。
+let WSLOTS = [
+  { ssid: '世界第一快', pass: '12345678' },
+  { ssid: 'ChinaNet-home', pass: '87654321' }
+];
+const WIFI_MAX = 4;            // 和固件 WIFI_MAX_SLOTS 保持一致
+function wifiListJson() {
+  return {
+    n: WSLOTS.length,
+    max: WIFI_MAX,
+    cur: 1,
+    list: WSLOTS.map((x, i) => ({ i: i, ssid: x.ssid, on: i === 0 ? 1 : 0 }))
+  };
+}
+
+const S = {
+  list: ALL.map(mkItem),         // 整张表（对应固件里的 g_st，不再是某一组）
+  tag: -1,                       // 面板列表的筛选标签，-1 = 全部
+  cur: 0, preview: -1, pending: 0,
+  ps: 2,                 // 0 暂停 1 连接中 2 播放中 3 缓冲 4 出错
+  vol: 18, fmVol: 35,   // 1.44.0：原厂口径 —— 网络 6..21 默认 18，FM 6..63 默认 35
+  wifi: true, rssi: -58,
+  clock: '10:24', wd: '周六',
+  learn: false,
+  fmMode: false, fmFreq: 98000, lastTurnAt: 0,   // 收音模式：频率单位 kHz（?fm=1 演示）
+  volHold: false,        // 1.26.0：按住旋钮正在调音量（对应固件的 A.volHold）
+  off: {},               // 1.46.6：演示「现在停播」的台（下标 → true），换台会跳过
+};
+// 1.44.0：两路各自的顶（原厂口径 —— FM 是芯片 0..63，网络是音频库 0..21）
+const volTop = () => (S.fmMode ? 63 : 21);
+
+/* ---------------- 1.46.6：停播台自动跳过（对应固件 src/offair.cpp）----------------
+   固件那边是真检测：连不上两回、或者解出来的样本连续 8 秒全是 0
+   ⇒ 判「这台现在不播」→ 记进台账 → 换台跳过 → 15/30/45/60 分钟到期自动放回。
+   预览页没有网络，所以给一个人工开关：
+     · 双击列表里的一行 = 标记 / 取消「现在停播」
+     · 地址栏 ?off=3,7,9 = 开局就标好（**1 基**，和列表里显示的序号一致）
+   被标记的台：旋钮转不到、屏上右下角显示「跳过N」—— 和真机一致。 */
+function offSkip(i) { return !!S.off[i]; }
+function offHidden() { return Object.keys(S.off).filter(k => S.off[k]).length; }
+function offStep(i, dir) {
+  const n = S.list.length;
+  if (!n) return i;
+  let j = i;
+  for (let k = 0; k < n; k++) { j = albumStep(j, dir); if (!offSkip(j)) return j; }
+  return albumStep(i, dir);        // 整表都被跳过 → 退回普通换台（固件同款兜底）
+}
+// 删掉第 i 台后，off 里大于 i 的下标要跟着挪，否则「跳过」会歪到别人头上
+function offDropAt(i) {
+  const m = {};
+  Object.keys(S.off).forEach(k => {
+    const v = +k;
+    if (!S.off[k] || v === i) return;
+    m[v > i ? v - 1 : v] = true;
+  });
+  S.off = m;
+}
+(function initOff() {
+  const raw = new URLSearchParams(location.search).get('off');
+  if (!raw) return;
+  raw.split(',').forEach(v => {
+    const k = parseInt(v, 10) - 1;
+    if (k >= 0 && k < S.list.length) S.off[k] = true;
+  });
+})();
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+
+/* ---------------- 1.19.0：电量 ----------------
+   固件那边是从 ADC 读出来的（battery.cpp）。预览器没有硬件，就给个固定值，
+   想演示「电量低」用 ?batt=3（低于 5% 会走播报分支），想演示没接电池用 ?batt=-1 */
+const BATT = (() => {
+  // 1.39.0 修 bug：原来写 `+(new URLSearchParams(...).get('batt'))`，
+  // 不带参数时 get() 返回 null，`+null === 0` ⇒ pct 恒为 0%，
+  // 于是屏上电量方块永远显示 0、还是红的。必须显式判 null。
+  const raw = new URLSearchParams(location.search).get('batt');
+  const q = (raw === null) ? NaN : +raw;
+  if (q === -1) return { ok: false, pct: -1, mv: 0, chg: false };
+  const pct = (q >= 0 && q <= 100) ? q : 82;
+  // 百分比反推一个看着合理的毫伏：跟 battery.cpp 的曲线斜率大致对上
+  const mv = Math.round(3400 + (pct / 100) * 800);
+  // 默认不充电（想看充电态用 ?chg=1）
+  const chgq = new URLSearchParams(location.search).get("chg");
+  return { ok: true, pct, mv, chg: chgq === "1" };
+})();
+
+/* ---------------- 1.17.0：台的健康档案 ----------------
+   口径与固件 src/health.cpp 一致：每台一个状态 0 没测过 / 1 正常 / 2 连不上 / 3 没声音。
+   预览里没法真的解码，就按「播到且撑过 1.2 秒」算正常；另外预置三个问题台，
+   好让「有问题」这个筛选一打开就有东西看。档案按地址存（跟固件一样按 url 指纹） */
+const HL = {};                                  // url -> { st, fail, lastOk, lastChk }
+const hlKeyOf = it => (it && (it.u || it.n)) || '?';
+const hlNowSec = () => Math.floor(Date.now() / 1000);
+let hlCurSeen = -1, hlAt = 0;
+
+// 预置：第 4 台连不上（试过 2 次）、第 13 台没声音、第 41 台连不上 1 次
+(function seedHl(){
+  const mark = (i, st, fail) => {
+    const it = S.list[i]; if (!it) return;
+    HL[hlKeyOf(it)] = { st, fail, lastOk: st === 1 ? hlNowSec() - 600 : 0,
+                        lastChk: hlNowSec() - 1800 };
+  };
+  mark(3, 2, 2); mark(12, 3, 0); mark(40, 2, 1);
+})();
+
+function hlJson(one){
+  const total = S.list.length;
+
+  // 单台详情
+  if (one !== undefined && one !== null && one !== ''){
+    const i = +one, it = S.list[i] || {};
+    const r = HL[hlKeyOf(it)] || { st: 0, fail: 0, lastOk: 0, lastChk: 0 };
+    return { i, n: it.n || '', st: r.st, v: ['unk','ok','bad','dim'][r.st] || 'unk',
+             fail: r.fail, lastOk: r.lastOk, lastChk: r.lastChk, lv: r.lv || 0,
+             ep: isQtfm(it.u) ? 1 : 0, live: (S.cur === i && S.ps >= 1) ? 1 : 0 };
+  }
+
+  // 换台 → 重新计时（对应固件里 startIndex 开一次体检会话）
+  if (S.cur !== hlCurSeen){ hlCurSeen = S.cur; hlAt = Date.now(); }
+
+  let s = '', f = '', ok = 0, bad = 0, dim = 0, unk = 0;
+  for (let i = 0; i < total; i++){
+    const r = HL[hlKeyOf(S.list[i])];
+    const st = r ? r.st : 0;
+    if (st === 1) ok++; else if (st === 2) bad++; else if (st === 3) dim++; else unk++;
+    s += String(st);
+    f += String(Math.min(r ? r.fail : 0, 9));
+  }
+
+  // 正在播的这一台：撑过 1.2 秒就算出过声（跟固件「累计有声 250ms 判正常」一个意思）
+  const el = (Date.now() - hlAt) / 1000;
+  let cst = 0;
+  if (S.ps === 2 && el > 1.2) cst = 1;
+  else if (S.ps === 4) cst = 2;
+  if (cst === 1){
+    const it = S.list[S.cur];
+    const r = HL[hlKeyOf(it)];
+    if (!r || r.st !== 1){
+      HL[hlKeyOf(it)] = { st: 1, fail: 0, lastOk: hlNowSec(), lastChk: hlNowSec() };
+    }
+  }
+  const lv = cst === 1 ? 26 + Math.round(Math.abs(Math.sin(Date.now() / 170)) * 58) : 0;
+
+  return { n: total, s, f, c: { ok, bad, dim, unk },
+           cur: { i: S.cur, st: cst, lv, sec: Math.round(el), why: cst === 2 ? '连不上' : '' } };
+}
+
+/* ---------------- 收音波段环（1.10.0）：一个旋钮走完 长波→中波→调频→短波 ----------------
+   与 src/fm.cpp 的 kBands / radioWalk() 一一对应，频率单位全部是 kHz。
+   长波 153~279、中波 531~1602、调频 64000~108000、短波 2300~26100。
+   跨过波段边界直接跳到下一波段的第一格 —— 空白频段不占格子，所以「不用切波段」。 */
+const RBANDS = [
+  { k: 'LW', lo: 153,   hi: 279,    step: 9   },
+  { k: 'MW', lo: 531,   hi: 1602,   step: 9   },
+  { k: 'FM', lo: 64000, hi: 108000, step: 100 },
+  { k: 'SW', lo: 2300,  hi: 26100,  step: 5   },
+];
+function radioClosest(khz){
+  let best = RBANDS[0].lo, bd = Infinity;
+  for (const b of RBANDS){
+    for (const e of [b.lo, b.hi]){
+      const d = Math.abs(khz - e);
+      if (d < bd){ bd = d; best = e; }
+    }
+  }
+  return best;
+}
+function radioBandOf(khz){
+  for (let i = 0; i < RBANDS.length; i++)
+    if (khz >= RBANDS[i].lo && khz <= RBANDS[i].hi) return i;
+  const near = radioClosest(khz);
+  for (let i = 0; i < RBANDS.length; i++)
+    if (near >= RBANDS[i].lo && near <= RBANDS[i].hi) return i;
+  return 0;
+}
+function radioSnap(khz){
+  for (const b of RBANDS) if (khz >= b.lo && khz <= b.hi) return khz;
+  return radioClosest(khz);
+}
+function radioWalk(khz, clicks, gear){
+  let k = radioSnap(khz), bi = radioBandOf(k);
+  if (!gear || gear < 1) gear = 1;
+  let n = Math.abs(clicks); if (n > 400) n = 400;
+  for (let i = 0; i < n; i++){
+    const st = RBANDS[bi].step * gear;
+    if (clicks > 0){
+      let v = k + st;
+      if (v > RBANDS[bi].hi){ bi = (bi + 1) % RBANDS.length; v = RBANDS[bi].lo; }
+      k = v;
+    } else {
+      let v = k - st;
+      if (v < RBANDS[bi].lo){ bi = (bi + RBANDS.length - 1) % RBANDS.length; v = RBANDS[bi].hi; }
+      k = v;
+    }
+  }
+  return k;
+}
+// 转速 → 加速倍数：慢转 1（精调）、正常 5、快转 10、甩起来 30
+function radioGear(msPerClick){
+  if (msPerClick <= 60)  return 30;
+  if (msPerClick <= 130) return 10;
+  if (msPerClick <= 400) return 5;
+  return 1;
+}
+function radioBandWord(khz){
+  const k = RBANDS[radioBandOf(khz)].k;
+  return ({ LW: '长波', MW: '中波', SW: '短波' })[k] || '调频';
+}
+function radioFreqText(khz){
+  if (RBANDS[radioBandOf(khz)].k === 'FM') return 'FM ' + (khz / 1000).toFixed(1);
+  return radioBandWord(khz) + ' ' + khz;
+}
+
+
+/* ============================================================
+   1.9.0「集」层 —— 一部书 = 一个台
+     台表里只有一行（台名就是书名），各集地址在 EPIS 里。
+     规则与 src/epis.cpp 完全一致：播完接下一集、最后一集回第一集。
+     EPIS_CUR 相当于固件的 /epis.txt（每部书听到第几集）。
+   ============================================================ */
+const EPIS = SEED.epis || { books: [], items: [] };
+const EPIS_CUR = {};
+// 1.46.33：跟固件的 s_next[] 对应 —— App 里设的「下次调到这个台时从第 X 集起」。
+//   -1 / undefined = 没设。起播时取一次就作废（与 audio.cpp 的 episTakeNext 一致）。
+const EPIS_NEXT = {};
+function bookOfName(nm) {
+  for (let b = 0; b < EPIS.books.length; b++) {
+    const bn = EPIS.books[b].n || '';
+    if (!bn) continue;
+    if (nm === bn || (nm && nm.startsWith(bn) && nm[bn.length] === ' ')) return b;
+  }
+  return -1;
+}
+function bookOfStation(i) {
+  const st = S.list[i];
+  return st ? bookOfName(st.n) : -1;
+}
+function epCount(b) { return (b >= 0 && EPIS.books[b]) ? EPIS.books[b].c : 0; }
+function epCur(b) {
+  const n = epCount(b);
+  if (n <= 0) return -1;
+  const e = EPIS_CUR[b] | 0;
+  return (e < 0 || e >= n) ? 0 : e;
+}
+function epSetCur(b, e) {
+  const n = epCount(b);
+  if (n <= 0) return;
+  EPIS_CUR[b] = clamp(e | 0, 0, n - 1);
+}
+// 1.46.33：下次从第 X 集（一次性的起播点）
+function epNext(b) {
+  const n = epCount(b);
+  if (n <= 0) return -1;
+  const e = EPIS_NEXT[b];
+  if (typeof e !== 'number' || e < 0 || e >= n) return -1;
+  return e;
+}
+function epSetNext(b, e) {
+  const n = epCount(b);
+  if (n <= 0) return;
+  EPIS_NEXT[b] = (e < 0) ? -1 : clamp(e | 0, 0, n - 1);
+}
+function epTakeNext(b) {
+  const e = epNext(b);
+  if (e < 0) return -1;
+  EPIS_NEXT[b] = -1;
+  return e;
+}
+function epStep(b, dir) {
+  const n = epCount(b);
+  if (n <= 1) return 0;
+  return ((epCur(b) + (dir >= 0 ? 1 : -1)) % n + n) % n;
+}
+function epTitle(b, e) {
+  const B = EPIS.books[b];
+  if (!B || e < 0 || e >= B.c) return '';
+  return (EPIS.items[B.f + e] || {}).t || '';
+}
+// 方向参数：App 发数字（-1 / 1），顺手也认 'prev' / 'next' 这种写法
+const dirOf = v => (v === 'prev' || v === 'down' || +v < 0) ? -1 : 1;
+
+// 预览用的假收听记录（App 的「记录」页要显示东西）
+const _now = Math.floor(Date.now() / 1000);
+const MHIST = {
+  total: 36000, today: 2460, plays: 12,
+  days: [2460, 3600, 900, 5400, 1200, 0, 2400].map((s, i) => {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    return { d: d.toISOString().slice(0, 10), s, p: 1 };
+  }),
+  list: [
+    { n: '中国之声', g: '北京', s: 7200, last: _now - 300, p: 5 },
+    { n: '北京新闻广播', g: '北京', s: 3600, last: _now - 4200, p: 3 },
+    { n: '经济之声', g: '北京', s: 1800, last: _now - 9000, p: 2 },
+    { n: '天津相声广播', g: '天津', s: 900, last: _now - 86400, p: 1 },
+  ]
+};
+const mod = (v,n) => ((v % n) + n) % n;
+const isQtfm = u => /^\d+$/.test(u || '');
+
+/* ============================================================
+   1.7.0「节目」层 —— 判据与固件 album.cpp 完全相同
+     「三国演义 001」属于节目「三国演义」，同节目的台在组内连续，
+     整段算一个单元。旋钮换的是单元（一部书 / 一个普通台），不是集。
+     每部书播到第几集记在 PROG 里（固件对应 /album.txt）。
+   ============================================================ */
+const PROG = {};
+
+function albumSplit(name) {                    // "三国演义 001" -> "三国演义"
+  const m = /^(.{2,}?) (\d{2,4})$/.exec(name || '');
+  return m ? m[1] : null;
+}
+function unitStart(i) {
+  const L = S.list;
+  if (i < 0 || i >= L.length) return -1;
+  const a = albumSplit(L[i].n);
+  if (!a) return i;                            // 普通台自成单元
+  let k = i;
+  while (k > 0 && albumSplit(L[k - 1].n) === a) k--;
+  return k;
+}
+function unitEnd(i) {
+  const L = S.list;
+  if (i < 0 || i >= L.length) return -1;
+  const a = albumSplit(L[i].n);
+  if (!a) return i;
+  let k = i;
+  while (k + 1 < L.length && albumSplit(L[k + 1].n) === a) k++;
+  return k;
+}
+function albumStep(i, dir) {                   // 走一个单元，返回落点
+  const n = S.list.length;
+  if (!n) return -1;
+  if (i < 0 || i >= n) i = 0;
+  const s0 = unitStart(i), e0 = unitEnd(i);
+  const j = mod(dir >= 0 ? e0 + 1 : s0 - 1, n);
+  return unitStart(j);
+}
+function albumEntry(i) {                       // 单元入口：有声书从上次停的那集接着放
+  const s0 = unitStart(i);
+  if (s0 < 0) return -1;
+  const a = albumSplit(S.list[s0].n);
+  if (!a) return s0;
+  const rec = PROG[a];
+  if (rec !== undefined && rec >= s0 && rec < S.list.length &&
+      albumSplit(S.list[rec].n) === a) return rec;
+  return s0;
+}
+function stepUnit(base, steps) {
+  const n = S.list.length;
+  if (!n) return -1;
+  if (base < 0 || base >= n) base = 0;
+  steps = clamp(steps, -n, n);
+  let idx = base;
+  // 1.46.6：格子按「能听的台」走 —— 停播的台直接跳过（与 input.cpp 的 stepUnit 一致）
+  while (steps > 0) { idx = offStep(idx, +1); steps--; }
+  while (steps < 0) { idx = offStep(idx, -1); steps++; }
+  return idx;
+}
+function albumRemember(i) {
+  const a = albumSplit((S.list[i] || {}).n);
+  if (a) PROG[a] = i;
+}
+
+let commitTimer = null, playTimer = null;
+
+// 1.15.0：不再有「切分组」。setTag 只筛右侧那张管理列表 ——
+// 屏幕、播放顺序、旋钮走的台，全都还是同一张表。
+function setTag(t) {
+  S.tag = t;
+  renderList();
+  syncPanel(true);
+}
+function tagCount(t) { let c = 0; for (const o of S.list) if ((o.t | 0) === t) c++; return c; }
+function renderTagSel() {
+  const sel = $('#tagSel');
+  if (!sel) return;
+  sel.innerHTML = `<option value="-1">全部（${S.list.length} 台）</option>` +
+    TAGS.map((g, i) => `<option value="${i}">${escapeHtml(g.n)}（${tagCount(i)} 台）</option>`).join('');
+  sel.value = String(S.tag);
+}
+// 当前这台（或预览到的那台）所属的标签名 —— 顶栏那一小块、面板「标签」都靠它
+const tagName = i => (TAGS[((S.list[i] || {}).t) | 0] || {}).n || '';
+
+function startPlay(idx) {
+  S.cur = idx; S.preview = -1; S.pending = 0;
+  {
+    // 1.46.33：调到这个台时，先看有没有「下次从第 X 集」（用一次就作废）
+    const bk = bookOfStation(idx);
+    if (bk >= 0) {
+      const nx = epTakeNext(bk);
+      if (nx >= 0) epSetCur(bk, nx);
+    }
+  }
+  albumRemember(idx);                  // 记住这部书听到第几集
+  S.ps = 1;
+  clearTimeout(playTimer);
+  playTimer = setTimeout(() => { S.ps = 2; }, 750);
+}
+
+function rotate(dir) {
+  const n = S.list.length;
+  if (held) {
+    S.volHold = true;                    // 1.26.0：进「音量显示」，台名区换成大字
+    S.vol = clamp(S.vol + dir * 2, 0, 100);
+    S.muted = false;
+    return;
+  }
+  // 收音模式：转的就是频率（与 input.cpp 的 radioTurn 同规则）。
+  // 预览页一个按钮算一格，间隔按「正常速度」给 5 个频道
+  if (S.fmMode) {
+    const now = performance.now();
+    const per = S.lastTurnAt ? (now - S.lastTurnAt) : 9999;
+    S.lastTurnAt = now;
+    S.fmFreq = radioWalk(S.fmFreq, dir, radioGear(per));
+    return;
+  }
+  if (!n) return;
+  S.pending += dir;
+  S.preview = albumEntry(stepUnit(S.cur, S.pending));   // 一格一个节目，不再逐集
+  clearTimeout(commitTimer);
+  commitTimer = setTimeout(() => {
+    if (S.pending !== 0) startPlay(S.preview);
+  }, 250);
+}
+
+// 1.15.0：点一下旋钮**什么都不做**，只把屏幕点亮（固件里是 actTouch）。
+// 预览页没有熄屏，所以这里真的是空函数 —— 别顺手改成「换台」：
+// 旋钮转动已经在换台，单击再换一次会让老人误碰就跳台。
+function press() { /* 只亮屏，无动作 */ }
+
+// 真·播放/暂停。机器上点旋钮已经不是它了，只剩遥控器键和 App 有这个动作
+function playPause() {
+  if (S.ps === 2 || S.ps === 3) S.ps = 0;
+  else S.ps = 2;
+}
+function doublePress() { /* 1.38.0：双击不再静音，只亮屏（与 input.cpp 一致） */ }
+function longPress() { startPlay(S.cur); }
+
+function step(dir) {
+  const n = S.list.length; if (!n) return;
+  startPlay(albumEntry(stepUnit(S.cur, dir >= 0 ? 1 : -1)));
+}
+
+/* ============================================================
+   4. 绘制（坐标与 ui.cpp 一一对应）
+   ============================================================ */
+// ---- 1.38.3：布局（与 ui.cpp 的宏一一对应）----
+// 1.38.5：顶栏 22→24（20px 字在 22px 里上下各 1px，贴边）
+const TOP_H = 24, MAIN_Y = 24, MAIN_H = 80;   // 顶栏 0..23 / 台名区 24..103
+const BOX_Y = 106, BOX_H = 24;                // 三个框 106..129
+const BOX1_X = 5,   BOX1_W = 118;
+const BOX2_X = 128, BOX2_W = 86;
+const BOX3_X = 219, BOX3_W = 96;
+// 刻度区 40px 四段：130..137 三角 / 138..153 数字 / 154..169 刻度
+// 1.38.5：去掉倒三角，130..145 给数字，146..169 给指针＋刻度
+const TUN_Y = 130, TUN_H = H - TUN_Y;
+const TUN_NUM_Y = 130, TUN_PTR_Y = 146;
+const DIAL_PX = 8;                            // 每 0.1MHz 占 8px（1MHz=80px，稀疏）
+const DIAL_CX = W >> 1;
+const MARGIN = 5, BIG_PX = 36, MID_PX = 20, SML_PX = 16, F7_H = 48;
+/* 兼容旧名（别处还在引用）—— 注意不要再声明 DIAL_PX，上面已经有了 */
+const FREQ_Y = MAIN_Y, FREQ_H = MAIN_H;
+
+const PS_TXT = ['已暂停', '连接中', '播放中', '缓冲中', '出错了'];
+// 台数到三位（100/140）时序号占掉半个框宽，状态词要退成 2 字
+const PS_TXT_SHORT = ['暂停', '连接', '播放', '缓冲', '出错'];
+function psShort(st) {
+  if (st === '调频收音') return '调频';
+  if (st === '中波收音') return '中波';
+  if (st === '长波收音') return '长波';
+  if (st === '短波收音') return '短波';
+  if (st === '已静音') return '静音';
+  const i = PS_TXT.indexOf(st);
+  return i >= 0 ? PS_TXT_SHORT[i] : st;
+}
+function psColor() {
+  if (S.fmMode) return S.muted ? C.sub : C.cool;   // 收音不靠网络，红点会让人以为坏了
+  if (!S.wifi) return C.err;
+  return [C.sub, C.accent, C.cool, C.accent, C.err][S.ps] || C.sub;
+}
+
+
+
+/* ============================================================
+   1.39.0：台名清洗 —— 去掉「FM/AM + 数字频段」
+   与 ui.cpp 的 cleanName() 同一套规则：
+     ① FM/AM + 紧跟数字 → 删
+     ② 独立的频率 token（落在任何波段里、位数 2~5）→ 删
+        CCTV1 / CCTV10 里的 1、10 不在波段里，不会被误删
+     ③ 修首尾空白标点
+     ④ 全删空就退回原名
+   ============================================================ */
+function freqTok(v, digits) {
+  if (digits >= 2 && digits <= 5) {
+    if (v >= 640 && v <= 1080) return true;
+    if (v >= 153 && v <= 279) return true;
+    if (v >= 531 && v <= 1602) return true;
+    if (v >= 2300 && v <= 26100) return true;
+  }
+  return false;
+}
+function cleanName(s) {
+  if (!s) return '';
+  let buf = '';
+  for (let i = 0; i < s.length; ) {
+    const c = s[i];
+    const isFm = (c === 'F' || c === 'f' || c === 'A' || c === 'a');
+    const isMm = (s[i + 1] === 'M' || s[i + 1] === 'm');
+    if (isFm && isMm) {
+      let j = i + 2;
+      while (s[j] === ' ' || s[j] === '-') j++;
+      let any = false;
+      while (j < s.length && ((s[j] >= '0' && s[j] <= '9') || s[j] === '.')) { j++; any = true; }
+      if (any) { i = j; continue; }
+    }
+    buf += c; i++;
+  }
+  let out = '';
+  for (let i = 0; i < buf.length; ) {
+    if (buf[i] >= '0' && buf[i] <= '9') {
+      let j = i, v = 0, digits = 0, dot = false;
+      while (j < buf.length && ((buf[j] >= '0' && buf[j] <= '9') || buf[j] === '.')) {
+        if (buf[j] === '.') {
+          if (dot) break;
+          dot = true;
+          j++;
+          if (buf[j] >= '0' && buf[j] <= '9') { v = v * 10 + (+buf[j]); j++; }
+          while (j < buf.length && buf[j] >= '0' && buf[j] <= '9') j++;
+          break;
+        }
+        v = v * 10 + (+buf[j]); digits++; j++;
+      }
+      const eff = digits + (dot ? 1 : 0);
+      if (freqTok(v, eff)) { i = j; continue; }
+      out += buf.slice(i, j); i = j;
+      continue;
+    }
+    out += buf[i]; i++;
+  }
+  out = out.replace(/^[\s\-|]+/, '').replace(/[\s\-|]+$/, '');
+  return out || s;
+}
+
+/* 超长文字滚动（与 ui.cpp drawScrolling 同参数） */
+const SCROLL_SPEED_PX_S = 24, SCROLL_HOLD_MS = 1200;
+const _scrollAt = {};
+function drawScrolling(str, y, fg, fs) {
+  const avail = W - 12;
+  const tw = textWidth(str, fs);
+  if (tw <= avail) { center(str, y, fg, null, fs); return; }
+
+  const now = Date.now();
+  const key = str + '|' + fs;
+  if (_scrollAt[key] === undefined) _scrollAt[key] = now;
+  const span = tw - avail + 24;
+  const cycle = Math.round(span * 1000 / SCROLL_SPEED_PX_S) + SCROLL_HOLD_MS;
+  let tt = (now - _scrollAt[key]) % cycle;
+  let off = 0;
+  if (tt >= SCROLL_HOLD_MS) off = Math.min(span, Math.round((tt - SCROLL_HOLD_MS) * SCROLL_SPEED_PX_S / 1000));
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, y - 2, W, fs === 36 ? 40 : 20);
+  ctx.clip();
+  text(str, 6 - off, y, fg, null, fs);
+  ctx.restore();
+}
+
+/* ============================================================
+   七段数码（模拟 TFT_eSPI 的 font 7 = Font7srle，48px 高、数字宽 32px）
+   原厂 drawSprite 就是 spr.drawFloat(freq, 1, 160, 60, 7)，
+   预览页用 canvas 手绘同样形态，肉眼看起来就是那块屏。
+   ============================================================ */
+const SEG_ON = {
+  '0':'abcdef', '1':'bc', '2':'abged', '3':'abgcd', '4':'fgbc',
+  '5':'afgcd', '6':'afgedc', '7':'abc', '8':'abcdefg', '9':'abcdfg',
+  '-':'g', ' ':''
+};
+function segDigit(x, y, ch, w, h, t, col) {
+  const segs = SEG_ON[ch];
+  if (segs === undefined) return;
+  const has = c => segs.indexOf(c) >= 0;
+  ctx.fillStyle = col;
+  const hh = Math.floor(h / 2);
+  const put = (rx, ry, rw, rh) => ctx.fillRect(rx, ry, rw, rh);
+  if (has('a')) put(x + t, y, w - 2 * t, t);                       // 上
+  if (has('g')) put(x + t, y + hh - (t >> 1), w - 2 * t, t);       // 中
+  if (has('d')) put(x + t, y + h - t, w - 2 * t, t);               // 下
+  if (has('f')) put(x, y + t, t, hh - t);                          // 左上
+  if (has('b')) put(x + w - t, y + t, t, hh - t);                  // 右上
+  if (has('e')) put(x, y + hh, t, hh - t);                         // 左下
+  if (has('c')) put(x + w - t, y + hh, t, hh - t);                 // 右下
+}
+/* 把 "98.0" 这样的串按 font7 的宽度规则画出来，居中在 cx */
+function drawSevenSeg(str, cx, cy, col) {
+  const H7 = 48, WD = 32, WDT = 12, T = 7, GAP = 1;
+  let total = 0;
+  for (const ch of str) total += (ch === '.' || ch === '-' || ch === ' ') ? WDT : WD;
+  total += (str.length - 1) * GAP;
+  let x = Math.round(cx - total / 2);
+  const y = Math.round(cy - H7 / 2);
+  for (const ch of str) {
+    if (ch === '.') {                        // 小数点：画成底部的方块
+      ctx.fillStyle = col;
+      ctx.fillRect(x + 2, y + H7 - T, T, T);
+      x += WDT + GAP;
+    } else if (ch === ' ' || ch === '-') {
+      if (ch === '-') segDigit(x, y, '-', WD, H7, T, col);
+      x += (ch === '-' ? WD : WDT) + GAP;
+    } else {
+      segDigit(x, y, ch, WD, H7, T, col);
+      x += WD + GAP;
+    }
+  }
+}
+
+// 超宽截断（与 ui.cpp 的 cutTo 一致）
+function cutTo(s, maxW, big) {
+  let out = '';
+  for (const ch of s) {
+    if (textWidth(out + ch, big) > maxW - (big ? BIG_PX : 16)) return out + '…';
+    out += ch;
+  }
+  return out;
+}
+
+/* 1.38.2：顶栏电量条（4 格，与 ui.cpp 的 drawBatt 同坐标同分档）
+   为什么是 4 格不是百分比：电压法在平台区差 100mV 就是 30 个百分点，
+   写死一个数字迟早被看出不对。精确值看右侧面板。 */
+// 1.38.3：电量图标（1.19.0 的 20×10 造型），按**真实百分比**填充
+// 1.38.5：电量 = 长方块（48×20），百分比数字写在方块**里面**
+//   填充跟着真实电量走，数字压在上面居中。
+// 电量方块 48×20：数字写在方块里，填充按真实电量走。
+//
+//  1.40.0 按用户要求改三档配色：≥40% 蓝 / <40% 黄 / <10% 红。
+//  数字用白色 + 深色描边（真机那边是同一套：透明字形 + 1px 描边），
+//  这样压在任何底色上都读得清 —— 原来把"填充色"当文字底色填入，
+//  方块右半边会多出一条彩条，看着就是"电池图标显示不正常"。
+function drawBattIcon(x, y) {
+  const W2 = 48, H2 = 20;
+  if (!BATT.ok) {
+    lineRect(x, y, W2, H2, C.sub);
+    ctx.strokeStyle = C.sub; ctx.lineWidth = 1; ctx.beginPath();
+    ctx.moveTo(x + 3, y + H2 - 3); ctx.lineTo(x + W2 - 3, y + 3); ctx.stroke();
+    return;
+  }
+  const pct = Math.max(0, Math.min(100, BATT.pct | 0));
+  const bar = (pct < 10) ? C.battLow : (pct < 40) ? C.battMid : C.battHi;
+
+  // 槽底 + 外框
+  rect(x, y, W2, H2, C.barBg);
+  lineRect(x, y, W2, H2, C.sub);
+
+  // 填充（四舍五入，别在 99% 时看着差一格）
+  const inner = W2 - 4;
+  const fw = Math.round(inner * pct / 100);
+  if (fw > 0) rect(x + 2, y + 2, fw, H2 - 4, bar);
+
+  // 数字：白字 + 深色描边
+  const b = String(pct);
+  const tw = textWidth(b, false);
+  const tx = x + Math.round((W2 - tw) / 2);
+  const ty = y + 2;
+  text(b, tx + 1, ty + 1, C.bg, null, false);      // 描边
+  text(b, tx, ty, C.white, null, false);           // 正文
+
+  if (BATT.chg) {
+    rect(x + W2 - 7, y + 3, 2, 3, C.accent);
+    rect(x + W2 - 6, y + 6, 2, 2, C.accent);
+    rect(x + W2 - 7, y + 8, 2, 2, C.accent);
+  }
+}
+
+function drawBatt(x, y) { drawBattIcon(x, y); }
+
+function drawTop() {
+  rect(0, 0, W, TOP_H, C.bg);
+  const now = new Date();
+  const clk = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+  // 左：时钟 + 星期（16px）
+  let x = MARGIN;
+  text(clk, x, 4, C.time, C.bg, false);
+  x += textWidth(clk, false) + 4;
+  const wd = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()];
+  text(wd, x, 4, C.sub, C.bg, false);
+  x += textWidth(wd, false) + 5;
+
+  // 黄色徽标：广播 / 网络广播
+  // 1.39.0：20 → 16px。20px 字塞 20px 块上下零间距，看着顶到上沿
+  const md = S.fmMode ? '广播' : '网络广播';
+  const mw = textWidth(md, false) + 8;
+  rect(x, 2, mw, 20, C.bandBg);
+  textInBox(md, x + 4, 2, 20, C.bandFg, C.bandBg, false);
+
+  // 右：电量方块 48×20
+  let rx = W - MARGIN - 48;
+  drawBattIcon(rx, 2);
+
+  // 信号柱：两个模式都显示（广播用芯片 RSSI）
+  const sigOk = S.fmMode ? true : S.wifi;
+  const sigV  = S.fmMode ? (S.fmRssi || 0) : S.rssi;
+  const bars = sigOk ? (sigV > -55 ? 4 : sigV > -67 ? 3 : sigV > -78 ? 2 : 1) : 0;
+  rx -= 4 + 24;
+  for (let i = 0; i < 4; i++) {
+    const h = 4 + i * 3;
+    rect(rx + i * 6, 3 + 13 - h, 4, h, i < bars ? C.cool : C.barBg);
+  }
+
+  // WiFi 徽标只在网络模式画（广播时没有 WiFi 这回事）
+  if (!S.fmMode) {
+    const wf = S.wifi ? 'WiFi' : '断网';
+    const ww = textWidth(wf, false) + 8;
+    const wbg = S.wifi ? C.modeBg : C.err;
+    rx -= 4 + ww;
+    rect(rx, 2, ww, 20, wbg);
+    textInBox(wf, rx + 4, 2, 20, C.modeFg, wbg, false);
+  }
+}
+
+function drawMain() {
+  rect(0, MAIN_Y, W, MAIN_H, C.bg);
+
+  if (S.volHold) {
+    const v = S.fmMode ? (S.fmVol || S.vol) : S.vol;
+    center('音量 ' + v, MAIN_Y + (MAIN_H - BIG_PX) / 2, C.name, C.bg, true);
+    return;
+  }
+
+  if (S.fmMode) {
+    if (S.fmScan) {
+      center('正在搜台 ' + (S.fmProg || 0) + '%', MAIN_Y + (MAIN_H - BIG_PX) / 2, C.name, C.bg, true);
+      return;
+    }
+    const band = RBANDS[radioBandOf(S.fmFreq)];
+    // 1.46.59：不再有「没有台」这一屏 —— 搜台改成手动之后，一台没搜过也能
+    //   正常听（旋钮直接调频率）。原来那屏会在"正听着"的时候写"没有台"。
+    // 1.40.0：48px 加粗（用户要求「频段数字加大加粗」）
+    let f;
+    if (band.k === 'FM') f = 'FM ' + Math.floor(S.fmFreq / 1000) + '.' + Math.floor((S.fmFreq % 1000) / 100);
+    else f = radioBandWord(S.fmFreq) + ' ' + S.fmFreq;
+    center(f, MAIN_Y + (MAIN_H - 48) / 2 - 2, C.name, C.bg, 48);
+    text(radioBandWord(S.fmFreq), 6, MAIN_Y + MAIN_H - 22, C.sub, C.bg, false);
+    return;
+  }
+
+  // 网络：台名（清洗 + 超长滚动）
+  const idx = S.preview >= 0 ? S.preview : S.cur;
+  const st = S.list[idx];
+  const rawName = st ? st.n : '没有电台';
+  const nm = cleanName(rawName);
+  const col = S.preview >= 0 ? C.sub : C.name;
+
+  const bk = bookOfStation(idx);
+  if (bk >= 0) {
+    const e = epCur(bk), tt = epTitle(bk, e);
+    drawScrolling(nm, MAIN_Y + 8, col, 36);
+    const sb = '第' + (e + 1) + '集' + (tt ? ' ' + tt : '');
+    drawScrolling(sb, MAIN_Y + MAIN_H - 20, C.sub, 16);
+    text('网络', 6, MAIN_Y + MAIN_H - 22, C.sub, C.bg, false);
+    return;
+  }
+  drawScrolling(nm, MAIN_Y + (MAIN_H - BIG_PX) / 2 - 4, col, 36);
+  text('网络', 6, MAIN_Y + MAIN_H - 22, C.sub, C.bg, false);
+  // 1.46.6：右下角「跳过N」。只画普通台 —— 有声书那一行是集标题，整行都在滚动。
+  const offN = offHidden();
+  if (offN > 0) {
+    const ob = '跳过' + offN;
+    text(ob, W - 6 - textWidth(ob, false), MAIN_Y + MAIN_H - 22, C.sub, C.bg, false);
+  }
+}
+
+// 刻度条（1.4.4 真机调谐样式）：指针钉在屏幕正中不动，刻度随台滚动
+// 台序 → FM 频率（×10 的整数，1042 表示 104.2），与 ui.cpp 的 freq10() 一致
+// 只给「台名里没写频率」的台用；取整用 floor，和 C 的整数除法一样（round 会差 1 个 0.1MHz）
+function freq10(i, n) {
+  if (n <= 1) return 975;
+  i = clamp(i, 0, n - 1);
+  return 875 + Math.floor((1080 - 875) * i / (n - 1));
+}
+
+// 台名里写着真实频率的，盘上就按它摆指针：FM89.1 / 电台914 / 1008 / FM100
+// 规则与 src/ui.cpp 的 nameFreq10 一一对应（带小数点取一位；纯数字先按末位是十分位，
+// 落不进 64~108 再按整兆赫；波段外一律不认）
+function nameFreq10(s) {
+  s = s || '';
+  for (let i = 0; i < s.length; ) {
+    const ch = s[i];
+    if (ch < '0' || ch > '9') { i++; continue; }
+    let j = i, v = 0, nd = 0;
+    while (j < s.length && s[j] >= '0' && s[j] <= '9') {
+      if (nd < 5) { v = v * 10 + (+s[j]); nd++; }
+      j++;
+    }
+    if (nd > 4) { i = j; continue; }          // 5 位以上：年份 / 流水号
+    let f = -1;
+    if (s[j] === '.' && s[j + 1] >= '0' && s[j + 1] <= '9') {
+      f = v * 10 + (+s[j + 1]);
+      j += 2;
+      while (j < s.length && s[j] >= '0' && s[j] <= '9') j++;
+    }
+    if (f < 0) {
+      const tenths = v, whole = v * 10;
+      if (tenths >= 640 && tenths <= 1080) f = tenths;
+      else if (whole >= 640 && whole <= 1080) f = whole;
+    }
+    if (f >= 640 && f <= 1080) return f;
+    i = j > i ? j : i + 1;
+  }
+  return -1;
+}
+
+// 这台在盘上指到哪：台名写了真实频率就用它，没写才按序号编
+function stationFreq10(idx, n) {
+  const it = (idx >= 0 && idx < n) ? S.list[idx] : null;
+  if (it) {
+    const f = nameFreq10(it.n);
+    if (f > 0) return f;
+  }
+  return freq10(idx, n);
+}
+
+function drawTuner() {
+  rect(0, TUN_Y, W, TUN_H, C.bg);
+
+  const numY = TUN_NUM_Y;
+  const ptrY = TUN_PTR_Y;
+  const base = H - 1;
+  const LW = 3;                       // 1.38.5：刻度线 2 → 3px
+  const half = Math.floor(DIAL_CX / DIAL_PX) + 1;
+
+  if (S.fmMode) {
+    const band = RBANDS[radioBandOf(S.fmFreq)];
+    const step = band.step;
+    const curT = Math.floor((S.fmFreq - band.lo) / step);
+
+    for (let t = curT - half; t <= curT + half; t++) {
+      const k = band.lo + t * step;
+      if (k < band.lo || k > band.hi) continue;
+      const x = DIAL_CX + (t - curT) * DIAL_PX - 1;
+      if (x < 0 || x + LW > W) continue;
+      let hh;
+      if (k % (step * 10) === 0)      hh = 16;
+      else if (k % (step * 5) === 0)  hh = 10;
+      else if (k % (step * 2) === 0)  hh = 6;
+      else                            hh = 3;
+      rect(x, base - hh + 1, LW, hh, (k % (step * 10) === 0) ? C.dialMk : C.tick);
+    }
+
+    let lastRight = -999;
+    for (let t = curT - half; t <= curT + half; t++) {
+      const k = band.lo + t * step;
+      if (k < band.lo || k > band.hi) continue;
+      if (k % (step * 10) !== 0) continue;
+      const lb = (band.k === 'FM') ? (Math.floor(k / 1000) + '.' + Math.floor((k % 1000) / 100))
+                                   : String(k);
+      const tw = textWidth(lb, false);
+      const tx = DIAL_CX + (t - curT) * DIAL_PX - Math.round(tw / 2);
+      if (tx < 1 || tx + tw > W - 1) continue;
+      if (tx < lastRight + 4) continue;
+      text(lb, tx, numY, C.sub, C.bg, false);
+      lastRight = tx + tw;
+    }
+
+    rect(DIAL_CX - 1, ptrY, 3, base - ptrY + 1, C.dialPtr);
+    return;
+  }
+
+  const n = S.list.length;
+  let idx = S.preview >= 0 ? S.preview : S.cur;
+  idx = clamp(idx, 0, Math.max(0, n - 1));
+  const fcur = (n > 0) ? stationFreq10(idx, n) : 975;
+
+  for (let t = -half; t <= half; t++) {
+    const f10 = fcur + t;
+    const x = DIAL_CX + t * DIAL_PX - 1;
+    if (x < 0 || x + LW > W) continue;
+    let hh;
+    if      ((f10 % 10) === 0) hh = 16;
+    else if ((f10 % 5) === 0)  hh = 10;
+    else if ((f10 % 2) === 0)  hh = 6;
+    else                       hh = 3;
+    rect(x, base - hh + 1, LW, hh, ((f10 % 10) === 0) ? C.dialMk : C.tick);
+  }
+
+  let lastRight = -999;
+  for (let t = -half; t <= half; t++) {
+    const f10 = fcur + t;
+    if ((f10 % 10) !== 0) continue;
+    if (f10 < 640 || f10 > 1080) continue;
+    const lb = Math.floor(f10 / 10) + '.' + (f10 % 10);
+    const tw = textWidth(lb, false);
+    const tx = DIAL_CX + t * DIAL_PX - Math.round(tw / 2);
+    if (tx < 1 || tx + tw > W - 1) continue;
+    if (tx < lastRight + 4) continue;
+    text(lb, tx, numY, C.sub, C.bg, false);
+    lastRight = tx + tw;
+  }
+
+  if (n > 0) {
+    const pc = S.preview >= 0 ? C.sub : C.dialPtr;
+    rect(DIAL_CX - 1, ptrY, 3, base - ptrY + 1, pc);
+  }
+}
+
+// 1.38.0：右侧音量竖条（替代原顶栏胶囊）。从底部往上填充，数字白色写在条左边。
+function drawVolBar() {
+  const v = S.fmMode ? (S.fmVol || S.vol) : S.vol;
+  rect(VOL_X, VOL_Y, VOL_W, VOL_H, C.barBg);
+  lineRect(VOL_X, VOL_Y, VOL_W, VOL_H, S.muted ? C.err : C.white);
+  const inner = VOL_H - 4;
+  const fh = Math.round(v * inner / volTop());
+  if (fh > 0) rect(VOL_X + 2, VOL_Y + 2 + (inner - fh), VOL_W - 4, fh,
+                   S.muted ? C.err : C.white);
+  const t = String(v);            // 1.38.0：静音也不显示 0（只变红 + 条空着）
+  const tw = textWidth(t, false);
+  const ty = VOL_Y + Math.round((VOL_H - 16) / 2);
+  rect(VOL_TX - tw - 1, ty, tw + 2, 16, C.bg);
+  text(t, VOL_TX - tw, ty, S.muted ? C.err : C.white, C.bg, false);
+}
+
+// 1.38.0：三个小框已经去掉（用户要求），保留空函数免得别处调用报错
+function drawBoxes() {
+  const y = BOX_Y, h = BOX_H;
+
+  rect(BOX1_X, y, BOX1_W, h, C.barBg);
+  const idx = Math.max(0, S.preview >= 0 ? S.preview : S.cur);
+  const bk1 = bookOfStation(idx);
+  const b = S.fmMode ? ''
+    : (bk1 >= 0 ? (epCur(bk1) + 1) + '/' + epCount(bk1)
+                : (S.list.length > 0 ? idx + 1 : 0) + '/' + S.list.length);
+  const nw = textWidth(b, false);
+  let st = S.fmMode ? (S.muted ? '已静音' : radioBandWord(S.fmFreq) + '收音')
+                    : (S.wifi ? PS_TXT[S.ps] : '断网');
+  if (18 + textWidth(st, false) + 8 + nw + 6 > BOX1_W) st = psShort(st);
+  dot(BOX1_X + 10, y + h / 2, 4, psColor());
+  textInBox(st, BOX1_X + 18, y, h, C.name, C.barBg, false);
+  if (nw > 0) textInBox(b, BOX1_X + BOX1_W - 6 - nw, y, h, C.sub, C.barBg, false);
+
+  rect(BOX2_X, y, BOX2_W, h, C.barBg);
+  const bars = S.wifi ? (S.rssi > -55 ? 4 : S.rssi > -67 ? 3 : S.rssi > -78 ? 2 : 1) : 0;
+  for (let i = 0; i < 4; i++) {
+    const bh = 4 + i * 3;
+    rect(BOX2_X + 8 + i * 7, y + 19 - bh, 5, bh, i < bars ? C.cool : C.bg);
+  }
+  const rt = String(S.rssi);
+  textInBox(rt, BOX2_X + BOX2_W - 7 - textWidth(rt, false), y, h, C.sub, C.barBg, false);
+
+  rect(BOX3_X, y, BOX3_W, h, C.barBg);
+  const showVol = S.fmMode ? (S.fmVol || S.vol) : S.vol;
+  textInBox('音量', BOX3_X + 6, y, h, S.muted ? C.accent : C.sub, C.barBg, false);
+  const vt = String(showVol);
+  textInBox(vt, BOX3_X + BOX3_W - 6 - textWidth(vt, false), y, h, C.name, C.barBg, false);
+  const vx = BOX3_X + 6, vw = BOX3_W - 12;
+  rect(vx, y + 21, vw, 2, C.bg);
+  // 1.44.0：进度条按"当前这一路"的顶算（FM 63 / 网络 21），不是固定的 63
+  const fw = Math.round(showVol * vw / volTop());
+  if (fw > 0) rect(vx, y + 21, fw, 2, C.cool);
+}
+
+function render() {
+  if (resizeCanvas()) { /* 尺寸变了，变换已重置 */ }
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, W, H);
+  drawTop(); drawMain(); drawBoxes(); drawTuner();
+  syncPanel();
+}
+
+/* ============================================================
+   5. 右侧面板
+   ============================================================ */
+const $ = s => document.querySelector(s);
+let panelTick = 0;
+function syncPanel(force) {
+  if (!force && (++panelTick % 6)) return;   // 每 6 帧刷一次，够用
+  const st = S.list[S.cur];
+  $('#sTag').textContent = (st ? tagName(S.cur) : '') || '—';
+  const ts = $('#tagSel');
+  if (ts && ts.value !== String(S.tag)) ts.value = String(S.tag);
+  $('#sName').textContent = st ? st.n : '—';
+  $('#sIdx').textContent = S.list.length ? (S.cur + 1) + ' / ' + S.list.length : '—';
+  $('#sPs').textContent = PS_TXT[S.ps];
+  $('#sVol').textContent = S.vol;
+  $('#sRssi').textContent = S.wifi ? S.rssi + ' dB' : '断网';
+  // 1.46.6：现在有几台被"停播"藏着（真机上这份数据来自 /api/offair）
+  const offN = offHidden();
+  $('#sOff').textContent = offN ? offN + ' 台（换台会跳过）' : '0';
+}
+
+function renderList() {
+  const box = $('#list');
+  // 1.15.0：列表就是整张表；S.tag >= 0 时只显示那个标签下的台。
+  // 行号仍用**全表序号**（data-i 也是），删除/播放才对得上固件里的下标。
+  box.innerHTML = S.list.map((s, i) => ({ s, i }))
+    .filter(o => S.tag < 0 || (o.s.t | 0) === S.tag)
+    .map(({ s, i }) => `
+    <div class="item ${i === S.cur ? 'cur' : ''}" data-i="${i}">
+      <span class="ix">${i + 1}</span>
+      <span class="nm">${escapeHtml(s.n)}</span>
+      ${isQtfm(s.u) ? '<span class="tg">蜻蜓</span>' : ''}
+      ${S.off[i] ? `<span class="tg" data-off="${i}" style="color:#c0392b" title="点一下放回列表">停播</span>` : ''}
+      <span class="x" data-del="${i}">×</span>
+    </div>`).join('');
+  box.querySelectorAll('.item').forEach(el => {
+    // 1.46.6：双击一行 = 标记/取消「现在停播」（演示自动跳过）
+    el.ondblclick = e => {
+      e.preventDefault();
+      const i = +el.dataset.i;
+      if (S.off[i]) delete S.off[i]; else S.off[i] = true;
+      renderList(); syncPanel(true);
+      // 当前这台被标成停播 → 像真机一样直接跳到下一个能听的台
+      if (S.off[S.cur] && !S.fmMode) startPlay(albumEntry(offStep(S.cur, +1)));
+    };
+    el.onclick = e => {
+      if (e.target.dataset.off !== undefined) {
+        delete S.off[+e.target.dataset.off];
+        renderList(); syncPanel(true); return;
+      }
+      if (e.target.dataset.del !== undefined) {
+        const i = +e.target.dataset.del;
+        offDropAt(i);
+        S.list.splice(i, 1);
+        if (S.cur >= S.list.length) S.cur = Math.max(0, S.list.length - 1);
+        renderList(); return;
+      }
+      startPlay(+el.dataset.i);
+    };
+  });
+}
+function escapeHtml(s) {
+  return (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+/* 标签下拉：只筛右边这张列表。点哪台还是按全表序号播（不重排） */
+const tagSel = $('#tagSel');
+tagSel.onchange = () => setTag(+tagSel.value);
+renderTagSel();
+
+$('#addBtn').onclick = () => {
+  const n = $('#addName').value.trim() || '未命名';
+  const u = $('#addSrc').value.trim();
+  if (!/^\d{1,9}$/.test(u) && !/^https?:\/\//i.test(u)) { alert('填蜻蜓台号（数字）或 http 地址'); return; }
+  // 新台进「当前筛的那个标签」；没筛就进第一个标签（广播）
+  S.list.push({ n, u, t: S.tag >= 0 ? S.tag : 0 });
+  $('#addName').value = ''; $('#addSrc').value = '';
+  renderTagSel(); renderList();
+};
+
+/* ============================================================
+   6. 交互
+   ============================================================ */
+let held = false, pressAt = 0, clickTimer = null;
+
+const knob = $('#knob');
+let dragging = false, lastAngle = null;
+
+function angleOf(e) {
+  const r = knob.getBoundingClientRect();
+  return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2));
+}
+knob.addEventListener('pointerdown', e => {
+  knob.setPointerCapture(e.pointerId);
+  dragging = true; lastAngle = angleOf(e);
+  held = false;
+  pressAt = performance.now();
+  knob._holdTimer = setTimeout(() => { held = true; }, 220);
+});
+knob.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  const a = angleOf(e);
+  let d = a - lastAngle;
+  if (d > Math.PI) d -= 2 * Math.PI;
+  if (d < -Math.PI) d += 2 * Math.PI;
+  const steps = Math.trunc(d / (Math.PI / 8));
+  if (steps) { rotate(steps); lastAngle += steps * (Math.PI / 8); }
+});
+knob.addEventListener('pointercancel', () => {
+  dragging = false; held = false; S.volHold = false;
+});
+knob.addEventListener('pointerup', e => {
+  dragging = false;
+  clearTimeout(knob._holdTimer);
+  const dt = performance.now() - pressAt;
+  if (!held && Math.abs(dt) < 250) {
+    if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; doublePress(); }
+    else clickTimer = setTimeout(() => { clickTimer = null; press(); }, 260);
+  } else if (held) {
+    longPress();
+  }
+  held = false;
+  S.volHold = false;                     // 1.26.0：松手 -> 台名恢复
+});
+knob.addEventListener('wheel', e => {
+  e.preventDefault();
+  rotate(e.deltaY > 0 ? 1 : -1);
+}, { passive: false });
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  // 遥控器手感：上下 = 换台（CH+ / CH-）。
+  // 左右两个键 1.15.0 起没有功能（原来是换组），和固件保持一致 —— 别在这儿偷偷加回「换台」。
+  if (e.key === 'ArrowDown')  { e.preventDefault(); step(1); }
+  if (e.key === 'ArrowUp')    { e.preventDefault(); step(-1); }
+  if (e.key === ' ') { e.preventDefault(); playPause(); }
+  if (e.key === 'm') { S.muted = !S.muted; }
+});
+
+document.querySelectorAll('[data-ir]').forEach(b => {
+  b.onclick = () => {
+    const a = b.dataset.ir;
+    if (a === 'prev') step(-1);
+    if (a === 'next') step(1);
+    // lkey / rkey：1.15.0 起固件里这两个键位不响应，预览页也不响应
+    if (a === 'play') playPause();
+    if (a === 'mute') S.muted = !S.muted;
+    // 1.44.0：原厂每格 ±1；下限 6 是这次的要求
+    if (a === 'vup') { S.vol = clamp(S.vol + 1, 6, volTop()); }
+    if (a === 'vdn') { S.vol = clamp(S.vol - 1, 6, volTop()); }
+    if (a === 'reconnect') longPress();
+  };
+});
+
+/* ============================================================
+   7. 手机 App：把真 HTML 塞进 iframe，把 fetch 接到模拟器
+   ============================================================ */
+window.__api = (path, q) => {
+  const n = S.list.length;
+  q = q || {};
+  switch (path) {
+    case '/api/auth': return { token: 'preview-token' };
+    case '/api/info': return { fw: SEED.fw, paired: 1, needSetup: 0, ap: 1,
+      ip: '192.168.4.1', count: n, devid: 'A1B2C3D4E5F6', rcode: '482913',
+      open: 1, dcode: '482913', cloud: 1, cloudConn: 1,
+      bok: BATT.ok, batt: BATT.pct, bmv: BATT.mv, chg: BATT.chg ? 1 : 0,
+      blow: BATT.pct <= 5 ? 1 : 0, bpin: 4 };
+    case '/api/state': return {
+      cur: S.cur, name: S.list[S.cur] ? S.list[S.cur].n : '', count: n,
+      group: 0, gcount: 1, gname: tagName(S.cur),
+      ps: S.ps, vol: S.vol, mute: S.muted ? 1 : 0, wifi: S.wifi ? 1 : 0,
+      sq: (typeof S.sq === 'number') ? S.sq : 0, hs: 0, fmscan: 0, fmprog: 100, fmstn: 0,
+      rssi: S.rssi, ip: '192.168.4.1', clock: S.clock, fw: SEED.fw,
+      // 1.19.0：电量（预览器固定 82%，想试低电提示改 ?batt=3 见文件末尾）
+      bok: BATT.ok, batt: BATT.pct, bmv: BATT.mv, chg: BATT.chg ? 1 : 0,
+      blow: BATT.pct <= 5 ? 1 : 0, bpin: 4
+    };
+    case '/api/batt': return {
+      bok: BATT.ok, batt: BATT.pct, bmv: BATT.mv, chg: BATT.chg ? 1 : 0,
+      blow: BATT.pct <= 5 ? 1 : 0, bpin: 4, vready: 2, vbusy: 0
+    };
+    // 1.19.0：免配对 + 派生码（派生码是算出来的，预览里给个固定值够看）
+    case '/api/cloud': return {
+      on: 1, conn: 1, open: 1, pres: 12, devid: 'A1B2C3D4E5F6', short: 'A1B2C3',
+      code: '482913', host: 'broker-cn.emqx.io', port: 1883, cmds: 3, bad: 0
+    };
+    case '/api/stations': return {
+      count: n,
+      tags: TAGS.map((g, i) => ({ i, n: g.n, c: tagCount(i) })),
+      list: S.list.map((s, i) => ({ i, n: s.n, u: s.u, q: isQtfm(s.u) ? 1 : 0,
+                                   ep: epCount(bookOfName(s.n)), t: s.t | 0 }))
+    };
+    // 1.15.0：固件里 /api/group 已经是空壳（恒返回 ok:0），这里照抄，别让 App 以为还能切组
+    case '/api/group':
+      return { ok: 0, group: 0, msg: '1.15.0 起不再分组' };
+    case '/api/play': startPlay(+q.id); return { ok: 1 };
+    case '/api/step': step(+q.dir); return { ok: 1 };
+    case '/api/epis': {
+      // 1.9.0：dir=上一集/下一集，e=跳集，不带参数就回这一台的集表
+      if (q.dir !== undefined) {
+        const b = bookOfStation(S.cur);
+        if (b < 0) return { ok: 0 };
+        epSetCur(b, epStep(b, dirOf(q.dir)));
+        startPlay(S.cur);
+        return { ok: 1 };
+      }
+      if (q.e !== undefined) {
+        // 1.46.33：可以带 id —— App 的选集弹层不再先切台，点某一集时才说台号
+        const st = (q.id !== undefined && q.id !== '') ? (+q.id | 0) : S.cur;
+        const b = bookOfStation(st);
+        if (b < 0) return { ok: 0 };
+        epSetCur(b, +q.e);
+        EPIS_NEXT[b] = -1;               // 手动点了具体集数，「下次从第 X 集」作废
+        startPlay(st);
+        return { ok: 1 };
+      }
+      // id 给了就是那台的集表（固件也是这么认的：server.hasArg("id")），没给才用当前台
+      const want = (q.id !== undefined && q.id !== '') ? (+q.id | 0) : S.cur;
+      const bid = bookOfStation(want);
+      if (bid < 0) return { n: 0, cur: -1, from: 0, list: [] };
+      const B = EPIS.books[bid];
+      // 1.18.0：跟固件 apiEpisJson 一样按**字节**切页（EPIS_PAGE_BYTE=8500），
+      // 不按条数 —— 标题长短差三倍，按条数卡要么撑爆要么太浪费。
+      const from = Math.max(0, Math.min(B.c, (q.from === undefined ? 0 : (+q.from | 0))));
+      const out = [];
+      let bytes = 64;
+      for (let k = from; k < B.c; k++) {
+        const t = EPIS.items[B.f + k].t || '';
+        bytes += 16 + t.length * 3;
+        if (bytes > 8500 && out.length) break;
+        out.push({ i: k, t: t === null ? '' : t });
+      }
+      return { prog: B.n, n: B.c, cur: epCur(bid), from, list: out };
+    }
+    // 1.46.33：下次调到这个台从第 X 集起 —— **不换台、不起播、不动进度**
+    case '/api/epnext': {
+      const st = (q.id !== undefined && q.id !== '') ? (+q.id | 0) : S.cur;
+      const b = bookOfStation(st);
+      if (b < 0) return { err: 'notbook' };
+      const e = (q.e === undefined) ? -1 : (+q.e | 0);
+      epSetNext(b, e);
+      return { ok: 1, next: e };
+    }
+    case '/api/squelch': S.sq = clamp(+q.v, 0, 100); return { ok: 1 };
+    case '/api/vol': S.vol = clamp(+q.v, 6, volTop()); return { ok: 1 };
+    case '/api/mute': S.muted = !S.muted; return { ok: 1 };
+    case '/api/pause': playPause(); return { ok: 1 };
+    case '/api/add':
+      if (!/^\d{1,9}$/.test(q.url) && !/^https?:\/\//i.test(q.url)) return { err: 'url' };
+      S.list.push({ n: q.name || '未命名', u: q.url,
+                    t: (q.g !== undefined && q.g !== '') ? (+q.g | 0) : 0 });
+      renderTagSel(); renderList();
+      return { id: S.list.length - 1, count: S.list.length };
+    case '/api/del':
+      S.list.splice(+q.id, 1);
+      if (S.cur >= S.list.length) S.cur = Math.max(0, S.list.length - 1);
+      renderTagSel(); renderList(); return { ok: 1 };
+    case '/api/move': {
+      const i = +q.id;
+      const j = (q.to !== undefined && q.to !== '') ? +q.to : i + (+q.dir >= 0 ? 1 : -1);
+      if (i >= 0 && j >= 0 && i < n && j < n && i !== j) {
+        const t = S.list.splice(i, 1)[0];
+        S.list.splice(j, 0, t);
+        if (S.cur === i) S.cur = j; else if (S.cur === j) S.cur = i;
+      }
+      renderList(); syncPanel(true); return { ok: 1 };
+    }
+    case '/api/screen': {
+      const idx = S.preview >= 0 ? S.preview : S.cur;
+      return {
+        on: 1, br: 100, clock: S.clock,
+        wd: Math.max(0, '日一二三四五六'.indexOf(String(S.wd).replace('周', ''))),
+        grp: 0, gname: tagName(idx), idx, cnt: n,
+        name: S.list[idx] ? S.list[idx].n : '没有电台',
+        ps: S.ps, vol: S.vol, mute: S.muted ? 1 : 0,
+        wifi: S.wifi ? 1 : 0, rssi: S.rssi, pv: S.preview, learn: 0, pc: 0,
+        tip: '旋钮换节目', mu: S.muted ? 1 : 0,
+        epn: epCount(bookOfStation(idx)),
+        epi: epCur(bookOfStation(idx)),
+        epnext: epNext(bookOfStation(idx)),
+        ept: epTitle(bookOfStation(idx), epCur(bookOfStation(idx))),
+        prog: bookOfStation(idx) >= 0 ? EPIS.books[bookOfStation(idx)].n : ''
+      };
+    }
+    // 1.17.0：台的健康档案。不带 i = 整表摘要，带 i = 单台详情
+    case '/api/health': return hlJson(q.i);
+    case '/api/history': return MHIST;
+    case '/api/diag': return {
+      fw: String(SEED.fw).replace(/^MyRadio\s*/, ''), up: 3600 * 7 + 1800, reset: '上电',
+      heap: 214536, heapMin: 168420, psram: 8388608, psramFree: 7864320,
+      fsTotal: 3145728, fsUsed: 402653,
+      wifi: { ok: S.wifi ? 1 : 0, ssid: 'TP-LINK_5G', rssi: S.rssi, ch: 6,
+              ip: '192.168.4.1', gw: '192.168.4.1', dns: '192.168.4.1', ap: 1 },
+      audio: { ps: S.ps, retry: 0, dead: 0, kbps: 128, sec: 620,
+               url: 'http://lhttp.qtfm.cn/live/' + (S.list[S.cur] ? S.list[S.cur].u : '0') + '/64k.mp3' },
+      time: { ok: 1, now: '' },
+      table: { tags: TAGS.length, count: n, total: ALL.length },
+      token: { set: 1, fp: 'a1b2' },
+      pair: { locked: 0 },
+      batt: { bok: BATT.ok, batt: BATT.pct, bmv: BATT.mv, chg: BATT.chg ? 1 : 0,
+              blow: BATT.pct <= 5 ? 1 : 0, bpin: 4 },
+      voice: { vready: 2, vbusy: 0 }
+    };
+    case '/api/pair':
+      if (q.op === 'unbind') return { ok: 1, token: 'preview-token-2' };
+      if (q.op === 'lock') return { ok: 1, locked: q.on === '1' ? 1 : 0, code: q.on === '1' ? '284917' : '' };
+      if (q.op === 'newcode') return { ok: 1, code: '284917' };
+      return { locked: 0, fp: 'a1b2', ip: '192.168.4.1', up: 27000, dev: 'MyRadio' };
+    case '/api/fix':
+      if (q.action === 'replay' || q.action === 'reset_audio') startPlay(S.cur);
+      if (q.action === 'reconnect') { S.wifi = true; S.rssi = -58; }
+      if (q.action === 'clear_history') { MHIST.total = 0; MHIST.today = 0; MHIST.plays = 0; MHIST.list = []; }
+      if (q.action === 'reset_stations') {
+        S.list = ALL.map(mkItem); S.cur = 0; S.preview = -1; S.tag = -1; renderTagSel();
+      }
+      return { ok: 1, reboot: 0, msg: '预览里已模拟执行' };
+    case '/api/edit':
+      if (S.list[+q.id]) {
+        if (q.name) S.list[+q.id].n = q.name;
+        if (q.url) S.list[+q.id].u = q.url;
+        renderList();
+      }
+      return { ok: 1 };
+    // 1.15.0：/api/mvgroup 现在只改标签、不动位置（对应 storeMoveToGroup）
+    case '/api/mvgroup': {
+      const i = +q.id;
+      if (!S.list[i]) return { err: 'id' };
+      let t = (q.g !== undefined && q.g !== '') ? (+q.g | 0) : -1;
+      if (t < 0) {                                   // 用新名字建标签
+        const nm = (q.gn || '').trim();
+        if (!nm) return { err: 'g' };
+        t = TAGS.findIndex(x => x.n === nm);
+        if (t < 0) { TAGS.push({ n: nm, count: 0 }); t = TAGS.length - 1; }
+      }
+      if (t < 0 || t >= TAGS.length) return { err: 'g' };
+      S.list[i].t = t;
+      renderTagSel(); renderList(); syncPanel(true);
+      return { ok: 1 };
+    }
+    // 标签管理（增 / 改名 / 删 / 排序）。规则与 store.cpp 的 storeGroup* 一一对应：
+    //   · 改名：台只存下标，所以自动跟着走
+    //   · 删标签**不删台**，这些台退回第 0 个标签；第 0 个标签不许删
+    //   · 排序只动 chips 先后，不影响播放顺序
+    case '/api/groupop': {
+      const op = q.op, nm = (q.n || '').trim();
+      const g = (q.g !== undefined && q.g !== '') ? (+q.g | 0) : -1;
+      if (op === 'add') {
+        if (!nm || TAGS.some(x => x.n === nm)) return { err: 'group' };
+        TAGS.push({ n: nm, count: 0 });
+      } else if (op === 'rename') {
+        if (g < 0 || g >= TAGS.length || !nm) return { err: 'group' };
+        if (TAGS.some((x, k) => k !== g && x.n === nm)) return { err: 'group' };
+        TAGS[g].n = nm;
+      } else if (op === 'del') {
+        if (g <= 0 || g >= TAGS.length || TAGS.length <= 1) return { err: 'group' };
+        for (const o of S.list) {
+          if ((o.t | 0) === g) o.t = 0;
+          else if ((o.t | 0) > g) o.t--;
+        }
+        TAGS.splice(g, 1);
+        if (S.tag === g) S.tag = -1; else if (S.tag > g) S.tag--;
+      } else if (op === 'move') {
+        const j = g + ((q.dir | 0) >= 0 ? 1 : -1);
+        if (g < 0 || g >= TAGS.length || j < 0 || j >= TAGS.length) return { err: 'group' };
+        const tmp = TAGS[g]; TAGS[g] = TAGS[j]; TAGS[j] = tmp;
+        for (const o of S.list) {
+          if ((o.t | 0) === g) o.t = j;
+          else if ((o.t | 0) === j) o.t = g;
+        }
+      } else return { err: 'group' };
+      renderTagSel(); renderList(); syncPanel(true);
+      return { ok: 1 };
+    }
+    case '/api/wifi/list': return wifiListJson();
+    case '/api/wifi/forget': {
+      // 1.46.36：真的从 WSLOTS 里删掉，并回 left（剩几组）——
+      //   这样 App 删完再读一次列表，能直接看出「机器里到底还有没有」。
+      const ssid = q.ssid || '';
+      const before = WSLOTS.length;
+      WSLOTS = WSLOTS.filter(x => x.ssid !== ssid);
+      if (WSLOTS.length === before) return { err: 'notfound' };
+      return { ok: 1, left: WSLOTS.length };
+    }
+    case '/api/wifi/add': {
+      // 1.46.51：只存不连（和固件 apiWifiAdd 同语义）——
+      //   同名原地改密码，新名字追加末尾，满了回 full。
+      const ssid = (q.ssid || '').trim();
+      const pass = q.pass || '';
+      if (!ssid) return { err: 'ssid' };
+      const k = WSLOTS.findIndex(x => x.ssid === ssid);
+      if (k >= 0) WSLOTS[k].pass = pass;
+      else {
+        if (WSLOTS.length >= WIFI_MAX) return { err: 'full' };
+        WSLOTS.push({ ssid, pass });
+      }
+      return { ok: 1, n: WSLOTS.length, max: WIFI_MAX };
+    }
+    case '/api/wifi/use': {
+      // 1.46.51：把这一组挪到最前面（= 现在用它），但不改别的
+      const ssid = (q.ssid || '').trim();
+      const k = WSLOTS.findIndex(x => x.ssid === ssid);
+      if (k < 0) return { err: 'notfound' };
+      const it = WSLOTS.splice(k, 1)[0];
+      WSLOTS.unshift(it);
+      return { ok: 1, state: 1, ssid };
+    }
+    case '/api/wifi/status':
+      return { state: 2, msg: '已连上', ssid: 'TP-LINK_5G', ip: '192.168.4.1', rssi: -55, ok: 1 };
+    case '/api/scan': return [
+      { s: 'TP-LINK_5G', r: -48 }, { s: 'ChinaNet-home', r: -63 }, { s: 'Xiaomi_AX3000', r: -71 }
+    ];
+    case '/api/wifi': return { ok: 1, reboot: 1 };
+    default: return { err: 'notfound' };
+  }
+};
+
+const stub = `
+<script>
+(function(){
+  try { localStorage.setItem('_t','1'); localStorage.removeItem('_t'); }
+  catch(e){
+    const m = {};
+    Object.defineProperty(window, 'localStorage', { value: {
+      getItem: k => (k in m ? m[k] : null),
+      setItem: (k,v) => { m[k] = String(v); },
+      removeItem: k => { delete m[k]; }
+    }});
+  }
+  // 1.19.0：预览环境标记 —— App 里据此不真的去连公网 MQTT
+  window.MR_PREVIEW = true;
+  const realFetch = window.fetch ? window.fetch.bind(window) : null;
+  window.fetch = async function(url, opt){
+    const u = String(url);
+    if (u.indexOf('/api/') === 0){
+      let q = {};
+      if (opt && opt.body){
+        for (const [k,v] of new URLSearchParams(String(opt.body))) q[k] = v;
+      }
+      const j = parent.__api(u.split('?')[0], q);
+      // 1.46.51：错误要带对应的 HTTP 码，别再一律 200 —— 真固件对
+      //   「WiFi 四组已满」是 409、对「没这一组」是 404，App 靠 e.code 分流。
+      //   一律 200 的话，回归里验不出「按错误码给不同提示」这条路。
+      const code = (j && j.err === 'full') ? 409
+                 : (j && j.err === 'notfound') ? 404
+                 : 200;
+      return new Response(JSON.stringify(j), { status: code, headers: { 'Content-Type':'application/json' } });
+    }
+    if (realFetch) return realFetch(url, opt);
+    return new Response('{}', { status: 200 });
+  };
+  // 1.19.0：「我的机器」卡片在真机上靠 MQTT 广播填充，预览里喂一台假的
+  setTimeout(function(){
+    try{
+      CLOUD.S.devs = [{ dev: 'A1B2C3', n: 'MyRadio-A1B2C3', fw: '1.19.0',
+                        open: 1, batt: 82, seen: Date.now() }];
+      CLOUD.S.phase = 'online';
+      if (typeof renderDevs === 'function') renderDevs();
+    }catch (e){}
+  }, 1400);
+})();
+<\/script>`;
+
+$('#appFrame').srcdoc = stub + WEBAPP;
+
+/* ============================================================
+   8. 标签切换与启动
+   ============================================================ */
+function setTab(app) {
+  $('#tabApp').classList.toggle('on', app); $('#tabDev').classList.toggle('on', !app);
+  $('#viewApp').classList.toggle('on', app); $('#viewDev').classList.toggle('on', !app);
+  // 同一块画布在两个标签页之间搬，保证 App 里点按钮时左边屏幕能看到联动
+  const target = app ? $('#stageApp') : $('#stageDev');
+  const box = $('#fitbox');
+  if (box.parentElement !== target) target.appendChild(box);
+  fitDevice();
+}
+$('#tabDev').onclick = () => setTab(false);
+$('#tabApp').onclick = () => setTab(true);
+if (location.hash === '#app') setTab(true);
+
+// ?fm=1：模拟「没网 → 自动切 FM 收音」，方便没接硬件的时看效果
+if (new URLSearchParams(location.search).get('fm') === '1') {
+  const q = new URLSearchParams(location.search);
+  S.wifi = false;
+  S.fmMode = true;
+  // ?khz=531 看中波左端 / ?khz=2300 看短波左端 / ?khz=64000 看调频左端；
+  // 老的 ?fmfreq=980（100kHz 单位）也认
+  const _khz = q.get('khz'), _old = q.get('fmfreq');
+  S.fmFreq = _khz ? parseInt(_khz, 10) : (_old ? parseInt(_old, 10) * 100 : 98000);
+  S.ps = 2;
+}
+
+// ?tag=1 直接筛某个标签（截图 / 调试用；标签号从 0 开始，0=广播）。老参数 ?g= 照样认。
+const _q = new URLSearchParams(location.search);
+const _gp = _q.get('tag') !== null ? _q.get('tag') : _q.get('g');
+if (_gp !== null && !isNaN(+_gp)) setTag(+_gp);
+
+/* 设备按可用空间选一个「整数倍率」（1x/2x/2.5x…）直接设画布像素尺寸。
+   不要在画布外面再套一层 transform/zoom：那会让 1bit 点阵被二次重采样，数字会破。 */
+function fitDevice() {
+  const box = document.getElementById('fitbox');
+  const stage = box.parentElement;
+  if (!stage || !stage.parentElement) return;
+  const view = stage.parentElement;
+  if (!view.clientWidth) return;
+
+  let availW = view.clientWidth - 40;
+  for (const c of view.children) if (c !== stage) availW -= c.offsetWidth;
+  availW -= 36;                       // .case 左右内边距
+  const availH = stage.clientHeight - 60 - 130;   // 留出旋钮行和底部提示
+
+  let s = Math.min(availW / W, availH / H);
+  s = Math.max(1.2, Math.min(2.6, s));
+  s = Math.floor(s * 2) / 2;          // 取 0.5 的整数倍，横竖采样一致
+  cv.style.width = Math.round(W * s) + 'px';
+  cv.style.height = Math.round(H * s) + 'px';
+}
+addEventListener('resize', fitDevice);
+fitDevice();
+
+$('#fwv').textContent = '· 固件 ' + String(SEED.fw).replace(/^MyRadio\s*/, '');
+renderList();
+
+/* ============================================================
+   1.45.0 屏幕色切换 / 面板标定
+   ============================================================ */
+(function panUI() {
+  const $b = id => document.getElementById(id);
+  const setMode = real => {
+    panReal = real;
+    $b('panReal').classList.toggle('on', real);
+    $b('panDesign').classList.toggle('on', !real);
+    applyPanel();
+  };
+  $b('panReal').onclick = () => setMode(true);
+  $b('panDesign').onclick = () => setMode(false);
+  $b('panTune').onclick = () => $b('panBox').classList.toggle('on');
+
+  const KEYMAP = [['pBlack', 'black', 'vBlack', 0], ['pWhite', 'white', 'vWhite', 0],
+                  ['pSat', 'sat', 'vSat', 2], ['pBlue', 'blue', 'vBlue', 2],
+                  ['pCon', 'contrast', 'vCon', 2]];
+  const sync = () => {
+    KEYMAP.forEach(([id, key, vid, d]) => {
+      $b(id).value = PANEL[key];
+      $b(vid).textContent = Number(PANEL[key]).toFixed(d);
+    });
+  };
+  KEYMAP.forEach(([id, key, vid, d]) => {
+    $b(id).oninput = e => {
+      PANEL[key] = parseFloat(e.target.value);
+      $b(vid).textContent = PANEL[key].toFixed(d);
+      applyPanel();
+    };
+  });
+  $b('panReset').onclick = () => { Object.assign(PANEL, PANEL0); sync(); applyPanel(); };
+  $b('panCopy').onclick = () => {
+    const txt = 'PANEL = {"black": %d, "white": %d, "sat": %.2f, "blue": %.2f, "contrast": %.2f}'
+      .replace('%d', PANEL.black).replace('%d', PANEL.white)
+      .replace('%.2f', PANEL.sat.toFixed(2)).replace('%.2f', PANEL.blue.toFixed(2))
+      .replace('%.2f', PANEL.contrast.toFixed(2));
+    const done = () => { $b('panCopy').textContent = '已复制'; setTimeout(() => { $b('panCopy').textContent = '复制参数'; }, 1200); };
+    if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done, done); else done();
+    console.log(txt);
+  };
+  sync();
+})();
+
+(function loop() { render(); requestAnimationFrame(loop); })();
+setInterval(() => {
+  const d = new Date();
+  S.clock = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  S.wd = '周' + '日一二三四五六'[d.getDay()];
+  if (S.wifi) S.rssi = -58 + Math.round(Math.sin(Date.now()/9000) * 6);
+}, 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+MyRadio-v1.43.0 —— 完整工程包
+
+固件版本 : 1.43.0（src/config.h 的 FW_VER）
+手机 App : 1.22.0  →  MyRadio-1.22.0.apk（随包，自签，Android 6.0 起）
+打包时间 : 2026-11-02 21:49
+文件数   : 210（含本清单）
+解压后   : 20.6 MB
+
+先看这三样：
+  说明书.html      使用说明（双击打开，台表可搜索）
+  preview/index.html  固件预览页（双击打开，可拖旋钮 / 试手机 App）
+  README.md        技术文档（接线、编译、接口、跨网协议）
+
+要发给在外地的家人：
+  MyRadio-远程版.html  存到手机里（微信收藏 / 文件）就能遥控这台机器。
+                      1.19.1 起打开就列出家里那几台机器，点一下就连，一个字不用输
+                      （机器开着「免配对」时；关掉了才要手输遥控码）。
+
+装成手机 App（不想每次输网址）：
+  MyRadio-1.22.0.apk  直接装（手机要允许一次「未知来源」）。在家自动找机器，点一下进界面；在外地打开就自动走远程，不用点任何东西（1.42.0 起「离线遥控」按钮删了）。
+
+!! 首次上机先刷「硬件自检」，确认 I2S 引脚（1.21.1）：
+  firmware/硬件自检-整片烧写-0x0.bin  → 写到 0x0，串口 115200 看 [hw] 组 N/10
+  听到 1kHz 连续音就记下组号，改 src/config.h 的 PIN_I2S_BCK/LCK/DIN 三行重编。
+  不确认这一步，主固件可能看起来正常但没声音（I2S 引脚错）。
+  详见 原厂对照报告.md 第二节。
+
+刷机（1.20.0 起包里带已编译固件 firmware/）：
+  整片烧写：固件-整片烧写-0x0.bin → esptool 写到 0x0（会覆盖 WiFi 配置，刷完重配）
+  只换固件：固件-只刷APP-0x10000.bin → 写到 0x10000（保留 WiFi 与台表设置，推荐）
+  命令：python -m esptool --chip esp32s3 -p COM3 -b 460800 write_flash 0x10000 firmware/固件-只刷APP-0x10000.bin
+
+改手机 App 的人注意：源码在 tools/app/，改完要跑
+  python tools/gen_webapp.py      生成 src/webapp.h（固件里那份，别手改）
+
+1.19.0 的电量与播报：
+  电量低于 5% 念「电量低，请充电」，电压掉到 3400mV 撑满 60 秒念「没电了，关机」再断 IO15。
+  两句 MP3 编在 src/voice_data.h（生成物，142KB，别手改）：
+    python tools/gen_voice.py        已有 mp3 就只重生成头文件（离线可用）
+    python tools/gen_voice.py --tts  改词后重新合成（要联网 + edge-tts）
+  电量接线（100k/100k 分压进 IO4）与分压比见 README 3.5d；1.43.0 起按原厂口径只乘 batfactor=1.71，没有「校准」这一步了；
+  首次编译请确认 4MB app 分区装得下（多了约 142KB rodata）。
+
+改 APK 外壳的人注意：源码在 android/，出包：
+  python tools/build_apk.py        编 APK（tools/build_apk.py --icon 顺带重画图标）
+  assets/remote.html 由脚本从 MyRadio-远程版.html 复制，别手改；
+  重装同一个包必须用 android/myradio.keystore（换签名 = 覆盖安装失败）。
+
+音频库说明：lib/ESP32-audioI2S 是上游 2.0.6 + 两处补丁（蜻蜓 m4a 被 CDN 标成 mp3）。
+  升级上游后重跑 python tools/patch_audio_lib.py；别改回 GitHub 在线依赖。
+
+--------------------------------------------------------------
+文件清单：
+
+       0.2 KB  .gitignore
+     208.4 KB  CHANGELOG.md
+     107.6 KB  MyRadio-1.19.2.apk
+     108.9 KB  MyRadio-1.19.3.apk
+     120.0 KB  MyRadio-1.20.0.apk
+     127.8 KB  MyRadio-1.21.0.apk
+     127.8 KB  MyRadio-1.22.0.apk
+     202.1 KB  MyRadio-远程版.html
+      66.1 KB  README.md
+       8.2 KB  android/README.md
+       1.0 KB  android/app/build.gradle
+       1.8 KB  android/app/src/main/AndroidManifest.xml
+      27.0 KB  android/app/src/main/assets/home.html
+     202.1 KB  android/app/src/main/assets/remote.html
+      12.0 KB  android/app/src/main/java/com/myradio/app/Discovery.java
+      21.6 KB  android/app/src/main/java/com/myradio/app/MainActivity.java
+      14.3 KB  android/app/src/main/java/com/myradio/app/Provision.java
+       0.2 KB  android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+       0.2 KB  android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+       1.8 KB  android/app/src/main/res/mipmap-hdpi/ic_fg.png
+       0.9 KB  android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+       0.9 KB  android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+       1.0 KB  android/app/src/main/res/mipmap-mdpi/ic_fg.png
+       0.7 KB  android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+       0.7 KB  android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+       2.4 KB  android/app/src/main/res/mipmap-xhdpi/ic_fg.png
+       1.3 KB  android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+       1.3 KB  android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+       3.8 KB  android/app/src/main/res/mipmap-xxhdpi/ic_fg.png
+       2.1 KB  android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+       2.1 KB  android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+       5.3 KB  android/app/src/main/res/mipmap-xxxhdpi/ic_fg.png
+       2.8 KB  android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+       2.8 KB  android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+       0.2 KB  android/app/src/main/res/values/colors.xml
+       0.1 KB  android/app/src/main/res/values/strings.xml
+       0.5 KB  android/app/src/main/res/values/themes.xml
+       0.4 KB  android/app/src/main/res/xml/network_security_config.xml
+       0.1 KB  android/build.gradle
+       0.2 KB  android/gradle.properties
+       0.1 KB  android/local.properties
+       2.7 KB  android/myradio.keystore
+       0.5 KB  android/settings.gradle
+      14.8 KB  firmware/bootloader.bin
+       3.0 KB  firmware/partitions.bin
+    3183.1 KB  firmware/固件-只刷APP-0x10000.bin
+    3247.1 KB  firmware/固件-整片烧写-0x0.bin
+    2889.6 KB  firmware/硬件自检-整片烧写-0x0.bin
+      34.3 KB  lib/ESP32-audioI2S/LICENSE
+       0.4 KB  lib/ESP32-audioI2S/library.properties
+     221.0 KB  lib/ESP32-audioI2S/src/Audio.cpp
+      25.4 KB  lib/ESP32-audioI2S/src/Audio.h
+     442.4 KB  lib/ESP32-audioI2S/src/aac_decoder/aac_decoder.cpp
+      24.4 KB  lib/ESP32-audioI2S/src/aac_decoder/aac_decoder.h
+      22.2 KB  lib/ESP32-audioI2S/src/flac_decoder/flac_decoder.cpp
+       9.4 KB  lib/ESP32-audioI2S/src/flac_decoder/flac_decoder.h
+     178.2 KB  lib/ESP32-audioI2S/src/mp3_decoder/mp3_decoder.cpp
+      20.8 KB  lib/ESP32-audioI2S/src/mp3_decoder/mp3_decoder.h
+       0.3 KB  partitions.csv
+       5.0 KB  platformio.ini
+      31.1 KB  preview/app-setup.html
+     468.1 KB  preview/index.html
+     202.1 KB  preview/remote.html
+       5.1 KB  src/album.cpp
+       1.9 KB  src/album.h
+      12.5 KB  src/api.cpp
+       3.1 KB  src/api.h
+      19.0 KB  src/audio.cpp
+       1.7 KB  src/audio.h
+      16.2 KB  src/battery.cpp
+       3.5 KB  src/battery.h
+      22.4 KB  src/cloud.cpp
+       2.7 KB  src/cloud.h
+      29.2 KB  src/config.h
+       4.2 KB  src/epis.cpp
+       1.7 KB  src/epis.h
+      36.4 KB  src/fm.cpp
+       5.0 KB  src/fm.h
+    4748.0 KB  src/font_cn.h
+       9.6 KB  src/health.cpp
+       2.8 KB  src/health.h
+       8.3 KB  src/history.cpp
+       1.6 KB  src/history.h
+      18.7 KB  src/input.cpp
+       1.0 KB  src/input.h
+      14.8 KB  src/main.cpp
+      49.8 KB  src/net.cpp
+       0.8 KB  src/net.h
+      12.2 KB  src/power.cpp
+       2.4 KB  src/power.h
+     714.9 KB  src/preset_episodes.h
+      17.9 KB  src/preset_stations.h
+      28.2 KB  src/selftest.cpp
+       4.7 KB  src/state.h
+      18.8 KB  src/store.cpp
+       3.2 KB  src/store.h
+      61.7 KB  src/ui.cpp
+       2.3 KB  src/ui.h
+       3.4 KB  src/voice.cpp
+       2.5 KB  src/voice.h
+     220.6 KB  src/voice_data.h
+     196.2 KB  src/webapp.h
+      23.8 KB  tools/.qm_cache_5249.json
+      92.3 KB  tools/.qtfm_cache_140696.json
+       7.6 KB  tools/.qtfm_cache_324449.json
+      18.5 KB  tools/.qtfm_cache_360691.json
+       0.1 KB  tools/.t13cache/13532.json
+       4.5 KB  tools/.t13cache/24417.json
+       0.1 KB  tools/.t13cache/24594.json
+       0.1 KB  tools/.t13cache/31201.json
+       0.1 KB  tools/.t13cache/32867.json
+       0.1 KB  tools/.t13cache/33545.json
+       0.1 KB  tools/.t13cache/36415.json
+       0.1 KB  tools/.t13cache/39788.json
+       0.1 KB  tools/.t13cache/41327.json
+       0.1 KB  tools/.t13cache/41332.json
+       0.1 KB  tools/.t13cache/42266.json
+       0.7 KB  tools/.t13sig.json
+      18.3 KB  tools/.xm2_105008938.json
+      14.3 KB  tools/.xm2_111523688.json
+       8.6 KB  tools/.xm2_118037621.json
+      20.2 KB  tools/.xm2_118368717.json
+       8.4 KB  tools/.xm2_119757262.json
+       3.1 KB  tools/.xm2_21696929.json
+       3.1 KB  tools/.xm2_36125379.json
+       1.0 KB  tools/.xm2_75580490.json
+       3.8 KB  tools/.xm2_76705325.json
+      11.9 KB  tools/.xm2_77855794.json
+      13.3 KB  tools/.xm2_83568108.json
+       4.1 KB  tools/.xm2_84153135.json
+      12.8 KB  tools/.xm2_84242589.json
+      18.5 KB  tools/.xm2_91392373.json
+      38.0 KB  tools/.xm_cache_49001687.json
+      47.1 KB  tools/.xm_cache_53688396.json
+      14.6 KB  tools/album_sim.py
+       0.9 KB  tools/app/base.html
+      23.3 KB  tools/app/body.html
+      14.9 KB  tools/app/js/cloud.js
+      46.8 KB  tools/app/js/core.js
+      11.9 KB  tools/app/js/health.js
+      40.1 KB  tools/app/js/pages.js
+      18.0 KB  tools/app/js/stations.js
+      37.6 KB  tools/app/style.css
+       4.2 KB  tools/bili_audio.py
+       4.0 KB  tools/build_apk.py
+       5.4 KB  tools/fetch_books.py
+       6.1 KB  tools/fetch_qm.py
+       2.7 KB  tools/fetch_qtfm.py
+       9.5 KB  tools/fetch_qtfm_album.py
+       4.4 KB  tools/fetch_rcn.py
+      15.7 KB  tools/fetch_t13.js
+      14.3 KB  tools/fetch_t13.py
+       7.1 KB  tools/fetch_xm.py
+       6.2 KB  tools/fetch_xm2.py
+       0.3 KB  tools/fixture_cloud.html
+       4.9 KB  tools/gen_apk_icon.py
+       4.7 KB  tools/gen_app_preview.py
+       8.0 KB  tools/gen_font.py
+       3.4 KB  tools/gen_manual.py
+       2.3 KB  tools/gen_preset.py
+      24.5 KB  tools/gen_preset_curated.py
+       9.5 KB  tools/gen_remote.py
+       5.3 KB  tools/gen_stationlist.py
+       5.3 KB  tools/gen_voice.py
+       3.6 KB  tools/gen_webapp.py
+       7.7 KB  tools/gen_webpreview.py
+      10.8 KB  tools/icons/lucide.json
+      12.3 KB  tools/import_local.py
+      11.7 KB  tools/make_release.py
+      93.0 KB  tools/manual_template.html
+      11.5 KB  tools/mqtt_broker_sim.js
+       3.7 KB  tools/patch_audio_lib.py
+      68.7 KB  tools/preview_template.html
+       4.2 KB  tools/probe/probe.ino
+       8.6 KB  tools/probe_m3u.py
+      73.1 KB  tools/qtfm_all.json
+       9.8 KB  tools/radio_sim.py
+       2.5 KB  tools/rcn_api.py
+       2.2 KB  tools/shot_app.py
+       8.3 KB  tools/sim_screen.py
+      22.1 KB  tools/store_sim.py
+      19.0 KB  tools/verify_album.js
+      12.3 KB  tools/verify_app.js
+      18.1 KB  tools/verify_appctl.py
+      10.4 KB  tools/verify_batt.js
+      11.0 KB  tools/verify_cloud.js
+       6.4 KB  tools/verify_freq.js
+       9.2 KB  tools/verify_power.js
+      14.8 KB  tools/verify_provision.py
+      10.0 KB  tools/verify_radio.js
+       8.1 KB  tools/verify_remote.js
+       8.5 KB  tools/verify_squelch_halfstep.py
+       7.5 KB  tools/verify_volhold.py
+       4.3 KB  tools/verify_wifi3.py
+      14.1 KB  tools/voice/low.mp3
+      13.2 KB  tools/voice/off.mp3
+      15.0 KB  tools/voice/scan.mp3
+      18.0 KB  tools/台表-精选.md
+       2.5 KB  tools/听书网源.json
+       1.1 KB  tools/有声书.json
+      15.4 KB  tools/有声书源-云听.json
+     180.1 KB  tools/有声书源-喜马.json
+     107.3 KB  tools/有声书源-蜻蜓.json
+     573.4 KB  tools/有声书源.json
+       6.7 KB  原厂对照报告.md
+      29.8 KB  台表-全国.csv
+      16.2 KB  台表-全国.md
+     111.4 KB  说明书.html
+      53.4 KB  说明书.md

@@ -1,0 +1,12 @@
+[
+  {"group": "评书", "name": "三国演义", "feed": "http://www.ximalaya.com/album/44599381.xml",
+   "skip": 1, "count": 0, "note": "小熊有声；RSS 共 146 条，第 1 条是花絮，跳过 → 145 集（001~147，中间有跳号）"},
+  {"group": "评书", "name": "官场现形记", "feed": "https://www.ximalaya.com/album/74803384.xml",
+   "skip": 0, "count": 0, "rev": true, "note": "京味新评书；RSS 是倒序（引子排在最后一条），必须 rev 反转 → 1167 集"},
+  {"group": "历史", "name": "上下五千年", "feed": "https://www.ximalaya.com/album/79743055.xml",
+   "skip": 0, "count": 0, "note": "235 集，从开天辟地讲起，本来就是正序"},
+  {"group": "历史", "name": "每晚一个历史故事", "feed": "http://www.ximalaya.com/album/39391561.xml",
+   "skip": 0, "count": 0, "rev": true, "note": "RSS 是倒序（「短序」排在最后一条），必须 rev 反转 → 207 集"},
+  {"group": "广播剧", "name": "红楼梦", "feed": "https://www.ximalaya.com/album/78660042.xml",
+   "skip": 0, "count": 15, "note": "原著全文有声书，RSS 共 120 集；这部没让改，仍取前 15 集"}
+]

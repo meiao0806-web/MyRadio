@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 收音机是局域网里的裸 HTTP 服务（http://192.168.x.x/api/...），
+     targetSdk 34 默认禁明文，这里显式放开。 -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

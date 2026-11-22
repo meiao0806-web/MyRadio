@@ -1,0 +1,494 @@
+<!--__SPRITE__-->
+
+<div class="boot" id="boot">
+  <div class="logo"><svg class="ic"><use href="#i-radio"></use></svg></div>
+  <div class="msg" id="bootMsg">正在连接收音机…</div>
+  <div class="bar2"><i></i></div>
+</div>
+
+<!-- 离线条：连不上收音机时出现，不拦路，点「去配网」直接进设置页 -->
+<div class="offbar" id="offBar" hidden>
+  <svg class="ic sm"><use href="#i-wifi-off"></use></svg>
+  <span class="tx" id="offTx">没连上收音机</span>
+  <button id="offGo">去配网</button>
+</div>
+
+<div class="app">
+
+  <!-- ================= 主页 ================= -->
+  <section class="page on" data-page="home">
+    <div class="hdr">
+      <div>
+        <h1>操控收音机</h1>
+        <div class="sub" id="hdrSub">正在连接…</div>
+      </div>
+      <!-- 1.41.0：配网做成首页按钮。用户明确要求「WiFi 配网做成按钮放在首页」——
+           没网时它闪琥珀色 + 一个红点，点一下直接弹配网面板（不用先摸到设置页）。
+           设置页里那一行还在，两处都能进。 -->
+      <div class="hdrbtns">
+        <button class="iconbtn wifi" id="btnWifiHome" aria-label="给收音机配网">
+          <svg class="ic"><use href="#i-wifi"></use></svg>
+          <i class="dot2" id="wifiDot"></i>
+        </button>
+        <!-- 1.43.0：静音按钮删了（用户要求「去掉静音功能」）。
+             固件的 /api/mute 也已是空操作 —— 留着这个键就是个按了没反应的坑。 -->
+      </div>
+    </div>
+
+    <div class="screenwrap">
+      <canvas id="scr" width="320" height="170" aria-label="收音机屏幕实时镜像"></canvas>
+    </div>
+
+    <div class="screentip">
+      <span class="dot" id="dot"></span>
+      <span id="tipTx">正在启动…</span>
+      <span class="sp"><span class="mirror" id="liveTx">实时</span><span id="lat"></span></span>
+    </div>
+
+    <!-- 1.17.0：这台到底有没有真的出声。电平取自解码后的 PCM，与音量大小无关，
+         所以「显示播放中但没声音」的台在这里会露出来 -->
+    <div class="sndrow" id="sndRow">
+      <i class="lv"><b id="lvBar"></b></i>
+      <span class="snd" id="sndTx">没在放</span>
+    </div>
+
+    <!-- 1.41.0：调台 / 暂停 / 音量全部收进这个按钮里，点一下才展开。
+         老人日常只用旋钮，手机上这些键是给子女用的，摊在首屏反而抢戏。
+         收起时按钮副标题写当前状态（音量几档、在放还是暂停），不用展开也知道机器怎么样。 -->
+    <button class="ctlbtn" id="btnCtl" aria-expanded="false" aria-controls="ctlPanel">
+      <span class="ci"><svg class="ic"><use href="#i-sliders-horizontal"></use></svg></span>
+      <span class="cx">
+        <b>控制收音机</b>
+        <i id="ctlSub">换台 · 音量 · 暂停</i>
+      </span>
+      <svg class="ic sm chev" id="ctlChev"><use href="#i-chevron-down"></use></svg>
+    </button>
+
+    <div class="ctlpanel hide" id="ctlPanel">
+
+    <div class="transport">
+      <button class="tbtn" id="btnPrev">
+        <svg class="ic"><use href="#i-skip-back"></use></svg>
+        <span>上一台</span>
+      </button>
+      <button class="tbtn main" id="btnPlay" aria-label="播放或暂停">
+        <svg class="ic" id="playIc"><use href="#i-pause"></use></svg>
+      </button>
+      <button class="tbtn" id="btnNext">
+        <svg class="ic"><use href="#i-skip-forward"></use></svg>
+        <span>下一台</span>
+      </button>
+    </div>
+
+    <!-- 有声书（1.9.0）：一个台 = 一部书。这里是「第几集 / 共几集」+ 上一集/下一集 -->
+    <div class="epbar hide" id="epBar">
+      <button class="epbtn" id="epPrev" aria-label="上一集">
+        <svg class="ic sm"><use href="#i-skip-back"></use></svg>
+        <span>上一集</span>
+      </button>
+      <button class="epmid" id="epOpen" aria-label="选集">
+        <span class="line"><b id="epNow">第 1 集</b><em id="epOf">共 15 集</em></span>
+        <i id="epTitle"></i>
+      </button>
+      <button class="epbtn" id="epNext" aria-label="下一集">
+        <svg class="ic sm"><use href="#i-skip-forward"></use></svg>
+        <span>下一集</span>
+      </button>
+    </div>
+
+    <div class="volrow">
+      <button class="iconbtn" id="btnVolDown" aria-label="音量减">
+        <svg class="ic sm"><use href="#i-volume-1"></use></svg>
+      </button>
+      <input type="range" id="vol" min="6" max="21" step="1" value="18" aria-label="音量">
+      <button class="iconbtn" id="btnVolUp" aria-label="音量加">
+        <svg class="ic sm"><use href="#i-volume-2"></use></svg>
+      </button>
+    </div>
+    <div class="volnum">音量 <span id="volNum">18</span></div>
+
+    </div><!-- /ctlPanel -->
+
+    <div class="chips" id="homeChips"></div>
+
+    <div class="card" style="margin-top:4px">
+      <div class="card-hd">今天听得怎么样<span class="r" id="todayPlays"></span></div>
+      <div class="today">
+        <div class="tnum" id="todayNum">—</div>
+        <button class="btn sm ghost" id="btnHist" style="margin-left:auto">
+          <svg class="ic sm"><use href="#i-history"></use></svg>看记录
+        </button>
+      </div>
+      <div class="lastone" id="lastOne">—</div>
+    </div>
+  </section>
+
+  <!-- ================= 电台 ================= -->
+  <section class="page" data-page="stations">
+    <div class="hdr">
+      <div>
+        <h1>电台</h1>
+        <div class="sub" id="stHint">长按左侧把手可拖动排序</div>
+      </div>
+      <button class="iconbtn" id="btnAdd" aria-label="添加电台">
+        <svg class="ic"><use href="#i-plus"></use></svg>
+      </button>
+    </div>
+
+    <div class="search">
+      <svg class="ic sm"><use href="#i-search"></use></svg>
+      <input id="q" type="search" placeholder="搜台名、频道" autocomplete="off" enterkeyhint="search">
+      <button class="iconbtn hide" id="qClear" style="width:26px;height:26px;border-radius:9px" aria-label="清空">
+        <svg class="ic sm"><use href="#i-x"></use></svg>
+      </button>
+    </div>
+
+    <div class="chips" id="stChips"></div>
+    <div class="list" id="stList"></div>
+  </section>
+
+  <!-- ================= 历史 ================= -->
+  <section class="page" data-page="history">
+    <div class="hdr">
+      <div>
+        <h1>收听记录</h1>
+        <div class="sub" id="histHint">机器自动记账</div>
+      </div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="card">
+      <div class="card-hd">最近 7 天<span class="r" id="weekSum"></span></div>
+      <div class="bars" id="bars"></div>
+    </div>
+    <div class="list" id="histList"></div>
+    <div class="btnrow one" style="margin-top:4px">
+      <button class="btn ghost" id="btnClearHist">
+        <svg class="ic sm"><use href="#i-trash-2"></use></svg>清空记录
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= 体检 ================= -->
+  <section class="page" data-page="diag">
+    <div class="hdr">
+      <div>
+        <h1>体检</h1>
+        <div class="sub" id="diagHint">检查这台机器哪儿不舒服</div>
+      </div>
+      <button class="iconbtn" id="btnRecheck" aria-label="重新检查">
+        <svg class="ic"><use href="#i-refresh-cw"></use></svg>
+      </button>
+    </div>
+    <div id="diagAlert"></div>
+    <div class="health">
+      <div class="ring">
+        <svg width="92" height="92" viewBox="0 0 92 92">
+          <circle cx="46" cy="46" r="38" fill="none" stroke="#dfe3ea" stroke-width="7"></circle>
+          <circle id="ringFg" cx="46" cy="46" r="38" fill="none" stroke="#4a8a63" stroke-width="7"
+                  stroke-linecap="round" stroke-dasharray="238.8" stroke-dashoffset="0"
+                  style="transition:stroke-dashoffset .6s cubic-bezier(.23,1,.32,1),stroke .3s"></circle>
+        </svg>
+        <div class="val" id="ringVal">--<small>分</small></div>
+      </div>
+      <div class="txt">
+        <h2 id="healthTitle">正在检查…</h2>
+        <p id="healthDesc">把网络、声音、存储都过一遍。</p>
+      </div>
+    </div>
+    <div class="card" id="chkList"></div>
+    <div class="btnrow one">
+      <button class="btn pri" id="btnFixAll">
+        <svg class="ic sm"><use href="#i-wand-sparkles"></use></svg>
+        <span id="fixAllTx">一键修复</span>
+      </button>
+    </div>
+    <div class="card">
+      <div class="card-hd">台的健康<span class="r" id="hlSum">—</span></div>
+      <div class="hlgrid">
+        <div class="hcell"><b id="hlOk">0</b><span>出过声</span></div>
+        <div class="hcell bad"><b id="hlBad">0</b><span>连不上</span></div>
+        <div class="hcell dim"><b id="hlDim">0</b><span>没声音</span></div>
+        <div class="hcell unk"><b id="hlUnk">0</b><span>没测过</span></div>
+      </div>
+      <button class="srow" id="btnHlList">
+        <span class="si"><svg class="ic sm"><use href="#i-triangle-alert"></use></svg></span>
+        <span class="st"><span class="t">只看有问题的台</span><span class="m">连不上、没声音的都挑出来</span></span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+      <button class="srow" id="btnHlScan">
+        <span class="si"><svg class="ic sm"><use href="#i-play"></use></svg></span>
+        <span class="st"><span class="t">挨个试一遍</span><span class="m" id="hlScanSub">查一查哪些台真的有声</span></span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">这些活 App 能替你干</div>
+      <button class="srow" data-fix="replay">
+        <span class="si"><svg class="ic sm"><use href="#i-play"></use></svg></span>
+        <span class="st"><span class="t">重开这一个台</span><span class="m">卡住、没声音、一直缓冲</span></span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+      <button class="srow" data-fix="reconnect">
+        <span class="si"><svg class="ic sm"><use href="#i-wifi"></use></svg></span>
+        <span class="st"><span class="t">重新连 WiFi</span><span class="m">不用断电，10 秒左右</span></span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+      <button class="srow" data-fix="fix_table">
+        <span class="si"><svg class="ic sm"><use href="#i-list-music"></use></svg></span>
+        <span class="st"><span class="t">整理台表</span><span class="m">台用着用着乱了、少了，点这个</span></span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+      <button class="srow" data-fix="reboot">
+        <span class="si"><svg class="ic sm"><use href="#i-power"></use></svg></span>
+        <span class="st"><span class="t">重启收音机</span><span class="m">万能招，先试这个</span></span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= 设置 ================= -->
+  <section class="page" data-page="settings">
+    <div class="hdr">
+      <div>
+        <h1>设置</h1>
+        <div class="sub" id="setHint"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">这台收音机</div>
+      <div class="srow">
+        <span class="si"><svg class="ic sm"><use href="#i-radio"></use></svg></span>
+        <span class="st"><span class="t">固件版本</span></span>
+        <span class="sv" id="svFw">—</span>
+      </div>
+      <div class="srow">
+        <span class="si"><svg class="ic sm"><use href="#i-signal"></use></svg></span>
+        <span class="st"><span class="t">网络地址</span></span>
+        <span class="sv" id="svIp">—</span>
+      </div>
+      <div class="srow">
+        <span class="si"><svg class="ic sm"><use href="#i-timer"></use></svg></span>
+        <span class="st"><span class="t">已运行</span></span>
+        <span class="sv" id="svUp">—</span>
+      </div>
+      <button class="srow" id="btnReboot">
+        <span class="si"><svg class="ic sm"><use href="#i-power"></use></svg></span>
+        <span class="st"><span class="t">重启收音机</span><span class="m">卡住了就重启，台表和设置都在</span></span>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">屏幕与声音</div>
+      <div class="srow col">
+        <span class="st"><span class="t">音量 · 网络电台</span><span class="m">听手机台/有声书那一路（原厂 netvolume，0–21）</span></span>
+        <input type="range" id="rgVol" min="6" max="21" step="1" aria-label="网络电台音量">
+      </div>
+      <div class="srow col">
+        <span class="st"><span class="t">音量 · 收音机</span><span class="m">转 FM/中波那一路（原厂 volume，0–63）</span></span>
+        <input type="range" id="rgFmVol" min="6" max="63" step="1" aria-label="收音机音量">
+      </div>
+      <div class="srow col">
+        <span class="st"><span class="t">亮度</span><span class="m">平时嫌刺眼就调低；一会儿没人动还会自动再暗一档</span></span>
+        <input type="range" id="rgBr" min="5" max="100" step="5" aria-label="亮度">
+      </div>
+      <div class="srow col">
+        <span class="st"><span class="t">没人动就熄屏</span><span class="m">到时间自动黑屏省电，转一下旋钮就亮</span></span>
+        <div class="seg" id="segOff">
+          <button data-v="1">1 分</button><button data-v="3">3 分</button>
+          <button data-v="10">10 分</button><button data-v="0">从不</button>
+        </div>
+      </div>
+      <button class="srow" id="btnScreenOff">
+        <span class="si"><svg class="ic sm"><use href="#i-eye-off"></use></svg></span>
+        <span class="st"><span class="t">立即熄屏</span><span class="m">听广播不用看屏幕的时候用</span></span>
+      </button>
+    </div>
+
+    <!-- 1.41.0：收音机（SI4732）那一路的设置。原厂的 halfstep / currentSquelch 就在这里 -->
+    <div class="card" id="fmCard">
+      <div class="card-hd">收音机（调频 / 中波）<span class="hd-r" id="fmNow">—</span></div>
+      <div class="srow">
+        <span class="si"><svg class="ic sm"><use href="#i-radio"></use></svg></span>
+        <span class="st"><span class="t">现在收的是</span><span class="m" id="fmBandSub">没在收音模式</span></span>
+        <span class="sv" id="fmFreq">—</span>
+      </div>
+
+      <div class="srow col">
+        <span class="st"><span class="t">静噪门限</span><span class="m">台太弱时自动闭嘴，省得一直嘶嘶响；0 = 关</span></span>
+        <input type="range" id="rgSq" min="0" max="100" step="5" aria-label="静噪门限">
+        <span class="sqnow" id="sqNow">关</span>
+      </div>
+
+      <button class="srow" id="btnHalfStep">
+        <span class="si"><svg class="ic sm"><use href="#i-sliders-horizontal"></use></svg></span>
+        <span class="st"><span class="t">半步进</span><span class="m">调频按 0.05MHz 走，适合台挤在一起的地方</span></span>
+        <span class="sw" id="swHalf"></span>
+      </button>
+
+      <!-- 1.41.0：「搜到哪些台」和「重新搜」分成两行。
+           原来挤在一行里，点数就变成重新搜，看不见清单。 -->
+      <button class="srow" id="btnFmStations">
+        <span class="si"><svg class="ic sm"><use href="#i-list-music"></use></svg></span>
+        <span class="st"><span class="t">搜到的台</span><span class="m">点开看清单，点一行就调过去</span></span>
+        <span class="sv" id="fmCount">—</span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+      <button class="srow" id="btnFmScan">
+        <span class="si"><svg class="ic sm"><use href="#i-search"></use></svg></span>
+        <span class="st"><span class="t">重新搜台</span><span class="m" id="fmScanSub">收音机自己扫一遍，十几秒</span></span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+    </div>
+
+    <div class="card" id="wifiCard">
+      <div class="card-hd">网络</div>
+      <!-- 1.46.51：「换一个 WiFi」和「已存的 WiFi」合成一行 —— 点开是同一个页面：
+           固定几个格子，已存的显示名字，空着的直接填名字+密码就存进机器。
+           所以这里不再分两个入口（用户原话：「两个合并」）。 -->
+      <button class="srow" id="btnWifi">
+        <span class="si"><svg class="ic sm"><use href="#i-wifi"></use></svg></span>
+        <span class="st"><span class="t" id="wifiTitle">WiFi</span><span class="m" id="wifiSub">点这里管理：已存的 + 空着的格子</span></span>
+        <span class="sv" id="wifiNow">—</span>
+        <svg class="ic sm chev"><use href="#i-chevron-right"></use></svg>
+      </button>
+      <button class="srow" id="btnReconn">
+        <span class="si"><svg class="ic sm"><use href="#i-rotate-ccw"></use></svg></span>
+        <span class="st"><span class="t">重新连接网络</span><span class="m">WiFi 没断但没网时用</span></span>
+      </button>
+      <button class="srow" id="battRow" style="display:none">
+        <span class="si"><svg class="ic sm"><use href="#i-battery-medium"></use></svg></span>
+        <span class="st"><span class="t">电量</span><span class="m" id="battSub">—</span></span>
+        <span class="sv" id="battNow">—</span>
+      </button>
+      <!-- 1.38.2：电量校准。电压法算出来的百分比天生不准（平台区 + 负载压降），
+           唯一可靠的办法是拿万用表量一下电池，把真实值填进来。 -->
+      <button class="srow" id="btnBattCal" style="display:none">
+        <span class="si"><svg class="ic sm"><use href="#i-sliders-horizontal"></use></svg></span>
+        <span class="st"><span class="t">校准电量</span><span class="m">显示的百分比和实际不一样？点这里对一下</span></span>
+      </button>
+    </div>
+
+    <div class="card" id="cloudCard">
+      <div class="card-hd">不在家也能控制</div>
+      <!-- 1.42.0：远程控制**恒开**（固件里 cloudSetOn(false) 直接被拒）。
+           原来这一行是个开关 —— 但关掉之后人在外地就再也没有别的路能把它打开，
+           一次误触等于把机器锁死。所以改成纯状态行：点一下只是刷新状态。 -->
+      <button class="srow" id="btnCloud">
+        <span class="si"><svg class="ic sm"><use href="#i-signal"></use></svg></span>
+        <span class="st"><span class="t">远程控制（始终开启）</span>
+          <span class="m">不在一个网、不在一个城市，也能换台调音量</span></span>
+        <span class="sv" id="svRSt">—</span>
+        <svg class="ic sm chev"><use href="#i-refresh-cw"></use></svg>
+      </button>
+      <div class="srow">
+        <span class="si"><svg class="ic sm"><use href="#i-wifi"></use></svg></span>
+        <span class="st"><span class="t">中转服务器</span><span class="m">机器自己连出去，家里不用开端口</span></span>
+        <span class="sv" id="svRHost">—</span>
+      </div>
+      <div class="srow">
+        <span class="si"><svg class="ic sm"><use href="#i-activity"></use></svg></span>
+        <span class="st"><span class="t">状态</span></span>
+        <span class="sv" id="svRSt">—</span>
+      </div>
+      <!-- 1.46.7：4 位连接码。手机在同一个网里输它 = 直接连上；
+           人在外地，远程版/App 输它也能连（机器每 30 秒的报到里带着这个码）。
+           出厂都是 1234 —— 家里有两台的话，改掉其中一台才分得清。 -->
+      <button class="srow" id="btnPinEdit">
+        <span class="si"><svg class="ic sm"><use href="#i-key-round"></use></svg></span>
+        <span class="st"><span class="t">连接码</span>
+          <span class="m">手机输这 4 位就能找到这台（出厂 1234）</span></span>
+        <span class="sv" id="svPin">—</span>
+        <svg class="ic sm chev"><use href="#i-pencil"></use></svg>
+      </button>
+    </div>
+
+    <div class="card" id="devCard">
+      <div class="card-hd">我的机器<span class="hd-r" id="devHint">正在找…</span></div>
+      <!-- 1.46.7：跨网输码。机器那 4 位码跟着在线广播一起发过来，
+           输满 4 位就剩一台 → 直接切过去；多台同码 → 下面列表里点。
+           为什么放这儿：老人只记得住「1234」，记不住 12 位遥控码。 -->
+      <div class="pinrow">
+        <input id="devPin" inputmode="numeric" maxlength="4" autocomplete="off"
+               spellcheck="false" placeholder="输 4 位连接码">
+        <button id="devPinGo" type="button">连接</button>
+      </div>
+      <div class="devlist" id="devList"></div>
+      <button class="srow" id="btnDevRefresh">
+        <span class="si"><svg class="ic sm"><use href="#i-refresh-cw"></use></svg></span>
+        <span class="st"><span class="t">重新找一遍</span><span class="m">机器每 30 秒报一次到，等几秒就会出现</span></span>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">数据</div>
+      <button class="srow danger" id="btnResetStations">
+        <span class="si"><svg class="ic sm"><use href="#i-list-music"></use></svg></span>
+        <span class="st"><span class="t">恢复出厂台表</span><span class="m">341 个台回到出厂那版</span></span>
+      </button>
+      <button class="srow danger" id="btnForgetWifi">
+        <span class="si"><svg class="ic sm"><use href="#i-cloud-off"></use></svg></span>
+        <span class="st"><span class="t">忘掉 WiFi</span><span class="m">之后只能连机器自己的热点</span></span>
+      </button>
+      <button class="srow danger" id="btnFactory">
+        <span class="si"><svg class="ic sm"><use href="#i-triangle-alert"></use></svg></span>
+        <span class="st"><span class="t">恢复出厂设置</span><span class="m">台表、记录、配对全部清空</span></span>
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">出问题了？先看这里</div>
+      <div class="faq">
+        <details>
+          <summary>没有声音</summary>
+          <p>先看手机上这块屏幕：显示「播放中」却没有声音，多半是音量被拧到 0 —— 在主页把音量拉大试试。显示「出错了」或一直「缓冲中」，去体检页点「重开这一个台」。全都不行就「重启收音机」。</p>
+        </details>
+        <details>
+          <summary>连不上这台收音机</summary>
+          <p>收音机自己会发一个叫 <b>我的收音机</b> 的热点，<b>没有密码，点一下就连上</b>。连上后手机会自动弹出配置页；没弹的话，打开浏览器输入 <b>192.168.4.1</b> 也能进。注意：连着这个热点时手机用不了流量，改完设置记得切回家里的 WiFi。</p>
+        </details>
+        <details>
+          <summary>换了路由器 / 改了 WiFi 密码</summary>
+          <p>连上「我的收音机」热点进来，在「网络 → 换一个 WiFi」里重新选一次。新的连不上时机器会自动退回原来那个，不会变成一块砖。</p>
+        </details>
+        <details>
+          <summary>屏幕不亮</summary>
+          <p>为了省电，3 分钟没人动它会熄屏，转一下旋钮或按一下就好。真的黑着没反应，拔电等 5 秒再插上。</p>
+        </details>
+        <details>
+          <summary>某个台老是没声音</summary>
+          <p>很多地方台在蜻蜓 FM 上会变地址，机器 20 秒听不到就会自动跳到下一台。你可以在「电台」里把那个台删掉，或者点它右边的 ⋯ 改成新的台号。</p>
+        </details>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:12px;color:var(--ink3);font-weight:600;padding:6px 0 10px">
+      MyRadio · 给爸妈的收音机
+    </div>
+  </section>
+</div>
+
+<nav class="tabbar" id="tabbar">
+  <div class="in">
+    <button class="tab on" data-tab="home">
+      <svg class="ic"><use href="#i-radio"></use></svg><span>收音机</span>
+    </button>
+    <button class="tab" data-tab="stations">
+      <svg class="ic"><use href="#i-list-music"></use></svg><span>电台</span>
+    </button>
+    <button class="tab" data-tab="history">
+      <svg class="ic"><use href="#i-history"></use></svg><span>记录</span>
+    </button>
+    <button class="tab" data-tab="diag">
+      <svg class="ic"><use href="#i-activity"></use></svg><span>体检</span>
+      <span class="badge hide" id="diagBadge"></span>
+    </button>
+    <button class="tab" data-tab="settings">
+      <svg class="ic"><use href="#i-settings"></use></svg><span>设置</span>
+    </button>
+  </div>
+</nav>
+
+<div id="sheetHost"></div>
+<div class="toast" id="toast"><svg class="ic"><use href="#i-circle-check"></use></svg><span id="toastTx"></span></div>

@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.myradio.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.myradio.app"
+        minSdk 23
+        targetSdk 34
+        versionCode 1266
+        versionName "1.26.6"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../myradio.keystore")
+            storePassword "myradio2026"
+            keyAlias "myradio"
+            keyPassword "myradio2026"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+// 零第三方依赖：只用系统 Activity / WebView / NsdManager，
+// 免得离线环境去 Maven 拉 androidx。
+dependencies {
+}

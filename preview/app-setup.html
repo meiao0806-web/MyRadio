@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#e6e9ef">
+<title>MyRadio · App 配网预览</title>
+<style>
+:root{
+  --paper:#e6e9ef; --card:#e6e9ef; --ne-light:#ffffff; --ne-dark:#c3c8d3;
+  --ink:#3c414b; --ink2:#5c636f; --ink3:#8d95a3; --line:#cfd4de;
+  --brand:#3f7180; --brand2:#335d69; --ok:#4a8a63; --bad:#ab5147; --warn:#a8762f;
+  --sh:7px 7px 15px var(--ne-dark), -7px -7px 15px var(--ne-light);
+  --sh-s:4px 4px 9px var(--ne-dark), -4px -4px 9px var(--ne-light);
+  --sh-in:inset 4px 4px 9px var(--ne-dark), inset -4px -4px 9px var(--ne-light);
+  --r:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font:15px/1.5 -apple-system,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+  min-height:100vh; padding:env(safe-area-inset-top) 0 calc(18px + env(safe-area-inset-bottom));
+  -webkit-user-select:none; user-select:none;
+}
+.wrap{max-width:520px;margin:0 auto;padding:22px 18px 0}
+
+header{text-align:center;padding:12px 0 22px}
+.logo{width:64px;height:64px;margin:0 auto 12px;border-radius:20px;background:var(--card);
+  box-shadow:var(--sh);display:flex;align-items:center;justify-content:center}
+.logo svg{width:34px;height:34px;color:var(--brand)}
+h1{margin:0;font-size:22px;letter-spacing:.5px;font-weight:650;color:var(--ink)}
+.sub{margin:5px 0 0;font-size:13px;color:var(--ink3)}
+
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin:0 0 16px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+.t{font-size:13px;font-weight:650;color:var(--ink2);letter-spacing:.3px}
+.hint{font-size:12px;color:var(--ink3);line-height:1.45;margin-top:2px}
+
+.pill{
+  border:0;border-radius:14px;padding:9px 15px;font-size:13px;font-weight:600;
+  color:var(--brand2);background:var(--card);box-shadow:var(--sh-s);cursor:pointer;
+  font-family:inherit;flex:none;
+}
+.pill:active{box-shadow:var(--sh-in)}
+.pill[disabled]{color:var(--ink3);box-shadow:var(--sh-in);cursor:default}
+
+.list{margin-top:10px;display:flex;flex-direction:column;gap:9px}
+.dev{
+  display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:16px;
+  background:var(--card);box-shadow:var(--sh-s);cursor:pointer;
+}
+.dev:active{box-shadow:var(--sh-in)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);flex:none;
+  box-shadow:0 0 0 4px rgba(74,138,99,.14)}
+.dot.mute{background:var(--ink3);box-shadow:0 0 0 4px rgba(141,149,163,.14)}
+.dn{min-width:0;flex:1}
+.dn b{display:block;font-size:14.5px;font-weight:620;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dn i{display:block;font-style:normal;font-size:11.5px;color:var(--ink3);margin-top:2px}
+.go{color:var(--brand);font-size:19px;flex:none;opacity:.75}
+.x{border:0;background:transparent;color:var(--ink3);font-size:16px;padding:4px 2px;
+  cursor:pointer;flex:none;line-height:1;font-family:inherit}
+
+.ipt{display:flex;gap:9px;margin-top:8px}
+.ipt input{
+  flex:1;min-width:0;border:0;border-radius:15px;background:var(--card);
+  box-shadow:var(--sh-in);padding:13px 14px;font-size:15px;color:var(--ink);
+  font-family:inherit;outline:none;-webkit-user-select:text;user-select:text;
+}
+.ipt input::placeholder{color:var(--ink3)}
+.ipt button{
+  border:0;border-radius:15px;padding:0 22px;font-size:14.5px;font-weight:650;
+  color:#fff;background:linear-gradient(180deg,var(--brand),var(--brand2));
+  box-shadow:var(--sh-s);font-family:inherit;cursor:pointer;flex:none;
+}
+.ipt button:active{box-shadow:var(--sh-in)}
+
+.big{
+  width:100%;border:0;border-radius:var(--r);padding:17px;font-size:14.5px;font-weight:640;
+  color:var(--brand2);background:var(--card);box-shadow:var(--sh);font-family:inherit;
+  cursor:pointer;margin-bottom:14px;text-align:center;
+}
+.big:active{box-shadow:var(--sh-in)}
+.big small{display:block;font-weight:450;font-size:11.5px;color:var(--ink3);margin-top:3px}
+.big.main{color:#fff;background:linear-gradient(180deg,var(--brand),var(--brand2))}
+.big.main small{color:rgba(255,255,255,.78)}
+
+.foot{text-align:center;font-size:11.5px;color:var(--ink3);line-height:1.6;margin:0 0 6px}
+.empty{font-size:12.5px;color:var(--ink3);padding:12px 2px;text-align:center}
+.spin{display:inline-block;width:11px;height:11px;border-radius:50%;
+  border:2px solid var(--line);border-top-color:var(--brand);vertical-align:-1px;
+  margin-right:6px;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---- 配网面板 ---- */
+#setup{display:none}
+#setup.on{display:block}
+.stg{margin-top:12px;display:flex;flex-direction:column;gap:7px}
+.stgLine{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink2);
+  padding:10px 13px;border-radius:14px;box-shadow:var(--sh-in);background:var(--card)}
+.stgLine .ic{width:16px;flex:none;text-align:center;color:var(--ink3)}
+.stgLine.done{color:var(--ink)}
+.stgLine.done .ic{color:var(--ok)}
+.stgLine.now{color:var(--ink);font-weight:600}
+.stgLine.now .ic{color:var(--brand)}
+.stgLine.err{color:var(--bad)}
+.stgLine.err .ic{color:var(--bad)}
+.stgMsg{font-size:12.5px;color:var(--ink3);line-height:1.6;margin:11px 2px 0}
+.stgMsg b{color:var(--ink2);font-weight:600}
+.stgMsg em{font-style:normal;color:var(--warn)}
+
+.fld{margin-top:14px}
+.fld label{display:block;font-size:11.5px;color:var(--ink3);letter-spacing:.3px;
+  margin:0 0 2px 4px}
+.lnk{border:0;background:transparent;color:var(--brand);font-size:12.5px;
+  font-family:inherit;padding:9px 4px;cursor:pointer}
+.lnk.hot{color:var(--warn)}
+.wl{margin-top:2px;display:flex;flex-direction:column;gap:7px;max-height:36vh;overflow:auto}
+.wi{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:14px;
+  background:var(--card);box-shadow:var(--sh-s);cursor:pointer}
+.wi:active{box-shadow:var(--sh-in)}
+.wi .nm{flex:1;min-width:0;font-size:14px;color:var(--ink);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.wi .rs{font-size:11px;color:var(--ink3);flex:none}
+.bars{display:flex;align-items:flex-end;gap:2px;height:13px;flex:none;width:19px}
+.bars i{width:3px;background:var(--ink3);border-radius:1px;opacity:.35}
+.bars i.on{background:var(--brand);opacity:1}
+.row2{display:flex;gap:9px;margin-top:14px}
+/* ⚠️ [hidden] 的 display:none 来自 UA 样式表，会被 .row2{display:flex} 覆盖 ⇒ 必须显式补 */
+.row2[hidden]{display:none}
+.row2 button{flex:1;border:0;border-radius:15px;padding:14px 10px;font-size:14px;
+  font-weight:620;font-family:inherit;box-shadow:var(--sh-s);background:var(--card);
+  color:var(--brand2);cursor:pointer}
+.row2 button:active{box-shadow:var(--sh-in)}
+.row2 button.solid{background:linear-gradient(180deg,var(--brand),var(--brand2));color:#fff}
+.pw{position:relative}
+.pw .eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:12px;color:var(--ink3);cursor:pointer;padding:4px 2px}
+details#manualCard summary{list-style:none;outline:none}
+details#manualCard summary::-webkit-details-marker{display:none}
+
+/* 通道状态条：告诉用户「手机现在够不够得着机器」，别让他猜 */
+.via{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;
+  padding:9px 12px;border-radius:13px;margin-top:12px;box-shadow:var(--sh-in)}
+.via.ok{color:var(--ok)}
+.via.no{color:var(--bad)}
+.via .b{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+           stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2.5" y="6.5" width="19" height="11" rx="2.5"/>
+        <line x1="6" y1="10" x2="12" y2="10"/>
+        <line x1="6" y1="13" x2="9.5" y2="13"/>
+        <circle cx="17" cy="12" r="2.6"/>
+        <line x1="17" y1="9.4" x2="17" y2="8.1"/>
+      </svg>
+    </div>
+    <h1>MyRadio</h1>
+    <p class="sub" id="sub">给收音机设一下 WiFi，之后在哪都能控它</p>
+  </header>
+
+  <!-- ================= 配网面板（1.42.0：填表 + 发送，不再自动切网络） ================= -->
+  <div class="card" id="setup">
+    <div class="hd">
+      <div>
+        <div class="t">给收音机连 WiFi</div>
+        <div class="hint" id="setupHint">选网络、输密码，点一下就连上</div>
+      </div>
+      <button class="pill" id="btnSetupX">关掉</button>
+    </div>
+
+    <div class="via" id="viaBox">
+      <span class="b"></span><span id="viaTx">正在看手机够不够得着机器…</span>
+    </div>
+
+    <div class="stgMsg" id="setupMsg"></div>
+    <div id="setupBody"></div>
+
+    <div class="row2" id="setupActs" hidden>
+      <button id="btnGoWifi">去系统设置连 MyRadio</button>
+      <button id="btnSetupRetry" class="solid">再检查一次</button>
+    </div>
+  </div>
+
+  <div class="card" id="recentCard" hidden>
+    <div class="hd"><div class="t">最近用过</div></div>
+    <div class="list" id="recentList"></div>
+  </div>
+
+  <button class="big main" id="btnSetup">
+    设置 WiFi
+    <small>填家里路由器，或者填手机热点的名字和密码</small>
+  </button>
+
+  <div class="card">
+    <div class="hd">
+      <div>
+        <div class="t">同一个 WiFi 下的机器</div>
+        <div class="hint" id="note">正在找…</div>
+      </div>
+      <button class="pill" id="btnScan">找机器</button>
+    </div>
+    <div class="list" id="devList"><div class="empty" id="emptyTip">还没有找到，等一两秒…</div></div>
+  </div>
+
+  <details class="card" id="manualCard">
+    <summary style="cursor:pointer;font-size:13px;font-weight:650;color:var(--ink2);
+      letter-spacing:.3px">找不到？手动输地址</summary>
+    <div class="hint" style="margin-top:8px">连着机器热点时是 192.168.4.1；在家里就是它的 IP</div>
+    <div class="ipt">
+      <input id="ip" inputmode="decimal" autocomplete="off" spellcheck="false"
+             placeholder="192.168.1.23">
+      <button id="btnGo">连</button>
+    </div>
+  </details>
+
+  <p class="foot">配过一次就记着。以后不管在不在同一个网，<br>
+    打开 App 就直接进遥控界面 —— 不在同一个网时自动走远程。</p>
+</div>
+
+
+<script>
+/* ===== 预览用假桥：让浏览器里也能把「一键配网」整条流程点完 ===== */
+var NETS = [
+  { s: 'TP-LINK_5G',      r: -48, sec: 1 },
+  { s: 'ChinaNet-3F2A',   r: -61, sec: 1 },
+  { s: 'Xiaomi_AX3000',   r: -72, sec: 1 },
+  { s: 'CMCC-8kQz',       r: -86, sec: 0 },
+  { s: 'HUAWEI-9A2C',     r: -78, sec: 1 }
+];
+window.__previewNote = '';
+function previewToast(t){
+  window.__previewNote = t;
+  var d = document.getElementById('pvtoast');
+  if (!d) { d = document.createElement('div'); d.id = 'pvtoast';
+    d.style.cssText = 'position:fixed;left:12px;right:12px;top:12px;z-index:200;' +
+      'background:#3c414b;color:#fff;font:12.5px/1.5 sans-serif;padding:10px 13px;' +
+      'border-radius:12px;text-align:center;opacity:.95';
+    document.body.appendChild(d); }
+  d.textContent = t;
+  clearTimeout(window.__pvT);
+  window.__pvT = setTimeout(function(){ if (d.parentNode) d.parentNode.removeChild(d); }, 4200);
+}
+window.MRApp = {
+  ver: function () { return 'preview'; },
+  scan: function () { setTimeout(function () {
+      window.__mrDev && window.__mrDev('192.168.1.23', 'MyRadio-A1B2C3', 'MyRadio 1.40.2', 'mdns');
+      window.__mrDone && window.__mrDone(1);
+    }, 900); },
+  recent: function () { return '[]'; },
+  open: function (ip) { previewToast('真机上这里会打开 http://' + ip + '/ 的遥控界面'); },
+  openRemote: function () { previewToast('真机上这里会打开离线跨网遥控页'); },
+  forget: function () {},
+  apInfo: function () {
+    return JSON.stringify({ ssid: 'MyRadio', pass: '12345678', ip: '192.168.4.1', sdk: 34 });
+  },
+  provJoin: function () {
+    window.__mrProv && window.__mrProv({ stage: 'joining' });
+    setTimeout(function () {
+      window.__mrProv && window.__mrProv({ stage: 'ready', name: 'MyRadio',
+        fw: 'MyRadio 1.40.2', homeSsid: 'ChinaNet-3F2A', apip: '192.168.4.1', nets: NETS });
+    }, 1800);
+  },
+  provRescan: function () {
+    setTimeout(function () { window.__mrProv && window.__mrProv({ stage: 'nets', nets: NETS }); }, 1100);
+  },
+  provSend: function (s) {
+    setTimeout(function () { window.__mrProv && window.__mrProv({ stage: 'sending', ssid: s }); }, 250);
+    setTimeout(function () {
+      if (/5G/i.test(s)) {
+        window.__mrProv && window.__mrProv({ stage: 'fail',
+          msg: '连不上 ' + s + '，密码或信号有问题（收音机只认 2.4G）' });
+      } else {
+        window.__mrProv && window.__mrProv({ stage: 'ok', ssid: s, ip: '192.168.1.47' });
+      }
+    }, 3200);
+  },
+  provCancel: function () {},
+  provDirect: function () {
+    previewToast('真机上这里会直接打开 http://192.168.4.1 的遥控界面 —— 收音机的热点一直开着');
+  },
+  provFinish: function (ip) {
+    previewToast('真机上：App 放掉热点 → 等手机切回家里 WiFi → 自动打开 http://' + ip + '/');
+  }
+};
+</script>
+<script>
+(function () {
+  // 浏览器里直接打开这个文件时（做版式预览用），桥是假的
+  var B = window.MRApp || null;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var noteEl = $('note'), listEl = $('devList'), emptyEl = $('emptyTip');
+  var known = {};        // ip -> true
+  var scanning = false;
+
+  var AP = { ssid: 'MyRadio', pass: '12345678', ip: '192.168.4.1' };
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function note(s) { noteEl.textContent = s; }
+
+  function rowDev(ip, name, sub, cls) {
+    var d = document.createElement('div');
+    d.className = 'dev';
+    d.innerHTML =
+      '<span class="dot' + (cls ? ' ' + cls : '') + '"></span>' +
+      '<span class="dn"><b>' + esc(name) + '</b><i>' + esc(sub) + '</i></span>' +
+      '<span class="go">›</span>';
+    d.addEventListener('click', function () { open(ip, name); });
+    return d;
+  }
+
+  function open(ip, name) {
+    if (!B || !B.open) { note('这个预览里没有外壳，点不动'); return; }
+    B.open(ip, name || ip);
+  }
+
+  // ---- 设备列表（发现回调会往这里塞）----
+  window.__mrDev = function (ip, name, fw, how) {
+    if (!ip || known[ip]) return;
+    known[ip] = 1;
+    if (emptyEl && emptyEl.parentNode) emptyEl.parentNode.removeChild(emptyEl);
+    var ver = String(fw || '').replace(/^MyRadio\s*/i, '');
+    var sub = ip + (ver ? ' · ' + ver : '');
+    listEl.appendChild(rowDev(ip, name || ip, sub, ''));
+    note('找到 ' + Object.keys(known).length + ' 台，点一下就连');
+  };
+
+  window.__mrNote = function (s) {
+    if (scanning) return;
+    note(s);
+  };
+
+  window.__mrDone = function (n) {
+    scanning = false;
+    $('btnScan').disabled = false;
+    $('btnScan').textContent = '再找一次';
+    if (!n) {
+      if (!emptyEl) {
+        emptyEl = document.createElement('div');
+        emptyEl.className = 'empty';
+        emptyEl.id = 'emptyTip';
+        listEl.appendChild(emptyEl);
+      }
+      emptyEl.innerHTML = '一台都没找到 —— 点上面「设置 WiFi」配一次网';
+    }
+  };
+
+  // ---- 最近用过的 ----
+  function paintRecent() {
+    if (!B || !B.recent) { $('recentCard').hidden = true; return; }
+    var arr = [];
+    try { arr = JSON.parse(B.recent() || '[]'); } catch (e) { arr = []; }
+    if (!arr.length) { $('recentCard').hidden = true; return; }
+    $('recentCard').hidden = false;
+    var box = $('recentList');
+    box.innerHTML = '';
+    arr.forEach(function (o) {
+      var row = rowDev(o.ip, o.name || o.ip, o.ip + ' · 上次连过', 'mute');
+      var x = document.createElement('button');
+      x.className = 'x';
+      x.textContent = '×';
+      x.setAttribute('aria-label', '忘掉这台');
+      x.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        if (B.forget) B.forget(o.ip);
+        row.parentNode.removeChild(row);
+        if (!box.children.length) $('recentCard').hidden = true;
+      });
+      row.appendChild(x);
+      box.appendChild(row);
+    });
+  }
+
+  // ---- 设备发现按钮 ----
+  $('btnScan').addEventListener('click', function () {
+    if (!B || !B.scan) { note('这个预览里没有外壳'); return; }
+    scanning = true;
+    $('btnScan').disabled = true;
+    note('正在找…');
+    B.scan();
+  });
+
+  function normIp(s) {
+    s = String(s || '').trim();
+    s = s.replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+    var m = s.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})(:\d+)?$/);
+    if (!m) return '';
+    for (var i = 1; i <= 4; i++) if (+m[i] > 255) return '';
+    return s;
+  }
+
+  function go() {
+    var v = normIp($('ip').value);
+    if (!v) { note('地址不对，要像 192.168.1.23 这样'); $('ip').focus(); return; }
+    open(v, 'MyRadio · ' + v);
+  }
+
+  $('btnGo').addEventListener('click', go);
+  $('ip').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { $('ip').blur(); go(); }
+  });
+
+  // ==================================================================
+  //  配网：填 SSID + 密码 → 发给机器（家里路由器 / 手机热点 同一个接口）
+  // ==================================================================
+  var stg = {
+    open: false, reach: false, via: '', nets: [], homeSsid: '',
+    tm: 0, listOpen: false, lastHot: '', phoneHot: false
+  };
+
+  function viaSet(ok, txt) {
+    var b = $('viaBox');
+    if (!b) return;
+    b.className = 'via ' + (ok ? 'ok' : 'no');
+    $('viaTx').textContent = txt;
+  }
+
+  function timer(sec, label) {
+    clearInterval(stg.tm);
+    var t = sec;
+    function tick() {
+      $('setupHint').textContent = label + '（' + (t > 0 ? t + ' 秒' : '再等等') + '）';
+      if (t > 0) t--;
+    }
+    tick();
+    stg.tm = setInterval(tick, 1000);
+  }
+  function timerStop(txt) { clearInterval(stg.tm); stg.tm = 0; $('setupHint').textContent = txt; }
+
+  function setupOpen() {
+    if (stg.open) { probe(); return; }
+    stg.open = true;
+    stg.listOpen = false;
+    stg.nets = [];
+    $('setup').className = 'card on';
+    viaSet(false, '正在看手机够不够得着机器…');
+    $('setupMsg').innerHTML = '';
+    $('setupBody').innerHTML = '<div class="stgLine now"><span class="ic">'
+      + '<span class="spin"></span></span><span>正在检查…</span></div>';
+    $('setupActs').hidden = true;
+    timer(20, '等机器应答');
+    probe();
+  }
+
+  function setupClose() {
+    stg.open = false;
+    clearInterval(stg.tm); stg.tm = 0;
+    $('setup').className = 'card';
+    $('setupBody').innerHTML = '';
+    $('setupActs').hidden = true;
+    if (B && B.provCancel) B.provCancel();
+  }
+
+  function probe() {
+    if (!B || !B.provProbe) { fakeReady(); return; }
+    B.provProbe();
+  }
+
+  // 预览模式：假装手机够得着机器
+  function fakeReady() {
+    window.__mrProv({
+      stage: 'ready', name: 'MyRadio', fw: 'MyRadio 1.42.0', via: 'ap',
+      homeSsid: 'ChinaNet-3F2A', apSsid: AP.ssid,
+      nets: [{ s: 'TP-LINK_5G', r: -48, sec: 1 }, { s: 'ChinaNet-3F2A', r: -61, sec: 1 },
+             { s: 'Xiaomi_AX3000', r: -72, sec: 1 }, { s: '我的手机热点', r: -40, sec: 1 }]
+    });
+  }
+
+  function bars(r) {
+    var n = r >= -55 ? 4 : r >= -67 ? 3 : r >= -80 ? 2 : 1;
+    var h = [5, 8, 11, 13], s = '<span class="bars">';
+    for (var i = 0; i < 4; i++) s += '<i class="' + (i < n ? 'on' : '') + '" style="height:' + h[i] + 'px"></i>';
+    return s + '</span>';
+  }
+
+  /** 主表单：WiFi 名字 + 密码。家里路由器和手机热点在这儿是同一件事 */
+  function paintForm() {
+    var home = stg.homeSsid || '';
+    var hot = stg.lastHot || '';
+    $('setupBody').innerHTML =
+      '<div class="fld"><label>WiFi 名字</label>'
+      + '<div class="ipt"><input id="ssid" autocomplete="off" spellcheck="false"'
+      + ' placeholder="家里路由器，或者手机热点的名字" value="' + esc(home) + '"></div></div>'
+      + '<button class="lnk" id="btnPick">'
+      + (stg.listOpen ? '收起附近的网络' : '从手机附近选一个 ›') + '</button>'
+      + ' <button class="lnk hot" id="btnPhoneHot">'
+      + (hot ? '用上次的手机热点（' + esc(hot) + '）' : '用我手机的热点 ›') + '</button>'
+      + '<div id="netList"></div>'
+      + '<div class="fld"><label>WiFi 密码</label>'
+      + '<div class="ipt pw"><input id="pw" type="password" autocomplete="off" spellcheck="false"'
+      + ' placeholder="没密码就留空"><span class="eye" id="eye">显示</span></div></div>'
+      + '<div class="row2"><button id="btnPwGo" class="solid">让收音机连上</button></div>'
+      + '<div class="stgMsg">收音机只认 <b>2.4G</b> 的 WiFi，名字后面带 <em>5G</em> 的连不上。<br>'
+      + '想让它连<b>你手机的热点</b>：先去手机「设置 → 个人热点」打开，'
+      + '把热点名字和密码填在上面这两栏里 —— 接口是同一个，'
+      + '之后你在任何地方开热点，它都能连上。</div>';
+
+    var inp = $('ssid');
+    try { if (!home && !hot) inp.focus(); } catch (e) {}
+
+    $('eye').addEventListener('click', function () {
+      var p = $('pw');
+      p.type = p.type === 'password' ? 'text' : 'password';
+      $('eye').textContent = p.type === 'password' ? '显示' : '隐藏';
+    });
+
+    $('btnPick').addEventListener('click', function () { toggleList(); });
+
+    $('btnPhoneHot').addEventListener('click', function () {
+      stg.phoneHot = true;
+      // 1.42.0：读不到手机热点的 SSID（Android 没给公开接口），
+      //   所以这里不假装能读 —— 直接说清楚要填哪两样，并把焦点放到名字栏。
+      $('setupMsg').innerHTML = (stg.lastHot
+        ? '上次填过 <b>' + esc(stg.lastHot) + '</b>，密码如果没改就照原样。'
+        : '手机热点：先到「设置 → 个人热点」打开，'
+          + '那里能看到<b>热点名称</b>和<b>密码</b>，填到上面两栏。')
+        + '<br>手机一旦开热点，它自己就连不了家里的 WiFi —— 这期间 App 只能靠<b>远程</b>控机器，'
+        + '是正常的。';
+      var si = $('ssid');
+      if (si) { if (stg.lastHot) si.value = stg.lastHot; si.focus(); }
+    });
+
+    $('btnPwGo').addEventListener('click', submitWifi);
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { inp.blur(); var p = $('pw'); if (p) p.focus(); }
+    });
+    var pwEl = $('pw');
+    pwEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { pwEl.blur(); submitWifi(); }
+    });
+
+    if (stg.listOpen) paintNets();
+  }
+
+  /** 展开/收起「手机附近的网络」。只动列表那块，不重画表单（否则已打的字会丢） */
+  function toggleList() {
+    stg.listOpen = !stg.listOpen;
+    var bp = $('btnPick');
+    if (bp) bp.textContent = stg.listOpen ? '收起附近的网络' : '从手机附近选一个 ›';
+    var box = $('netList');
+    if (!box) return;
+    if (!stg.listOpen) { box.innerHTML = ''; return; }
+    if (stg.nets.length) { paintNets(); return; }
+    box.innerHTML = '<div class="stgMsg"><span class="spin"></span>正在让手机扫一下…</div>';
+    if (B && B.provRescan) B.provRescan(); else paintNets();
+  }
+
+  function paintNets() {
+    var box = $('netList');
+    if (!box) return;
+    var arr = (stg.nets || []).filter(function (x) { return x && x.s; });
+    if (!arr.length) {
+      box.innerHTML = '<div class="stgMsg">手机没扫到（可能没给权限）。不要紧，'
+        + '直接在上面的框里<b>手打 WiFi 名字</b> —— 路由器和手机热点背面都写着。</div>';
+      return;
+    }
+    arr.sort(function (a, b) { return b.r - a.r; });
+    var html = '<div class="wl">';
+    arr.forEach(function (x, i) {
+      html += '<div class="wi" data-i="' + i + '">' + bars(x.r)
+        + '<span class="nm">' + esc(x.s) + '</span>'
+        + '<span class="rs">' + x.r + 'dBm</span></div>';
+    });
+    box.innerHTML = html + '</div>';
+    Array.prototype.forEach.call(box.querySelectorAll('.wi'), function (el) {
+      el.addEventListener('click', function () {
+        var x = arr[+el.getAttribute('data-i')];
+        stg.phoneHot = false;
+        var inp = $('ssid');
+        if (inp) inp.value = x.s;
+        stg.listOpen = false;
+        var bp = $('btnPick');
+        if (bp) bp.textContent = '从手机附近选一个 ›';
+        box.innerHTML = '';
+        try { $('pw').focus(); } catch (e) {}
+      });
+    });
+  }
+
+  function submitWifi() {
+    var s = ($('ssid').value || '').trim();
+    if (!s) {
+      $('setupMsg').innerHTML = '还没填 WiFi 名字。点「从手机附近选一个」，或者手动打上去。';
+      try { $('ssid').focus(); } catch (e) {}
+      return;
+    }
+    var p = $('pw').value || '';
+    // 只有从「用我手机的热点」进来的才记进 lastHot，别把家里 WiFi 也记成热点
+    if (stg.phoneHot) {
+      stg.lastHot = s;
+      try { localStorage.setItem('mr.hot', s); } catch (e) {}
+    }
+    $('setupMsg').innerHTML = '正在把 <b>' + esc(s) + '</b> 告诉收音机，然后等它连上。<br>'
+      + '最多 30 秒。失败会自动退回原来的网络，机器不会失联。';
+    $('setupBody').innerHTML = '<div class="stgLine now"><span class="ic">'
+      + '<span class="spin"></span></span><span>正在连接 ' + esc(s) + ' …</span></div>';
+    $('setupActs').hidden = true;
+    timer(30, '等收音机连上');
+    if (!B || !B.provSend) return;
+    B.provSend(s, p);
+  }
+
+  function gameOver(msg) {
+    timerStop('没成功');
+    $('setupMsg').innerHTML = msg;
+    $('setupBody').innerHTML = '';
+    $('setupActs').hidden = false;
+  }
+
+  /** 够不着机器：把「缺哪一步」讲清楚，并给跳系统设置/重试两个出口 */
+  function needNet(o) {
+    timerStop('手机够不着机器');
+    stg.reach = false;
+    viaSet(false, '手机现在到不了收音机');
+    stg.nets = o.nets || [];
+    stg.homeSsid = o.homeSsid || '';
+    $('setupMsg').innerHTML =
+      '收音机还没上网时，手机上没有任何地址能到它 —— 这时只能借它自己发的热点。'
+      + '<br>请把手机 WiFi 连到 <b>' + esc(AP.ssid) + '</b>（密码 <b>' + esc(AP.pass) + '</b>），'
+      + '连上后回来点「再检查一次」。'
+      + '<br>连上那个热点时手机是<b>不能上网</b>的，配完网会自动回家里 WiFi。';
+    $('setupBody').innerHTML = '';
+    $('setupActs').hidden = false;
+  }
+
+  // 外壳回调：Provision.Cb → window.__mrProv
+  window.__mrProv = function (o) {
+    o = o || {};
+    var s = o.stage;
+
+    if (s === 'ready') {
+      timerStop('填一下 WiFi 名字和密码');
+      stg.reach = true;
+      stg.via = o.via || '';
+      stg.homeSsid = o.homeSsid || '';
+      stg.nets = o.nets || [];
+      viaSet(true, stg.via === 'ap'
+        ? '已经连着机器热点 ' + AP.ssid
+        : '机器就在这个网里（' + (o.base || o.ip || '') + '）');
+      $('setupMsg').innerHTML = '机器：<b>' + esc(o.name || 'MyRadio') + '</b>'
+        + (o.fw ? '（' + esc(o.fw) + '）' : '')
+        + (o.homeSsid ? '。<br>手机原来连的 <b>' + esc(o.homeSsid) + '</b> 已帮你填好，补个密码就行。' : '');
+      $('setupActs').hidden = true;
+      paintForm();
+      return;
+    }
+
+    if (s === 'need-net') {
+      needNet(o);
+      return;
+    }
+
+    if (s === 'nets') {
+      stg.nets = o.nets || [];
+      paintNets();
+      return;
+    }
+
+    if (s === 'locked') {
+      gameOver('收音机开着配对码保护。到机器屏幕上看看那 6 位数字，'
+        + '在机器的「设置」里关掉保护，或者用局域网那台手机先配一次。');
+      return;
+    }
+
+    if (s === 'sending') return;
+
+    if (s === 'ok') {
+      timerStop('配好了');
+      viaSet(true, '机器已连上 ' + (o.ssid || ''));
+      var ip = o.ip || '';
+      $('setupMsg').innerHTML = '连上了 <b>' + esc(o.ssid || '') + '</b>'
+        + (ip ? '，地址 <b>' + esc(ip) + '</b>' : '') + '。<br>'
+        + '现在手机会自己回到家里的 WiFi，然后进遥控界面。'
+        + '<br><b>以后不在同一个网也能控它</b>：远程控制是内置的，不用开任何开关。';
+      $('setupBody').innerHTML = '<div class="stgLine done"><span class="ic">✓</span>'
+        + '<span>配网完成 · ' + (ip ? esc(ip) : '已连接') + '</span></div>';
+      $('setupActs').hidden = true;
+      if (B && B.provFinish) setTimeout(function () { B.provFinish(ip); }, 1600);
+      return;
+    }
+
+    if (s === 'fail') {
+      gameOver(esc(o.msg || '没成功'));
+      return;
+    }
+
+    if (s === 'noperm') {
+      // 只是扫不到列表，不影响手输
+      if (stg.open && stg.reach) {
+        $('setupMsg').innerHTML = '没给「附近的 WiFi」权限，所以列不出网络 —— '
+          + '<b>手打 WiFi 名字</b>一样能配。';
+      }
+      return;
+    }
+  };
+
+  $('btnSetup').addEventListener('click', function () {
+    setupOpen();
+  });
+
+  $('btnSetupX').addEventListener('click', setupClose);
+  $('btnSetupRetry').addEventListener('click', function () {
+    viaSet(false, '正在重新检查…');
+    $('setupMsg').innerHTML = '';
+    $('setupBody').innerHTML = '<div class="stgLine now"><span class="ic">'
+      + '<span class="spin"></span></span><span>正在检查…</span></div>';
+    $('setupActs').hidden = true;
+    timer(15, '等机器应答');
+    probe();
+  });
+  $('btnGoWifi').addEventListener('click', function () {
+    if (B && B.openWifiSettings) B.openWifiSettings();
+    else $('setupMsg').innerHTML = '这个预览里打不开系统设置。真机上会跳到手机 WiFi 列表。';
+  });
+
+  // ---- 开跑 ----
+  if (B && B.apInfo) {
+    try {
+      var a = JSON.parse(B.apInfo() || '{}');
+      if (a.ssid) AP.ssid = a.ssid;
+      if (a.pass) AP.pass = a.pass;
+      if (a.ip) AP.ip = a.ip;
+    } catch (e) {}
+  }
+  try { stg.lastHot = localStorage.getItem('mr.hot') || ''; } catch (e) {}
+  paintRecent();
+  if (B && B.scan) {
+    scanning = true;
+    note('正在找…');
+    B.scan();
+  } else {
+    note('预览模式：没有壳，下面是假数据');
+    window.__mrDev('192.168.1.23', 'MyRadio-A1B2C3', 'MyRadio 1.42.0', 'mdns');
+    window.__mrDone(1);
+  }
+})();
+</script>
+
+<div id="tipbar" style="position:fixed;left:0;right:0;bottom:0;z-index:99;
+  background:#335d69;color:#fff;font:12px/1.5 -apple-system,'PingFang SC',sans-serif;
+  padding:8px 14px calc(8px + env(safe-area-inset-bottom));text-align:center;opacity:.94">
+  这是 <b>App 首页的可点预览</b>（不是真机）。点「一键配网」走一遍：<br>
+  连收音机热点 → 填/选 WiFi 名字 → 输密码 → 完成。选带 5G 的名字会演示失败那条路。
+</div>
+<style>body{padding-bottom:64px !important}</style>
+
+</body>
+</html>

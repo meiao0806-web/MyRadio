@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyRadio 网络收音机 · 使用说明书</title>
+<style>
+:root{
+  --bg:#fdf6ec; --card:#fffefb; --line:#ece2d2; --line2:#f3ece0;
+  --txt:#2c2a26; --sub:#7a7469; --dim:#a59c8d;
+  --acc:#0f766e; --acc2:#14897f; --accbg:#e7f3f0;
+  --amber:#b06b03; --amberbg:#fdf0d9;
+  --red:#c0392b;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--txt);
+  font:16px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",
+       "Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--acc);text-decoration:none;border-bottom:1px solid #bcdad5}
+a:hover{background:var(--accbg)}
+
+/* ---------- 布局 ---------- */
+.wrap{display:flex;align-items:flex-start;max-width:1180px;margin:0 auto;padding:0 28px}
+nav{
+  position:sticky;top:0;flex:0 0 210px;padding:34px 18px 40px 0;
+  max-height:100vh;overflow:auto;font-size:13.5px;line-height:1.5;
+}
+nav .vt{font-weight:800;letter-spacing:.5px;color:var(--acc);margin-bottom:14px;font-size:14px}
+nav a{
+  display:block;padding:6px 9px;border-radius:7px;color:var(--sub);
+  border:none;margin-bottom:1px;
+}
+nav a:hover{background:var(--accbg);color:var(--acc)}
+nav a.on{background:var(--acc);color:#fff;font-weight:600}
+main{flex:1 1 auto;min-width:0;padding-bottom:100px}
+
+/* ---------- 封面 ---------- */
+.cover{padding:52px 0 26px}
+.cover .kicker{color:var(--acc);font-weight:700;letter-spacing:3px;font-size:12px}
+.cover h1{
+  font-size:44px;line-height:1.2;margin:12px 0 6px;letter-spacing:-.5px;font-weight:800;
+}
+.cover .sub{color:var(--sub);font-size:17px;margin-bottom:28px}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.stat{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:14px 20px;min-width:120px;box-shadow:0 1px 0 #f6efe3;
+}
+.stat b{display:block;font-size:26px;color:var(--acc);line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{color:var(--dim);font-size:12.5px}
+.lede{
+  background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);
+  border-radius:10px;padding:16px 20px;margin-bottom:34px;font-size:15.5px;color:#4a463f;
+}
+
+/* ---------- 章节 ---------- */
+section{padding-top:16px;margin-bottom:46px;scroll-margin-top:18px}
+h2{
+  font-size:25px;margin:0 0 6px;font-weight:800;letter-spacing:-.3px;
+  display:flex;align-items:baseline;gap:12px;
+}
+h2 .no{
+  font:800 13px/1 var(--mono);color:#fff;background:var(--acc);
+  border-radius:6px;padding:6px 8px;letter-spacing:0;flex:0 0 auto;
+}
+h2+.lead{color:var(--sub);font-size:14.5px;margin:0 0 20px 0}
+h3{font-size:17.5px;margin:30px 0 10px;font-weight:700}
+h3 .no{font:700 12px/1 var(--mono);color:var(--acc);margin-right:8px}
+h4{font-size:15px;margin:20px 0 8px;font-weight:700;color:#46423b}
+p{margin:10px 0}
+
+/* ---------- 卡片 / 表格 ---------- */
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:4px 20px 16px;margin:16px 0;box-shadow:0 1px 0 #f7f1e6;
+}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line2);vertical-align:top}
+th{color:var(--dim);font-weight:600;font-size:12.5px;letter-spacing:.5px;text-transform:none}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fdfaf3}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13.5px}
+td b{color:var(--txt)}
+.kbd{
+  display:inline-block;font:600 13px/1.4 var(--mono);background:#f4eee2;
+  border:1px solid #e3d8c4;border-bottom-width:2px;border-radius:6px;padding:1px 7px;color:#514b41;
+}
+.tag{
+  display:inline-block;font-size:11.5px;font-weight:700;padding:2px 7px;border-radius:5px;
+  background:var(--accbg);color:var(--acc);vertical-align:1px;letter-spacing:.3px
+}
+.tag.am{background:var(--amberbg);color:var(--amber)}
+.tag.rd{background:#fbe9e7;color:var(--red)}
+
+/* ---------- 提示块 ---------- */
+.note{
+  background:var(--accbg);border-radius:10px;padding:13px 16px;margin:14px 0;
+  font-size:14.5px;color:#26504b;border:1px solid #d3e8e3;
+}
+.note b{color:var(--acc)}
+.warn{
+  background:var(--amberbg);border-radius:10px;padding:13px 16px;margin:14px 0;
+  font-size:14.5px;color:#5a3a08;border:1px solid #f2e0bd;
+}
+
+/* ---------- 屏幕示意图 ---------- */
+.figure{
+  background:#111;border-radius:14px;padding:14px;margin:18px 0;
+  border:1px solid #2a2a2a;box-shadow:0 10px 26px rgba(0,0,0,.14);
+}
+.figure svg{display:block;width:100%;height:auto;border-radius:6px}
+.figcap{color:var(--sub);font-size:12.5px;margin-top:9px;text-align:center}
+
+/* ---------- 遥控器 ---------- */
+.rc{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
+.rc svg{width:232px;height:auto;flex:0 0 auto}
+.rc .rcnote{flex:1 1 300px;min-width:250px}
+
+/* ---------- 代码 ---------- */
+pre{
+  background:#1f2421;color:#e6e2d8;border-radius:12px;padding:16px 18px;overflow:auto;
+  font:13.5px/1.75 var(--mono);margin:14px 0;
+}
+pre .c{color:#7f938a}
+code.inl{
+  font:13.5px var(--mono);background:#f4eee2;border-radius:5px;padding:1px 6px;color:#5a4a32;
+}
+
+/* ---------- 电台搜索 ---------- */
+.stool{
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 8px;
+  position:sticky;top:0;background:var(--bg);padding:12px 0 10px;z-index:5;
+}
+#q{
+  flex:1 1 240px;min-width:200px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;padding:11px 14px;font:15px inherit;color:var(--txt);outline:none;
+}
+#q:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--accbg)}
+.count{color:var(--dim);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.gchips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.gchips button{
+  border:1px solid var(--line);background:var(--card);color:var(--sub);
+  border-radius:8px;padding:5px 10px;font:13px/1.4 inherit;cursor:pointer;
+}
+.gchips button:hover{border-color:#cfe3df;color:var(--acc)}
+.gchips button.on{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+.gchips button small{opacity:.7;margin-left:4px;font-size:11px}
+.pager button{
+  border:1px solid #cfe3df;background:var(--accbg);color:var(--acc);
+  font:600 14px/1.4 inherit;padding:10px 22px;border-radius:9px;cursor:pointer;
+}
+.pager button:hover{background:var(--acc);border-color:var(--acc);color:#fff}
+#stTable{width:100%;max-width:900px;font-size:14px;table-layout:fixed}
+#stTable td{padding:7px 10px;line-height:1.5}
+#stTable .g{color:var(--dim);font-size:12.5px;white-space:nowrap}
+#stTable .nn{width:auto;overflow-wrap:anywhere}
+#stTable .id{font-family:var(--mono);font-size:12.5px;color:var(--sub);text-align:right;white-space:nowrap}
+.empty{padding:34px;text-align:center;color:var(--dim)}
+
+/* ---------- 页脚 ---------- */
+footer{
+  border-top:1px solid var(--line);margin-top:40px;padding:22px 0 40px;
+  color:var(--dim);font-size:13px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:900px){
+  .wrap{display:block;padding:0 18px}
+  nav{display:none}
+  .cover h1{font-size:32px}
+  .cover{padding-top:34px}
+}
+.print-only{display:none}
+@media print{
+  nav,.stool,.gchips,#q,#stTable,.pager{display:none!important}
+  .print-only{display:block;padding:12px 0;color:#444;font-size:10.5pt}
+  body{background:#fff;font-size:11pt}
+  .wrap{display:block;max-width:none;padding:0}
+  .card,.stat{box-shadow:none}
+  section{page-break-inside:auto;margin-bottom:22px}
+  h2{page-break-after:avoid}
+  pre{background:#f4f4f4;color:#222;border:1px solid #ddd}
+  .figure{background:#fff;border:1px solid #ccc;box-shadow:none}
+  #stTable tr{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="vt">目录</div>
+  <a href="#s1">1　一分钟上手</a>
+  <a href="#s2">2　屏幕怎么看</a>
+  <a href="#s3">3　怎么操作</a>
+  <a href="#s4">4　有哪些功能</a>
+  <a href="#s5">5　现有电台</a>
+  <a href="#s6">6　出问题了怎么办</a>
+  <a href="#s7">7　给维护的人</a>
+</nav>
+
+<main>
+<div class="cover">
+  <div class="kicker">使 用 说 明 书</div>
+  <h1>MyRadio 网络收音机</h1>
+  <div class="sub">一个旋钮，按一下就出声。所有设置都在手机里。</div>
+  <div class="stats">
+    <div class="stat"><b>__GCNT__</b><span>个标签</span></div>
+    <div class="stat"><b>__STCNT__</b><span>个电台</span></div>
+    <div class="stat"><b>1</b><span>个旋钮</span></div>
+    <div class="stat"><b>0</b><span>需要配网才能听</span></div>
+  </div>
+  <div class="lede">
+    这份说明书讲三件事：<b>怎么操作</b>（第 3 章）、<b>它有什么功能</b>（第 4 章）、
+    <b>里面有哪些台</b>（第 5 章，可搜索）。要改台表、重新编译、接线，看第 7 章。
+  </div>
+  <div class="note">
+    <b>1.19.0 新加了两件事。</b>一是<b>没电会说一句话</b>：电量低于 15% 念「电量低，请充电」，
+    快没电了念「没电了，关机」再断电（见 4.3）。二是<b>换手机不用再抄遥控码</b>：
+    烧了这版固件，任何一台装了 App 的手机打开就能看见「家里那台」，点一下就连上（见 3.8）。
+  </div>
+</div>
+
+<!-- ============ 1 ============ -->
+<section id="s1">
+  <h2><span class="no">1</span>一分钟上手</h2>
+  <p class="lead">只记三件事就够了。</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:38px">#</th><th>做什么</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><b>插电</b></td><td>屏幕亮起「收音机 正在启动…」，约两秒后自动出声</td></tr>
+        <tr><td class="num">2</td><td><b>转旋钮</b></td><td>换台。就这一个动作</td></tr>
+        <tr><td class="num">3</td><td><b>点一下旋钮</b></td><td>只把屏幕点亮，<b>不换台</b>。怕长辈误碰就跳台，所以点一下不给它派活</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>声音太大或太小：<b>按住旋钮不放，同时转</b>；或者按遥控器的音量键。按住转的时候，屏幕中间的大字会变成 <b>音量 45</b>，松手就变回台名。</p>
+  <div class="note">
+    不用配网、不用扫码、不用打开任何设置。出厂时已经设好家里 WiFi 的话，
+    插上电就会一直放，中间不需要碰它。
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section id="s2">
+  <h2><span class="no">2</span>屏幕怎么看</h2>
+  <p class="lead">320×170 横向屏，分四块：顶栏、台名、三个小框、FM 调谐盘。每一块都是给"扫一眼就懂"设计的。</p>
+
+  <div class="figure">
+    <svg viewBox="0 0 360 170" xmlns="http://www.w3.org/2000/svg" font-family="ui-monospace,Consolas,monospace">
+      <rect width="320" height="170" fill="#000" stroke="#3a3a3a" stroke-width="1"/>
+      <!-- 顶栏：时钟 + 星期 + 标签 + WiFi + 信号 + 音量 -->
+      <text x="5" y="15" fill="#cfcece" font-size="11">10:24</text>
+      <text x="44" y="15" fill="#cfcece" font-size="11">周六</text>
+      <rect x="74" y="1" width="32" height="20" fill="#b06b03"/>
+      <text x="78" y="15" fill="#e9e9e9" font-size="11">广播</text>
+      <rect x="196" y="1" width="32" height="20" fill="#004e61"/>
+      <text x="200" y="15" fill="#e9e9e9" font-size="11">WiFi</text>
+      <!-- 信号柱 -->
+      <rect x="238" y="12" width="4" height="4" fill="#01839d"/>
+      <rect x="244" y="9" width="4" height="7" fill="#01839d"/>
+      <rect x="250" y="6" width="4" height="10" fill="#01839d"/>
+      <rect x="256" y="3" width="4" height="13" fill="#202020"/>
+      <!-- 音量胶囊 -->
+      <rect x="263" y="1" width="52" height="20" fill="#202020"/>
+      <rect x="263" y="1" width="52" height="20" fill="none" stroke="#01839d"/>
+      <rect x="265" y="3" width="21" height="16" fill="#01839d"/>
+      <text x="297" y="15" fill="#cfcece" font-size="11">45</text>
+
+      <!-- 台名 -->
+      <text x="160" y="70" fill="#e9e9e9" font-size="32" text-anchor="middle" font-family="'Microsoft YaHei',sans-serif">北京新闻广播</text>
+
+      <!-- 三个小框：状态/台序 · 信号 · 音量 -->
+      <rect x="5" y="102" width="118" height="24" fill="#202020"/>
+      <circle cx="15" cy="114" r="4" fill="#01839d"/>
+      <text x="23" y="118" fill="#e9e9e9" font-size="12">播放中</text>
+      <text x="117" y="118" fill="#cfcece" font-size="11" text-anchor="end">1/10</text>
+
+      <rect x="128" y="102" width="86" height="24" fill="#202020"/>
+      <g fill="#01839d">
+        <rect x="136" y="117" width="5" height="4"/><rect x="143" y="114" width="5" height="7"/>
+        <rect x="150" y="111" width="5" height="10"/><rect x="157" y="108" width="5" height="13"/>
+      </g>
+      <text x="207" y="118" fill="#cfcece" font-size="11" text-anchor="end">-58</text>
+
+      <rect x="219" y="102" width="96" height="24" fill="#202020"/>
+      <text x="225" y="118" fill="#cfcece" font-size="11">音量</text>
+      <text x="309" y="118" fill="#e9e9e9" font-size="11" text-anchor="end">45</text>
+      <rect x="225" y="123" width="84" height="2" fill="#000"/>
+      <rect x="225" y="123" width="38" height="2" fill="#01839d"/>
+
+      <!-- 调谐盘（1.4.6：指针钉在正中、刻度与数字一起滚；数字在下、指针压最上层。示意停在 100.0） -->
+      <rect y="134" width="320" height="36" fill="#084d5a"/>
+      <g fill="#c8e8e8">
+        <rect x="0" y="166" width="1" height="3"/>
+        <rect x="5" y="166" width="1" height="3"/>
+        <rect x="15" y="166" width="1" height="3"/>
+        <rect x="20" y="166" width="1" height="3"/>
+        <rect x="25" y="166" width="1" height="3"/>
+        <rect x="30" y="166" width="1" height="3"/>
+        <rect x="40" y="166" width="1" height="3"/>
+        <rect x="45" y="166" width="1" height="3"/>
+        <rect x="50" y="166" width="1" height="3"/>
+        <rect x="55" y="166" width="1" height="3"/>
+        <rect x="65" y="166" width="1" height="3"/>
+        <rect x="70" y="166" width="1" height="3"/>
+        <rect x="75" y="166" width="1" height="3"/>
+        <rect x="80" y="166" width="1" height="3"/>
+        <rect x="90" y="166" width="1" height="3"/>
+        <rect x="95" y="166" width="1" height="3"/>
+        <rect x="100" y="166" width="1" height="3"/>
+        <rect x="105" y="166" width="1" height="3"/>
+        <rect x="115" y="166" width="1" height="3"/>
+        <rect x="120" y="166" width="1" height="3"/>
+        <rect x="125" y="166" width="1" height="3"/>
+        <rect x="130" y="166" width="1" height="3"/>
+        <rect x="140" y="166" width="1" height="3"/>
+        <rect x="145" y="166" width="1" height="3"/>
+        <rect x="150" y="166" width="1" height="3"/>
+        <rect x="155" y="166" width="1" height="3"/>
+        <rect x="165" y="166" width="1" height="3"/>
+        <rect x="170" y="166" width="1" height="3"/>
+        <rect x="175" y="166" width="1" height="3"/>
+        <rect x="180" y="166" width="1" height="3"/>
+        <rect x="190" y="166" width="1" height="3"/>
+        <rect x="195" y="166" width="1" height="3"/>
+        <rect x="200" y="166" width="1" height="3"/>
+        <rect x="205" y="166" width="1" height="3"/>
+        <rect x="215" y="166" width="1" height="3"/>
+        <rect x="220" y="166" width="1" height="3"/>
+        <rect x="225" y="166" width="1" height="3"/>
+        <rect x="230" y="166" width="1" height="3"/>
+        <rect x="240" y="166" width="1" height="3"/>
+        <rect x="245" y="166" width="1" height="3"/>
+        <rect x="250" y="166" width="1" height="3"/>
+        <rect x="255" y="166" width="1" height="3"/>
+        <rect x="265" y="166" width="1" height="3"/>
+        <rect x="270" y="166" width="1" height="3"/>
+        <rect x="275" y="166" width="1" height="3"/>
+        <rect x="280" y="166" width="1" height="3"/>
+        <rect x="290" y="166" width="1" height="3"/>
+        <rect x="295" y="166" width="1" height="3"/>
+        <rect x="300" y="166" width="1" height="3"/>
+        <rect x="305" y="166" width="1" height="3"/>
+        <rect x="315" y="166" width="1" height="3"/>
+      </g>
+      <g fill="#c8e8e8">
+        <rect x="35" y="164" width="1" height="6"/>
+        <rect x="85" y="164" width="1" height="6"/>
+        <rect x="135" y="164" width="1" height="6"/>
+        <rect x="185" y="164" width="1" height="6"/>
+        <rect x="235" y="164" width="1" height="6"/>
+        <rect x="285" y="164" width="1" height="6"/>
+      </g>
+      <g fill="#c8e8e8">
+        <rect x="10" y="160" width="1" height="10"/>
+        <rect x="110" y="160" width="1" height="10"/>
+        <rect x="210" y="160" width="1" height="10"/>
+        <rect x="310" y="160" width="1" height="10"/>
+      </g>
+      <g fill="#eef4f4">
+        <rect x="60" y="154" width="1" height="16"/>
+        <rect x="160" y="154" width="1" height="16"/>
+        <rect x="260" y="154" width="1" height="16"/>
+      </g>
+      <g fill="#eef4f4" font-size="11">
+        <text x="60" y="148" text-anchor="middle">98.0</text>
+        <text x="160" y="148" text-anchor="middle">100.0</text>
+        <text x="260" y="148" text-anchor="middle">102.0</text>
+      </g>
+      <!-- 指针最后画：2px 红竖线（只走蓝条）+ 尖朝下的实心倒三角（126..136，尖扎进蓝条 2px 免得露缝） -->
+      <rect x="159" y="134" width="2" height="36" fill="#b20a0a"/>
+      <polygon points="160,136 155,126 165,126" fill="#b20a0a"/>
+      <!-- 标注：放在屏幕右侧留白里，不压内容 -->
+      <g font-family="'Microsoft YaHei',sans-serif" font-size="9" font-weight="700">
+        <circle cx="340" cy="11" r="8" fill="#0f766e"/><text x="340" y="14" fill="#fff" text-anchor="middle" font-size="9">1</text>
+        <circle cx="340" cy="60" r="8" fill="#0f766e"/><text x="340" y="52" fill="#fff" text-anchor="middle" font-size="9">2</text>
+        <circle cx="340" cy="114" r="8" fill="#0f766e"/><text x="340" y="93" fill="#fff" text-anchor="middle" font-size="9">3</text>
+        <circle cx="340" cy="152" r="8" fill="#0f766e"/><text x="340" y="143" fill="#fff" text-anchor="middle" font-size="9">4</text>
+      </g>
+    </svg>
+    <div class="figcap">实际屏幕比例 320×170，这里是等比例缩小的示意</div>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:62px;white-space:nowrap">位置</th><th style="width:150px">内容</th><th>怎么读</th></tr></thead>
+      <tbody>
+        <tr><td class="num">①</td><td>时钟 + 星期</td><td>左上角。没对上时间就说明没联网（机器自己不设闹钟，只是看着方便）</td></tr>
+        <tr><td class="num">①</td><td><span class="kbd">广播</span></td><td><b>当前这台是什么内容</b>（广播 / 评书 / 历史…）。1.15.0 起它只是一句说明，不是「第几组」，也没有左右三角 —— 整台机器只有一张台表，没有组</td></tr>
+        <tr><td class="num">①</td><td><span class="tag">WiFi</span> / <span class="tag rd">断网</span></td><td>网络状态，断网时整块变红</td></tr>
+        <tr><td class="num">①</td><td>信号柱 4 格 / 音量胶囊</td><td>格数越多信号越好；胶囊填得越满声音越大（1.43.0 起没有静音态）</td></tr>
+<tr><td class="num">①</td><td>电量图标（<b>只有用电池的机器才有</b>）</td><td>WiFi 徽标右边那一小条，框里填得越满电越多，<b>低于 15% 变橙</b>，在充电时中间多一道竖条。<b>没接电池的机器这里什么都不显示</b> —— 上面那张示意图画的是插电的机器，所以没有这一格</td></tr>
+        <tr><td class="num">②</td><td>台名（32px 大字，屏上最大一块）</td><td>太长会截断成「…」，不会跑到屏幕外</td></tr>
+        <tr><td class="num">③</td><td>三个小框</td><td>左：状态圆点 + 状态字 + <b>第几台/共几台</b>；中：信号柱 + 信号值；右：音量数字 + 音量条</td></tr>
+        <tr><td class="num">④</td><td>调谐盘（青绿色那一条）</td><td>像一台真收音机的 FM 刻度盘：<b>红色竖线永远钉在屏幕正中</b>，头顶那个<b>尖朝下的实心小三角</b>指着当前频率；调到哪一台，整条刻度带着数字一起滑过来。数字是真实 FM 频率，每 2 MHz 一个。<br>
+          <span style="color:var(--sub);font-size:13px">台名里写了频率的台上真频率（FM89.1 指在 89.1、电台914 指在 91.4、1008 指在 100.8）；台名里没写的，才按「它在整张表里排第几台」平均摊到 87.5～108.0。想知道确切是第几台，看左边小框的 <b>3/10</b></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><span class="no">2.1</span>状态圆点的颜色</h3>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:60px">颜色</th><th style="width:130px">文字</th><th>意思</th><th>要做什么</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag">● 青蓝</span></td><td>播放中</td><td>正常出声</td><td>不用管</td></tr>
+        <tr><td><span class="tag am">● 琥珀</span></td><td>连接中</td><td>正在连台</td><td>等两三秒</td></tr>
+        <tr><td><span class="tag am">● 橙</span></td><td>缓冲中</td><td>信号不好，正在重连</td><td>等一会儿，会自动恢复</td></tr>
+        <tr><td><span class="tag">● 灰</span></td><td>已暂停</td><td>你在手机上按了暂停</td><td>再按一次继续</td></tr>
+        <tr><td><span class="tag rd">● 红</span></td><td>出错了 / 没有连上 WiFi</td><td>这个台连不上，或网断了</td><td>转一格换个台</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section id="s3">
+  <h2><span class="no">3</span>怎么操作</h2>
+  <p class="lead">整台机器只有三个操作源：机器上的旋钮、配套遥控器、手机 App。前两个负责日常听，App 负责所有设置和「出事了怎么办」。</p>
+
+  <h3><span class="no">3.1</span>旋钮：五个动作</h3>
+  <p>旋钮是机器上唯一的按键，也是长辈唯一必须学会的东西。</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:150px">手法</th><th style="width:170px">做什么</th><th>细节</th></tr></thead>
+      <tbody>
+        <tr><td><b>旋转</b></td><td>换台（换「节目」）</td><td><b>停手约 0.25 秒才真正切台</b>。转的时候台名变灰、游标变灰，那是"正在挑"；松手才切。有声书里<b>一格就是一部书</b>，不是一集（见 3.7）</td></tr>
+        <tr><td><b>点一下</b></td><td>不动，只点亮屏幕</td><td>1.15.0 起点一下<b>不换台也不换组</b>：旋钮转起来本来就在换台，点一下再换一次，长辈很容易一碰就跳台</td></tr>
+        <tr><td><b>按住 + 旋转</b></td><td>调音量</td><td>每格 ±2。<b>按住转的时候，屏幕中间那行大字会变成「音量 45」</b>，松手变回台名 —— 不用看小框，一眼就知道调到多少</td></tr>
+        <tr><td><b>双击</b></td><td><b>回到第一个台</b></td><td>1.46.55 新增。网络台回台表第 1 个（是书就从第 1 集起）；收音模式回搜到的第 1 个台。1.38.0 起双击仍然不静音（老人手上没准，连点两下把声音弄没了比误碰更糟）</td></tr>
+        <tr><td><b>长按 0.7 秒</b>（不到 3 秒）</td><td>重连当前台</td><td><b>最常用的一招</b>。没声音了先长按，多半就好了；松手才重连</td></tr>
+    <tr><td><b>长按 3 秒</b></td><td>开 / 关机器的 WiFi 热点</td><td>1.43.0 新增。热点<b>默认关着</b>；按满 3 秒亮起来（手机 WiFi 里能看到 <span class="kbd">我的收音机</span>，<b>没有密码</b>），再按 3 秒关掉</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>为什么旋转要等 0.25 秒：</b>网络台每换一个都要重新连接。如果转一格就播一格，
+    中途会听到「滋啦、滋啦」一串杂音。等手停下来再连，只有一个台的声音。
+  </div>
+
+  <div class="note">
+    <b>没网时（机器自己用天线收音）旋钮干的是另一件事：</b>不再是换台，而是<b>调频率</b> ——
+    长波、中波、调频、短波连成一个圈，转一格走 1 个台（调频是 0.1MHz），转快了一格走 10~30 个，见 3.9。
+    <br><br><b>1.46.59 起不再自动搜台：</b>开机就停在<b>上次听的频率</b>，有没有台靠自己转着听
+    （两个台之间能听到"沙沙"的底噪，说明机器是好的）。想让机器把整段扫一遍、列个台清单，
+    在手机 App「设置 → 收音机」里点<b>「重新搜台」</b>。
+  </div>
+
+  <h3><span class="no">3.2</span>遥控器：七个键</h3>
+  <div class="rc">
+    <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei',sans-serif">
+      <rect x="6" y="6" width="188" height="288" rx="22" fill="#2b2f33" stroke="#1a1d20"/>
+      <circle cx="100" cy="34" r="7" fill="#c0392b"/>
+      <rect x="24" y="62" width="152" height="44" rx="10" fill="#3a4045"/>
+      <text x="100" y="89" fill="#8f9a9f" font-size="10" text-anchor="middle">数字键区（用不到）</text>
+
+      <!-- 学习顺序编号 + 按键 -->
+      <g>
+        <rect x="40" y="132" width="52" height="34" rx="8" fill="#0f766e"/>
+        <text x="66" y="154" fill="#fff" font-size="12" text-anchor="middle">◀</text>
+        <circle cx="40" cy="132" r="9" fill="#fdf6ec"/><text x="40" y="136" fill="#b06b03" font-size="10" text-anchor="middle" font-weight="700">6</text>
+      </g>
+      <g>
+        <rect x="108" y="132" width="52" height="34" rx="8" fill="#0f766e"/>
+        <text x="134" y="154" fill="#fff" font-size="12" text-anchor="middle">▶</text>
+        <circle cx="160" cy="132" r="9" fill="#fdf6ec"/><text x="160" y="136" fill="#b06b03" font-size="10" text-anchor="middle" font-weight="700">7</text>
+      </g>
+      <text x="100" y="184" fill="#8f9a9f" font-size="10" text-anchor="middle">↑ 已无功能（键位留着）</text>
+
+      <g>
+        <rect x="40" y="196" width="52" height="30" rx="8" fill="#3a4045"/>
+        <text x="66" y="216" fill="#dfe6e8" font-size="12" text-anchor="middle">CH+</text>
+        <circle cx="40" cy="196" r="9" fill="#fdf6ec"/><text x="40" y="200" fill="#b06b03" font-size="10" text-anchor="middle" font-weight="700">1</text>
+      </g>
+      <g>
+        <rect x="108" y="196" width="52" height="30" rx="8" fill="#3a4045"/>
+        <text x="134" y="216" fill="#dfe6e8" font-size="12" text-anchor="middle">CH−</text>
+        <circle cx="160" cy="196" r="9" fill="#fdf6ec"/><text x="160" y="200" fill="#b06b03" font-size="10" text-anchor="middle" font-weight="700">2</text>
+      </g>
+      <g>
+        <rect x="40" y="232" width="52" height="30" rx="8" fill="#3a4045"/>
+        <text x="66" y="252" fill="#dfe6e8" font-size="11" text-anchor="middle">VOL+</text>
+        <circle cx="40" cy="232" r="9" fill="#fdf6ec"/><text x="40" y="236" fill="#b06b03" font-size="10" text-anchor="middle" font-weight="700">3</text>
+      </g>
+      <g>
+        <rect x="108" y="232" width="52" height="30" rx="8" fill="#3a4045"/>
+        <text x="134" y="252" fill="#dfe6e8" font-size="11" text-anchor="middle">VOL−</text>
+        <circle cx="160" cy="232" r="9" fill="#fdf6ec"/><text x="160" y="236" fill="#b06b03" font-size="10" text-anchor="middle" font-weight="700">4</text>
+      </g>
+      <g>
+        <rect x="58" y="266" width="84" height="22" rx="7" fill="#3a4045"/>
+        <text x="100" y="281" fill="#dfe6e8" font-size="10" text-anchor="middle">播放 / 暂停</text>
+        <circle cx="58" cy="266" r="9" fill="#fdf6ec"/><text x="58" y="270" fill="#b06b03" font-size="10" text-anchor="middle" font-weight="700">5</text>
+      </g>
+    </svg>
+    <div class="rcnote">
+      <p style="margin-top:0"><b>圆圈里的数字 = 学习模式要按的顺序</b>（见 3.3）。</p>
+      <table>
+        <tbody>
+          <tr><td><b>◀ / ▶</b></td><td><b>没有功能</b>（1.15.0 起不再分组）。键位还留着，以前学过的遥控器不用重学</td></tr>
+          <tr><td><b>CH+ / CH−</b></td><td>换台，和转旋钮一样</td></tr>
+          <tr><td><b>VOL+ / −</b></td><td>音量，每按一次 ±5</td></tr>
+          <tr><td><b>播放/暂停</b></td><td>暂停、继续</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3><span class="no">3.3</span>遥控器学习（换个遥控器也能用）</h3>
+  <p>不同遥控器的码值不一样。让机器认你的遥控器，只要一遍：</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:56px">步骤</th><th>做什么</th><th>屏幕上会看到</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><b>断电</b>，然后<b>按住旋钮不放</b>，再通电</td><td>台名位置变成 <b>按 下一台 (1/7)</b></td></tr>
+        <tr><td class="num">2</td><td>按遥控器上想用作「下一台」的键</td><td>变成 <b>(2/7)</b></td></tr>
+        <tr><td class="num">3</td><td>按顺序继续按完 7 个键（顺序见遥控器图上的圆圈数字）</td><td>数字一个个往上走</td></tr>
+        <tr><td class="num">4</td><td>第 7 个按完</td><td>恢复台名，<b>自动存进机器</b>，断电不丢</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="warn">
+    <b>不用学也能用。</b>固件内置了常见 NEC 遥控器的默认码（每个动作 2–3 个候选），
+    拿一个普通电视遥控器按一下，很可能直接就能用。<br>
+    顺序是固定的，上/下一组那两个键排在最后 —— 1.15.0 起它们没有功能，但键位保留，所以以前学过的遥控器不用重学，也不会串键。
+  </div>
+
+  <h3><span class="no">3.4</span>手机 App：五个页签</h3>
+  <p>App 不是要安装的软件，是机器自己带的一个网页 —— 连上就能开，还能「添加到主屏幕」当 App 用。
+  底下五个页签：<b>收音机 · 电台 · 记录 · 体检 · 设置</b>。</p>
+
+  <h4>第一次连（三步）</h4>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td class="num">1</td><td>手机 WiFi 里点一下 <span class="kbd">我的收音机</span> —— <b>没有密码，点一下就连上</b><br>
+          <span style="color:var(--sub);font-size:13.5px">连上后手机会<b>自己弹出配置页</b>；没弹就打开浏览器输 <span class="kbd">192.168.4.1</span></span></td></tr>
+        <tr><td class="num">2</td><td>浏览器打开 <span class="kbd">http://192.168.4.1</span><br>
+          <span style="color:var(--sub);font-size:13.5px">打开就自动配好了，<b>没有账号、没有登录</b></span></td></tr>
+        <tr><td class="num">3</td><td>「设置 → WiFi」→ 在空着的格子里填名字和密码（或者点右边的放大镜扫一下）。<b>机器不用重启</b>，
+          25 秒内连上就切过去；连不上会自动退回原来那个。之后手机连家里 WiFi，打开
+          <span class="kbd">http://myradio.local</span> 就行（不用记 IP）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>1.46.5 起，手机 App 输 4 位码就连上。</b>App 首页最上面有四格，填 <span class="kbd">1234</span> ——
+    输满第 4 位它自己去广播里问一句「谁是 1234」，机器答话就进遥控界面，<b>不用查 IP、也不靠 mDNS</b>。
+    出厂码就是 <span class="kbd">1234</span>；改过的会在收音机屏上显示一次。
+    这 4 位只用来「找到机器」，不是密码 —— 权限还是那台绑过的手机说了算（见 4.7）。
+  </div>
+
+  <div class="note">
+    热点不会关。哪天家里换了 WiFi、密码打错了，随时连回 <span class="kbd">192.168.4.1</span> 改回来。
+  </div>
+
+  <h4>① 收音机（主页）</h4>
+  <ul>
+    <li><b>顶部那块屏是机器屏幕的实时镜像。</b>不是拍照，是照机器的六个分区重画，每 0.9 秒同步一次：
+      台名、刻度位置、状态圆点、音量、信号、时钟都跟着机器动。在机器上转旋钮，手机上那块屏立刻跟着变
+      （转的时候台名变灰，和机器一模一样）。右上角一个绿点写「实时」，断开时变「断开」。</li>
+    <li>右上角一个按钮：<b>WiFi</b>（给收音机配网，见 3.11）。1.43.0 起<b>没有静音键</b>。
+      机器没连上网时 WiFi 那个会闪琥珀色并带一个红点。</li>
+    <li>屏幕下面只有一个按钮：<b>「控制收音机」</b>（1.41.0 起）。平时是收起的，
+      按钮上那行小字就是当前状态 —— <code>中国之声 · 音量 5 · 正在放</code>。
+      <b>点一下才展开</b>，里面才是「上一个台 / 暂停 / 下一个台」和音量条。
+      为什么收起来：老人日常只用机器上的旋钮，手机上这些键是给子女临时用的，
+      摊在首屏反而占掉半屏。展开状态会记住。</li>
+    <li><b>正在放有声书时</b>，展开后这三个键下面还会多出一条集控件：
+      <code>[ 上一集 ] 第 3 集 共 15 集 [ 下一集 ]</code>。两端都能点，到头上会绕回去；
+      <b>点中间那块弹出整本书的 15 集目录</b>，当前这行标着「上次听到这儿」，点哪一集就从哪儿放。
+      普通电台没有这条，那一整块是收起来的。</li>
+    <li>再下面是<b>音量条</b>。那个数字就是机器真正的音量，<b>两路分开记</b>：
+  听网络电台 / 有声书那一路是 <b>0~21</b>，听收音机（FM / 中波）那一路是 <b>0~63</b>。
+  最小都锁在 6 —— 往下拧到底就停在那里，不会变成"没声"。</li>
+    <li><b>机器在收音模式</b>（没网、听调频/中波）时：顶部显示 <code>调频 98.4</code> 而不是网络台名；
+      三个键里只剩<b>上一个台 / 下一个台</b>，中间那个<b>藏起来</b>（芯片没有「暂停」，静音也删了）；
+      换台是在<b>搜到的台</b>之间走（还没搜过台时，一次走 0.5MHz）。</li>
+    <li>最下面「今天听得怎么样」：今天听了多久、听了几次、上一次听的是哪个台，点「看记录」跳到记录页。</li>
+  </ul>
+
+  <h4>② 电台（加台、删台、改名、排序、分类）</h4>
+  <p>进来先是分类栏（横着一排，可左右滑），下面是这个分类的台。</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:150px">想做什么</th><th>怎么做</th></tr></thead>
+      <tbody>
+        <tr><td>换个台听</td><td><b>点一下台名</b></td></tr>
+        <tr><td>加台</td><td>右上角 <b>＋</b> → 填名字 + 台号 → 选分类 → 添加</td></tr>
+        <tr><td>改名 / 改地址</td><td>台名右边 <b>⋯</b> → 改名改地址</td></tr>
+        <tr><td>删台</td><td><b>⋯</b> → 删除（会再问一次）</td></tr>
+        <tr><td><b>调顺序</b></td><td><b>按住左边那两道杠上下拖</b>，松手就是新位置，一次存好</td></tr>
+        <tr><td>换分类</td><td><b>⋯</b> → 换分类：选已有分类，或者当场输入一个新分类名</td></tr>
+        <tr><td>管理分类</td><td>分类栏最右边 <b>分类管理</b> → 上移 / 下移 / 改名 / 删除</td></tr>
+        <tr><td><b>只看有问题的台</b></td><td>分类栏第二颗 <b>有问题 N</b> —— 只留「连不上 / 没声音」的台（3.10 有说明）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><b>台号怎么填</b>：只填纯数字就是蜻蜓台号（比如 <span class="kbd">339</span> 是北京新闻广播）；
+  填 <span class="kbd">http</span> 开头的完整地址就播任意网络流（mp3 / aac / m4a / flac / m3u8 都支持）。</p>
+  <div class="note">
+    拖动是真的拖：按住把手时那一行会轻轻浮起来跟着手指走，别的行让位，松手就落定。
+    排序和换分类都是<b>一次写盘</b>，中途拔电也不会写坏台表（先写临时文件，成功才换名）。
+  </div>
+
+  <h4>③ 记录（听了多久）</h4>
+  <ul>
+    <li>三张卡：<b>今天 / 近 7 天 / 累计</b>。</li>
+    <li>七根柱子：每天听了多久，今天那根是橙色。</li>
+    <li>下面是台列表，按最近听的排在前面：每个台听了多久、听了几次、多久以前听的。
+      <b>点一下直接切过去放。</b></li>
+  </ul>
+  <p>时长是机器自己算的，按「分类 + 台名」归属（台名改了会当成新台）。每 60 秒落一次盘，
+  所以断电最多丢半分钟。熄屏了但还在响也算在听 —— 老人听着睡着是常事。</p>
+
+  <h4>④ 体检（哪里不对，一键修）</h4>
+  <ul>
+    <li>一个 <b>0–100 的总分</b>，下面是 8 项检查：网络、信号、播放、存储空间、内存、时钟、台表、上次关机原因。</li>
+    <li>哪项不对就是黄 / 红，下面直接列出「点这里修」的按钮。</li>
+  </ul>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:230px">症状</th><th>点一下就好</th></tr></thead>
+      <tbody>
+        <tr><td>这个台不出声</td><td>重开这一个台</td></tr>
+        <tr><td>网络断了 / 连不上</td><td>重新连 WiFi</td></tr>
+        <tr><td>播放卡住、按了没反应</td><td>重启播放器</td></tr>
+        <tr><td>台表乱序、有读不出来的行</td><td>整理台表</td></tr>
+        <tr><td>记录太占地方（其实很小）</td><td>清空收听记录</td></tr>
+        <tr><td>实在不行</td><td>重启机器 / 恢复出厂台表 / 忘掉 WiFi / 恢复出厂</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>「恢复出厂台表」「忘掉 WiFi」「恢复出厂」会再问一次，因为做完就回不去了。
+  其余都是点了就做，做完页面自己刷新。</p>
+
+  <h4>⑤ 设置</h4>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:180px">这一栏</th><th>里面有什么</th></tr></thead>
+      <tbody>
+        <tr><td>这台收音机</td><td>固件版本、网络地址、已运行多久、重启收音机</td></tr>
+        <tr><td>屏幕与声音</td><td><b>音量 · 网络电台</b> / <b>音量 · 收音机</b>（原厂两套，分开记）、
+          亮度、没人动就熄屏（1/3/10 分/从不）、立即熄屏</td></tr>
+        <tr><td>收音机（调频 / 中波）</td><td>现在收的是哪个波段哪个频率、<b>静噪门限</b>
+          （原厂 <code>currentSquelch</code>，0 = 关）、<b>半步进</b>（原厂 <code>halfstep</code>，
+          0.05MHz 一格）、<b>搜到的台</b>（点开看清单，点一行就调过去）、<b>重新搜台</b></td></tr>
+        <tr><td>网络</td><td><b>WiFi</b>（一页管全部：机器记 4 组，已存的显示名字、空着的格子直接填名字+密码就存；
+          每格右边有放大镜，点了扫描附近网络，选中自动填进去；已存的可「连这个」或「忘掉」）、
+          重新连接网络、电量（每 20 秒跟机器对一次）、校准电量</td></tr>
+        <tr><td>不在家也能控制</td><td><b>远程控制（始终开启，没有开关）</b>、中转服务器、连没连上</td></tr>
+        <tr><td>我的机器</td><td>免配对时家里那几台机器会自己报到，点一下切过去</td></tr>
+        <tr><td>数据</td><td>恢复出厂台表、忘掉 WiFi、恢复出厂设置</td></tr>
+        <tr><td>出问题了？先看这里</td><td>最常见的几条问答</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>音量为什么分两套</b>：听网络电台时音量由 ESP32 的音频库控制，听调频/中波时由 SI4732
+    芯片寄存器控制，两边量纲不一样，原厂也是分开存。<br>
+    你只在听网络台时，调「收音机」那条不会有声音变化 —— 那是正常的，它等你切到收音时才生效。<br>
+    <b>滑条拖的时候不会一直发命令</b>（停手约 0.3 秒才发一条），拖动中机器上数字可能略滞后，松手就对齐。<br>
+    <b>搜到的台</b>是机器自己扫的，排序是「波段 + 信号从强到弱」。机器在<b>网络模式</b>时点它不会跳
+    （会提示先切到收音），因为那时候芯片没出声。
+  </div>
+
+  <h3><span class="no">3.5</span>用 App 给机器换 WiFi（换路由器、改密码）</h3>
+  <p>这是 App 最实用的一件事：<b>不用拆机、不用连 USB、不用重启</b>。</p>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td class="num">1</td><td>手机跟机器在同一个网络里（或连机器的 <span class="kbd">我的收音机</span> 热点），打开 App</td></tr>
+        <tr><td class="num">2</td><td>「设置 → WiFi」</td></tr>
+        <tr><td class="num">3</td><td>等它扫（两三秒），点要连的那个网络，输密码，点「连上它」</td></tr>
+        <tr><td class="num">4</td><td>界面显示「正在连接… 3s / 5s / …」，<b>最长 25 秒</b>：
+          成功 → 「连上了 · 192.168.x.x」；失败 → 「连不上 xxx，密码或信号有问题」，
+          并且机器<b>已经自动退回原来那个网络</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="warn">
+    <b>换到另一个网络后手机要做什么</b>：手机也连上那个新 WiFi，再打开 App。
+    地址变了的话，机器屏幕上会显示新地址；实在找不到就连 <span class="kbd">我的收音机</span> 热点，
+    打开 <span class="kbd">192.168.4.1</span>。<br>
+    另外：连着 <span class="kbd">我的收音机</span> 热点时手机是用不了流量的，改完记得切回家里的 WiFi。
+  </div>
+
+  <h3><span class="no">3.6</span>三种操作怎么分工</h3>
+  <div class="figure" style="background:var(--card);border:1px solid var(--line);box-shadow:none;padding:22px">
+    <svg viewBox="0 0 640 190" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei',sans-serif">
+      <rect x="0" y="8" width="640" height="76" rx="14" fill="#e7f3f0" stroke="#cfe3df"/>
+      <text x="22" y="38" fill="#0f766e" font-size="14" font-weight="700">日常：只用手上的</text>
+      <text x="22" y="63" fill="#26504b" font-size="13">旋钮 = 换台 / 按住转调音量　　·　　遥控器 = 换台 / 音量</text>
+      <text x="618" y="46" fill="#7d9b96" font-size="12" text-anchor="end">长辈只需要会这个</text>
+
+      <path d="M320 88 v14" stroke="#c9bfae" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+      <rect x="0" y="106" width="640" height="76" rx="14" fill="#fdf0d9" stroke="#f2e0bd"/>
+      <text x="22" y="136" fill="#b06b03" font-size="14" font-weight="700">偶尔：动一次设置</text>
+      <text x="22" y="161" fill="#5a3a08" font-size="13">App = 加台删台排顺序 / 打标签 / 换 WiFi / 看记录 / 体检修复</text>
+      <text x="618" y="144" fill="#b39264" font-size="12" text-anchor="end">家人帮忙弄一次就行</text>
+    </svg>
+  </div>
+  <p>机器和 App 是同一台：在机器上转旋钮换台，手机上那块屏会自己跟过去；
+  在手机上点「下一台」，机器屏幕立刻跟着变。</p>
+</section>
+
+  <h3><span class="no">3.7</span>听有声书：一部书就是一个台</h3>
+  <p>台表里带了 <b>33 部书、共 __EPCNT__ 集</b>，<b>均匀穿插在电台之间</b>（大约每 6 台一本，不会全堆在最后）。<b>一部书在台表里只占一个台</b>，
+  台名就是书名，集藏在书里面。</p>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td style="width:110px"><b>军事历史</b></td><td>抗战韩疯子（80 集）、二战战争史（20 集）</td></tr>
+        <tr><td><b>历史</b></td><td>精神的力量（83）、宇宙真相大探索（20）、中国绝密档案（16）、上下五千年（235）、每晚一个历史故事（207）</td></tr>
+        <tr><td><b>科普</b></td><td>原来是这样？！（488）</td></tr>
+        <tr><td><b>评书</b></td><td>官场现形记（1167）、乱世枭雄（200）、赵亮：白眉大侠外传（101）、春晚相声小品大全（100）、三国演义（145）、民国奇案之枪毙刘汉臣（17）</td></tr>
+        <tr><td><b>悬疑</b></td><td>鬼吹灯（100）、第九特区（60）、如临大敌（44）</td></tr>
+        <tr><td><b>都市</b></td><td>战神出狱（200）、为民无悔（100）、首席医官（80）、一路高升（39）</td></tr>
+        <tr><td><b>广播剧</b></td><td>红楼梦（15）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <b>为什么集数差这么多？</b>看音源放不放开。云听（radio.cn）、蜻蜓 FM 的书基本整档可放；
+    喜马的书要分两种 —— <b>开了 RSS 输出的专辑</b>能整本拿到（官场现形记 1167 集
+    都是这样抓的，每一条地址作者都当场试拉过 1KB，确认能响），
+    <b>没开 RSS 的</b>只放开前面几十集；<b>付费专辑</b>只放开最前面一小段（《三国演义》百名CV 版 389 集，免费的只有 22 集），后面是付费的（《战神出狱》整张 1756 集，只能拿到 200 集）。
+    <b>播到集表最后一集会回到第 1 集</b>，不会跳到别的台，也不会卡住。
+  </div>
+  <div class="note">
+    <b>旋钮是「一部书一格」，不是「一集一格」。</b>转到《三国演义》就播；再转一格直接是下一台，不用转上百下。<br>
+    <b>一集播完自己接下一集</b>，一直听下去，手不用管。<br>
+    <b>最后一集播完从头再来</b>（回到第 1 集，不会跳到别的台）。<br>
+    <b>不是书的点播节目也一样</b>（蜻蜓节目页、单集 mp3/m4a）：播完<b>回到第 1 集重放本台</b>，
+    绝不自己换台；换不换由你转旋钮决定。<br>
+    <b>选到这个台，从上次听到的那集接着放</b>：今天《三国演义》听到第 6 集，明天再转回《三国演义》还是从第 6 集开始，断电也不丢；
+    《官场现形记》记它自己的，两部书互不影响。只记「第几集」，不记「这一集听到第几分钟」。<br>
+    <b>屏上看得见听到哪儿</b>：书名下面多一行 <code>第3集 黄帝占蚩尤</code>，左下角那个框显示 <code>3/235</code>。
+    集名整本都一样的（如三国演义）就只显示 <code>第3集</code>；集数上千的（官场现形记）框里只留当前集号，
+    因为 <code>1167/1167</code> 会顶到旁边的状态词。<br>
+    <b>手机上还能直接选集</b>：播放键下面一条 <code>[上一集] 第 3 集 共 83 集 [下一集]</code>，
+    点中间弹出整本书的目录，<b>点哪一集就从哪儿放</b>。
+    打开目录本身<b>不打断</b>正在听的东西，点完一集目录也不关（可以接着往下挑）。<br>
+    <b>「下次从第几集开始」</b>：电台页点这部书的 <code>⋯</code> → 「下次从第几集开始」，
+    填好按「设好」。设的时候<b>机器什么都不做</b>（不跳台、不起播、不动进度）；
+    等你把它调到这个台，才从设的那一集开始放，放过一次就恢复「接着上次听」。<br>
+    <b>目录长了会分页</b>：弹层顶上是 <code>上一段 · 第 96–190 集 · 共 1167 集 · 下一段</code>，
+    按「下一段 / 上一段」翻；上次听到第 800 集，打开就直接翻到那一页，不用从第 1 集翻起。
+  </div>
+
+  <h3><span class="no">3.8</span>不在家也能控制（异地遥控）</h3>
+  <p>这台机器会<b>主动往外连</b>一台公共中转服务器（是它连出去，不是等人连进来），
+  手机在外地也连同一台服务器，两边在服务器上碰头 —— 所以<b>家里不用开端口、不用公网 IP、不用装任何东西</b>。</p>
+
+  <div class="note">
+    <b>1.19.0 起不用抄遥控码了。</b>烧了这版固件，机器会自己到服务器上报个到，
+    手机打开 App 就在<b>设置 → 我的机器</b>里看见它：短码、固件版本、电量、在不在线。
+    <b>点一下就切过去，不用输任何码</b>；换一台手机、App 升级重装都一样
+    （码是从机器自己的设备号算出来的，不是当初配对时记下来的）。<br>
+    想回到老做法（手输遥控码）：设置 → 我的机器 → 把<b>「免配对」</b>关掉。
+    机器立刻不再上报，只认屏幕上那串随机码，这时才要在「手动输入遥控码」里填一次。
+  </div>
+
+  <h4>不用做任何准备（1.42.0 起）</h4>
+  <div class="note">
+    远程控制是<b>内置且恒开</b>的：机器一连上网就自己挂到中转服务器，App 打开也自己连。
+    设置 → 不在家也能控制 那一行只是<b>状态</b>（连没连上服务器），不是开关 —— 它没有「关」这个选项：
+    关掉之后人在外地就再也没有别的路能把它打开，一次误触等于把机器锁死。
+    遥控码也不用抄（1.19.0 起码是机器自己算的，App 自动带上）。
+  </div>
+
+  <h4>在外地怎么用</h4>
+  <ul>
+    <li>把随包的 <span class="kbd">MyRadio-远程版.html</span> 存到手机里（微信收藏 / 文件 / 发给自己都行），
+      或者挂到任意网页空间上。</li>
+    <li>打开它 —— 第一次会弹一个小窗，<b>输收音机那 4 位连接码</b>（出厂 <span class="kbd">1234</span>），
+      剩下的机器自己办：它本来每 30 秒就在往服务器上报到，报到里带着这个码，
+      手机一筛就知道是哪台，<b>直接连上</b>。
+      <ul style="margin:6px 0 0;padding-left:18px">
+        <li>家里有好几台、都还是出厂 1234：会把它们列出来（各自标着码），点一台；</li>
+        <li>提示「没找到用 1234 的机器」：确认码没打错，或者那台机器固件比 1.46.7 老
+          （老固件不报码 —— 用折叠里的 12 位遥控码，或直接在列表里点一台）。</li>
+      </ul></li>
+    <li>连上之后<b>和在家时一样用</b>：中间那块屏、调台、音量、亮度、暂停、体检都在。
+      只两处不一样：顶部那行写「标签 · 广播 · 外地控制」，同步从 0.9 秒变成 1.6 秒。</li>
+  </ul>
+
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:50%">在外地能做</th><th>做不到</th></tr></thead>
+      <tbody>
+        <tr><td>换台、重连当前台（1.43.0 起没有暂停和静音）</td><td>换 WiFi（要同一个网里改；或者<b>长按旋钮 3 秒</b>开热点，连上去改）</td></tr>
+        <tr><td>调音量、调屏幕亮度、改熄屏时间</td><td>加台 / 删台 / 排顺序（那是写台表，只在家里的网里改）</td></tr>
+        <tr><td>看台表、体检并一键修</td><td>开关机、远程升级固件</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    <b>4 位码不是密码的全部。</b>它只是「找到哪台机器」的编号 —— 出厂都是 <span class="kbd">1234</span>，
+    谁输 1234 都能连上同一台（和在家输码一样）。真想收紧：把码改成别的
+    （App → 设置 → 不在家也能控制 → <b>连接码</b> → 改成 5678 之类，改完机器屏幕上显示一次，已经在用的手机会自动跟着换），或者关掉「免配对」让机器只认 12 位遥控码。<br>
+    换 12 位遥控码：设置 → 不在家也能控制 → 遥控码 → 「换一个密码」，换完旧的那串立刻作废，
+    外地的手机要重新填一次。
+  </div>
+  <div class="note">
+    用的是公共服务器 <span class="kbd">broker-cn.emqx.io</span>，它只替你把命令传过去；
+    台表、收听记录、设置全都存在机器上。<b>机器关机 / 家里断网，远程就连不上</b>，这是正常的。
+  </div>
+
+  <h3><span class="no">3.9</span>没网了：转旋钮收广播（长波 / 中波 / 调频 / 短波）</h3>
+  <p>WiFi 断了超过 20 秒、或者家里根本没装网，机器会<b>自己去用天线收台</b>（机内那颗 SI4732 芯片），
+  不花流量、也不看路由器脸色。</p>
+
+  <p><b>这里没有「波段开关」。</b>四个波段连成一个圈，只用一个旋钮：</p>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td style="width:150px">长波</td><td>153 ~ 279 kHz</td></tr>
+        <tr><td>中波</td><td>531 ~ 1602 kHz</td></tr>
+        <tr><td>调频</td><td>64.0 ~ 108.0 MHz</td></tr>
+        <tr><td>短波</td><td>2.3 ~ 26.1 MHz → <b>绕回长波</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul>
+    <li><b>在调频最低端（64.0）再往下转一格，直接落到中波最高端（1602）</b>：断网后最常听的就是这两个，
+      挨在一起，一下子就能到，不用跨过 24 兆赫的短波。</li>
+    <li>波段之间的空白频率（280~530、1610~2290…）<b>不占格子</b>，转过去就是下一个波段，不会卡在没台的地方。</li>
+  </ul>
+
+  <h4>转多快，就走多远（这一版特意调粗了，不用一格一格挪）</h4>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:190px">手法</th><th style="width:110px">一格走几个台</th><th>中波 / 调频 / 短波</th></tr></thead>
+      <tbody>
+        <tr><td>慢慢转（手停下来再转的那一下）</td><td>1 个</td><td>9 kHz / 0.1 MHz / 5 kHz</td></tr>
+        <tr><td>正常速度</td><td>5 个</td><td>45 kHz / 0.5 MHz / 25 kHz</td></tr>
+        <tr><td>转得快</td><td>10 个</td><td>90 kHz / 1 MHz / 50 kHz</td></tr>
+        <tr><td>甩起来</td><td>30 个</td><td>270 kHz / 3 MHz / 150 kHz</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    中波整段 531~1602 一共 119 个台：慢慢转要 6 圈，<b>正常速度 1 圈多就转完了</b>。
+    嫌太粗或太细：改 <span class="kbd">config.h</span> 里的 <span class="kbd">RADIO_MW_STEP</span>
+    （填 27 就是一格三个台）。
+  </div>
+
+  <h4>屏幕上看到什么</h4>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td style="width:110px">中间大字</td><td><code>FM 98.0</code> / <code>中波 999</code> / <code>长波 198</code> / <code>短波 6055</code></td></tr>
+        <tr><td>左下小框</td><td>状态词变成「调频收音 / 中波收音 / 长波收音 / 短波收音」，圆点是青蓝色</td></tr>
+        <tr><td>调谐盘</td><td>刻度换成这个波段的频道栅格（中波 9kHz 一格、短波 5kHz 一格、调频 0.1MHz 一格）</td></tr>
+        <tr><td>顶栏信号柱</td><td>换成本机的场强（不是 WiFi 信号）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>收音模式下，旋钮的其他四个手势</h4>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td style="width:150px"><b>按住 + 旋转</b></td><td>还是调音量（和网络模式一样），屏幕中间同样显示「音量 45」</td></tr>
+        <tr><td><b>双击</b></td><td><b>回到第一个电台</b>（1.46.55 新增；台表按信号排序，第一个就是最强的那个）</td></tr>
+        <tr><td><b>点一下</b></td><td>不动（只点亮屏幕）</td></tr>
+        <tr><td><b>长按</b></td><td>不动（收音没有「重连」这回事）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    中波/短波靠机内磁棒和拉杆天线，<b>靠窗、离充电器远一点</b>会明显好收；调频和平时一样。
+    WiFi 一回来，机器自动停止收音、接着放原来的网络台，不用你做任何事。
+  </div>
+
+  <h3><span class="no">3.10</span>台到底能不能听：App 的「台的健康」</h3>
+  <p>台表里 <b>__STCNT__ 个台</b>，屏上永远看着「播放中」—— 可有的台其实早就废了：地址死了，
+  或者连上了、数据也在流，但解出来全是静音。机器现在会给每一台记一份实测结果，App 里一眼能看见。</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:200px">机器看到的</th><th style="width:100px">记成</th><th>App 里长什么样</th></tr></thead>
+      <tbody>
+        <tr><td>解出来的声音有电平</td><td><b>正常</b></td><td>不显示（体检页计入「出过声」）</td></tr>
+        <tr><td>连 20 秒都没数据</td><td><b>连不上</b></td><td>红字「连不上 N 次」</td></tr>
+        <tr><td>数据在流，12 秒一声不出</td><td><b>没声音</b></td><td>琥珀色「没声音」</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    判断用的是<b>音量之前的解码输出</b>，所以静音、音量拧到 0 都不影响结论 ——
+    「放着但没声音」这种最坑的情况才拦得住。
+  </div>
+  <p><b>在哪看</b></p>
+  <ul>
+    <li><b>电台页</b>：分类栏第二颗就是 <b>有问题 N</b>（红字）。点它只剩有问题的台，
+      每行右边跟着原因；<b>点原因</b>看详情：失败过几次、上次正常出声是哪天。</li>
+    <li><b>主页</b>：屏幕下面多了一条细电平，右边写着「在出声 / 没声音 / 连不上」。
+      屏上说「播放中」而这里是「没声音」，就是解码出问题了。</li>
+    <li><b>体检页</b>：「台的健康」四格 —— 出过声 / 连不上 / 没声音 / 没测过。</li>
+  </ul>
+  <p><b>没测过的怎么办</b>：出厂时全是「没测过」（灰的）。体检页点 <b>挨个试一遍</b>：</p>
+  <ul>
+    <li>好的台 2 秒就过（听见声就判完）</li>
+    <li>坏的台要等 13 秒才判死</li>
+    <li>试完自动回到你原来在听的那个台</li>
+  </ul>
+  <p>也可以只试「没测过的」，或者只重试「有问题的」；中途「停下来」随时停。
+  试的时候会听见断断续续的片段，嫌吵就先把音量拧小 —— <b>音量不影响判断</b>。</p>
+  <div class="note">
+    结果存在机器里（<code>/health.bin</code>），按<b>地址</b>记，不是按第几台。
+    所以拖排序、加台删台都不会把「这台坏过」记到别人头上，断电重开也还在。
+  </div>
+
+<!-- ============ 4 ============ -->
+<section id="s4">
+  <h3><span class="no">3.11</span>装成 App 放手机桌面上（可选）</h3>
+  <p>不想每次都输网址，就装随包给的 <span class="kbd">MyRadio-1.21.0.apk</span>。装完桌面多一个
+    「MyRadio」图标。<b>1.42.0 起，配网就是一张表：填 WiFi 名字 + 密码，点一下「让收音机连上」。</b>
+    App 不再替你切网络、也不用先连机器的热点 —— 家里路由器和手机热点在这里是同一件事。</p>
+
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td class="num">1</td><td>打开 App，点 <b>「设置 WiFi」</b>。App 先看一眼手机够不够得着机器：
+          够得着（同一个网，或你已经连着机器热点）就直接出表单，手机原来连的 WiFi
+          <b>名字已经帮你填好</b>，补个密码就行；够不着会告诉你先把手机连到
+          <span class="kbd">我的收音机</span> 热点（<b>没有密码</b>，点一下就连），
+          连上回来点「再检查一次」</td></tr>
+        <tr><td class="num">2</td><td>想换一个 WiFi：点「从手机附近选一个」，列出<b>手机</b>扫到的网络，点一下就填进去；
+          一个都没扫到也不要紧，直接在框里<b>手打 WiFi 名字</b>；想让它连<b>你手机的热点</b>，
+          先到「设置 → 个人热点」打开，把热点名字和密码填进同一张表</td></tr>
+        <tr><td class="num">3</td><td>输密码（没密码就留空）→ 点 <b>「让收音机连上」</b>，最多等 30 秒。
+          成功会显示「配网完成 · 192.168.x.x」，手机自动回到原来的 WiFi 并直接进遥控界面；
+          失败会告诉你原因（密码错 / 选到 5G / 信号弱），并且<b>机器已经自动退回原来的网络</b>，
+          点「再检查一次」重来就行</td></tr>
+        <tr><td class="num">4</td><td>配好之后：同一个 WiFi 下的机器会自动列出来，点名字就进；
+          想换机器 / 重配 <b>按手机返回键</b>；人在外地打开 App 自动走远程，不用点任何按钮</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <b>只认 2.4G 的 WiFi</b>：名字后面带 <span class="kbd">5G</span> 的连不上。<br>
+    机器的热点 <span class="kbd">我的收音机</span>（<b>没有密码</b>）
+    <b>只在手机够不着它的时候才用</b>：平时不用管，也不用连它。<br>
+    自动找不到机器时，首页展开「找不到？手动输地址」填 <span class="kbd">192.168.1.23</span> 这种。
+    装的时候手机可能提示「未知来源」—— 因为是自己签的包，允许一次即可（Android 6.0 及以上都能装）。
+  </div>
+
+  <h2><span class="no">4</span>有哪些功能</h2>
+  <p class="lead">按"长辈实际会遇到的场景"排的，不是按技术模块排的。</p>
+
+  <h3><span class="no">4.1</span>播放</h3>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td style="width:150px"><b>全国电台</b></td><td>出厂内置 <b>__STCNT__ 个台</b>（__GCNT__ 个标签）：九个中央台（央广 / 国广，HLS 直链）+ 全国各省市台（蜻蜓公开数据），不是手抄的</td></tr>
+        <tr><td><b>任意网络流</b></td><td>App 里填 <span class="kbd">http://</span> 开头的地址就能播：MP3 / AAC / M4A / FLAC / OGG / OPUS / WAV，以及 M3U / PLS / ASX / M3U8 播放列表</td></tr>
+        <tr><td><b>开机自动播放</b></td><td>上电两秒内出声，不需要按任何键。上次听到哪个台，开机接着放</td></tr>
+        <tr><td><b>暂停不断线</b></td><td>在手机 App 上按暂停，再按继续，不用重新连接（机器上「点一下」1.15.0 起什么都不做）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><span class="no">4.2</span>自己会恢复（这条对长辈最重要）</h3>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:230px">情况</th><th>机器怎么做</th><th style="width:130px">老人要做什么</th></tr></thead>
+      <tbody>
+        <tr><td>这个台连不上</td><td>先垫一段「沙沙」并隔 30 秒重试；<b>两回都不行</b>就判它「现在不播」，换到下一个能听的台（1.46.6）</td><td>什么都不用做</td></tr>
+        <tr><td>听着听着断了</td><td>2 秒 → 4 秒 → 8 秒，最多重连 5 次</td><td>等一下，通常会回来</td></tr>
+        <tr><td>重连 5 次还不行</td><td>自动跳到下一台</td><td>什么都不用做</td></tr>
+        <tr><td>家里 WiFi 断了又回来</td><td>自动重新开始播当前台</td><td>什么都不用做</td></tr>
+        <tr><td>屏幕黑了</td><td>——</td><td>碰一下旋钮就亮</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h4>有的台凌晨不播 —— 机器自己认得（1.46.6）</h4>
+  <p>不少地方台有播出时间：晚上 12 点停播、早上 5 点半才开。机器不看时间表，只看有没有内容：</p>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td style="width:210px">怎么判定</td><td><b>连着两回连不上</b>，或者连上了但<b>连着 8 秒一个声音都没有</b> → 判它「现在不播」</td></tr>
+        <tr><td>判定之后</td><td>旋钮 / 遥控器 / 手机上的上一台下一台<b>都会跳过它</b>，转不到</td></tr>
+        <tr><td>屏上提示</td><td>右下角小字「<b>跳过 3</b>」—— 这一会儿藏了几台（不然会以为台被删了）</td></tr>
+        <tr><td>什么时候回来</td><td>隔 <b>15 分钟</b>自动放回列表试一次，还不行就 30 → 45 → 60 分钟（最多一小时）。台一开播，第一次转到它就恢复</td></tr>
+        <tr><td>开机时</td><td>上次听的正是停播的台 → 自动落到最近一个能听的台，不会一开机就是一片沙沙</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">想立刻把藏起来的台全放回来：手机浏览器打开
+    <span class="kbd">http://机器的IP/api/offair?clear=1</span>（方法用 POST）；
+    先看 <span class="kbd">/api/offair</span> 可以知道现在藏了哪几台。自检误判了就这么办。</div>
+
+  <h3><span class="no">4.3</span>省电与电量</h3>
+  <h4>屏幕省电</h4>
+  <table>
+    <tbody>
+      <tr><td style="width:180px">60 秒没有操作</td><td>屏幕变暗（不是黑，还看得见）</td></tr>
+      <tr><td>3 分钟没有操作</td><td>熄屏</td></tr>
+      <tr><td>一碰旋钮 / 按遥控器</td><td>立刻亮回最亮</td></tr>
+    </tbody>
+  </table>
+  <p>听收音机时不用管屏幕，声音一直正常。</p>
+
+  <h4>电池（用电池供电的机器才有）</h4>
+  <p>屏幕顶栏有一个电池图标，框里那条就是电量。手机 App 的「设置 → 我的机器」里、
+  外地遥控时顶部那行，也能看到百分比 —— 人在外地也知道家里那台还有多少电。</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:200px">什么时候</th><th>机器怎么做</th><th style="width:130px">你要做什么</th></tr></thead>
+      <tbody>
+        <tr><td>电量低于 <b>15%</b></td><td>念一句「<b>电量低，请充电</b>」，电池图标变橙；还没充就一直每 10 分钟再念一次</td><td>找充电器</td></tr>
+        <tr><td>开路电压掉到 <b>3550mV</b> 以下<b>连续 90 秒</b>（电池大约还剩 10%）</td><td>念「<b>没电了，关机</b>」，念完自己断电</td><td>插上充电器</td></tr>
+        <tr><td>正在充电</td><td>电池图标里多一道竖条；不会再念「电量低」，关机倒计时也取消。<b>电量按每 48 秒 1% 往上走</b>（插着电时电压被充电电流顶高 300~500mV，拿它换算会直接跳到 100%）</td><td>——</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>几个「不会误伤」的设计：</p>
+  <ul>
+    <li><b>插上充电器就不关了</b>：只要电压在往上走，关机倒计时立刻取消，不会念完就断。</li>
+    <li><b>充电和放电分开算</b>（1.46.64）：插上充电器，电池端会被顶高约 <b>580mV</b>，拔掉又掉回来；放音时终端又会掉 270mV。这不是电池在充放，是电流在电池内阻上的压降。所以机器<b>不拿带载电压当电量</b>：放电时关功放 0.18 秒量一次开路电压再查表；充电时不看电压（整段都钉在 4.2V），改成从插电那一刻的电量每 48 秒 +1%。</li><li><b>插拔靠「电压台阶」认，不靠固定电压</b>（1.46.64）：插上会跳一个大台阶、拔掉会掉一个大台阶，机器就看这个台阶（门槛 170mV），所以换什么电池都不用重调。再也不会出现「插上瞬间 77%、拔掉一会儿 3%」那种跟着电压乱跳的数。</li>
+    <li><b>显示 0% 之前要复核</b>（1.46.55）：真要把电量报到 0，机器会先把功放关掉 0.4 秒量一次空载电压；只要空载还高于 3550mV，就说明只是被负载压低了，最少显示 1%，不会假报 0%。</li>
+    <li><b>开机 5 分钟内绝不自动关机</b>：车上 / 电瓶车取电，打火瞬间电压会塌一下，不能刚开机就把人关掉。</li>
+    <li><b>没接电池的机器什么都不显示</b>：从来没接过电池的板子，电量那一格不出现，也不会乱念。</li>
+    <li><b>断电是真断电</b>（不是待机），按一下电源键就回来；断电前一定先把那句话念完。</li>
+    <li>播报会<b>临时把音量提上去</b>再还原 —— 怕老人正听着小音量的评书，一句「没电了」听不见。</li>
+  </ul>
+
+  <h3><span class="no">4.4</span>记住你的习惯</h3>
+  <p>断电也不丢：当前台、音量、遥控器按键、台表改动。
+  配置里记的是<b>当前是第几台</b>；万一以后整份台表被换掉（重灌出厂表），
+  开机时序号会被夹回合法范围，不会指到一个不存在的位置。</p>
+
+  <h3><span class="no">4.5</span>收听记录</h3>
+  <p>机器自己记着听了什么、听了多久：</p>
+  <ul>
+    <li><b>今天 / 近 7 天 / 累计</b>的时长，以及今天听了几次；</li>
+    <li>每个台听了多久、听了几次、多久以前听的（最多记 48 个台，满了先淘汰听得最少的）；</li>
+    <li>每天的时长留 7 天，第 8 天开始把最老的一天挤出去。</li>
+  </ul>
+  <p>记录只存在机器上，不上传任何地方。想清掉：体检页 → 清空收听记录。</p>
+
+  <h3><span class="no">4.6</span>体检与一键修复</h3>
+  <p>这是 1.4.0 加的主要功能。思路是：<b>别让人拿着说明书猜</b>，机器自己说哪里不对，并且能当场修。</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:130px">项目</th><th>怎么判断</th></tr></thead>
+      <tbody>
+        <tr><td>网络</td><td>WiFi 是否连着、有没有拿到 IP</td></tr>
+        <tr><td>信号</td><td>信号强度（dBm）分级</td></tr>
+        <tr><td>播放</td><td>播放状态、重连次数、这个台已经连续失败多少回</td></tr>
+        <tr><td>存储空间</td><td>台表所在的 flash 剩多少</td></tr>
+        <tr><td>内存</td><td>当前可用堆、历史最低值（掉得厉害说明有泄漏）</td></tr>
+        <tr><td>时钟</td><td>联网后有没有校时成功</td></tr>
+        <tr><td>台表</td><td>一共几个分类、多少台、当前分类读出来几台</td></tr>
+        <tr><td>上次关机</td><td>上次是正常重启，还是掉电 / 卡死 / 电压不足</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>每项不对就扣分并给出建议，扣到 80 以下变黄，60 以下变红。</p>
+
+  <h3><span class="no">4.7</span>只有你的手机能管这一台</h3>
+  <p>每台机器出厂时生成一个 16 位令牌存在自己身上，App 打开时会自动取走。
+  别的手机就算连上同一个 WiFi，拿到的也是这台机器的令牌 —— 反过来，一个 App 也只能管它自己配上的那台机器。</p>
+  <p><b>想让别人连不上（可选）</b>：设置 → 配对码保护，打开。之后任何一台新手机要控制它，
+  都得先输入机器屏幕上显示的 6 位数字。</p>
+  <ul>
+    <li>打开开关时，机器屏幕会直接亮出 6 位码，60 秒后退回正常界面；</li>
+    <li>在自己的手机上点「配对码」，可以随时让它再显示一次；</li>
+    <li>你自己的手机不受影响（令牌已经在手机里了）；</li>
+    <li>忘了码也不怕：机器重启后会重新显示，或者「换一台手机控制」重来。</li>
+  </ul>
+  <div class="note">这台机器的做法是「打开就能用」优先：配对码默认是<b>关</b>的。</div>
+  <div class="warn">
+    别把 1.19.0 的「<b>免配对</b>」跟这个混了：配对码管的是<b>同一个 WiFi 里</b>谁能拿到令牌；
+    「免配对」管的是<b>外地控制</b>要不要输遥控码。前者默认关，后者默认开。
+    免配对开着 = 任何一台装了 App 的手机都能看见并控制这台机器（方便，代价是谁知道你机器的短码谁就能控）。
+    想收紧：设置 → 我的机器 → 把「免配对」关掉，机器立刻从别人的列表里消失。
+  </div>
+
+  <h3><span class="no">4.8</span>不在家也能管这一台（跨网络）</h3>
+  <p>1.8.0 加的功能。做法很土但有效：<b>机器和手机都往同一台公共服务器上连一条线</b>，命令从这条线走。</p>
+  <ul>
+    <li>机器每 60 秒发一次心跳，掉线后服务器那头 1.5 分钟内就知道；</li>
+    <li>每条命令都带 6 位遥控码，码不对直接丢 —— 公共服务器上有人乱试也进不来；</li>
+    <li>主题是 <span class="kbd">myradio/&lt;机器码&gt;/c</span>（下行）和 <span class="kbd">/r</span>（上行），
+      机器码取 WiFi 地址的后 6 位，1670 万种组合，撞车概率可以不管；</li>
+    <li>换台、调音量、调亮度、暂停这些动作，和局域网走的是同一套代码（<span class="kbd">src/api.cpp</span>），
+      所以远程改了什么，机器上的行为和在家按手机完全一样。</li>
+  </ul>
+  <p>1.19.0 起这条通道多了两件事：</p>
+  <ul>
+    <li><b>机器每 30 秒往 <span class="kbd">myradio/dev/&lt;短码&gt;</span> 发一条小消息</b>
+      （名字 / 固件 / 电量 / 在线），带「保留」标记 —— 手机晚连上也能立刻看到。
+      关掉「免配对」就发一条空的，把它从所有人的列表里撤掉。</li>
+    <li><b>遥控码可以由短码算出来</b>（把设备码和一句固定的盐一起做 FNV-1a 哈希，再折成 6 位数），
+      所以 App 不用问你码是多少。算法是公开的 —— 这就是为什么它叫「免配对」，不是「免密码」。</li>
+  </ul>
+  <div class="note">做不到的：换 WiFi、改台表、开关机、升级固件 —— 这几件都要在同一台机器上、同一个网里做。</div>
+
+  <h3><span class="no">4.9</span>没有做的事（别期待）</h3>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:200px">没有</th><th>原因</th></tr></thead>
+      <tbody>
+        <tr><td>数字输入频率 / 存成收藏</td><td>收音只靠转旋钮（长波/中波/调频/短波都在一个旋钮里），没有数字键盘，也不能把某个频率存下来</td></tr>
+        <tr><td>倍速播放（1.25× / 1.5×）</td><td>这个方案变速是改采样率，1.5× 会明显变调发尖，给长辈听不合适</td></tr>
+        <tr><td>SD 卡 / U 盘播放</td><td>没做本地文件播放</td></tr>
+        <tr><td>定时开关机、闹钟</td><td>没做</td></tr>
+        <tr><td>手机远程升级（OTA）</td><td>分区已经留好了，但这次没做升级入口。升级要插 USB 线烧录</td></tr>
+        <tr><td>手机遥控关机</td><td>机器没有可控的电源开关，只能拔电</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section id="s5">
+  <h2><span class="no">5</span>现有电台</h2>
+  <p class="lead">一共 <b>__STCNT__ 个台</b>，串成<b>一个列表</b>：转一下旋钮换一台，从第 1 台一路走到第 __STCNT__ 台，
+  到头绕回第 1 台。<b>没有「分组」这一层了</b>（1.15.0 起），旋钮和遥控器都不再切组，所以也不用记「现在在第几组」。</p>
+
+  <h3><span class="no">5.1</span>__GCNT__ 个标签</h3>
+  <div class="card">
+    <table id="gsum">
+      <thead><tr><th class="num" style="width:44px">#</th><th>标签</th><th class="num" style="width:70px">台数</th>
+        <th class="num" style="width:44px">#</th><th>标签</th><th class="num" style="width:70px">台数</th></tr></thead>
+      <tbody id="gsumBody"></tbody>
+    </table>
+  </div>
+  <p>标签只用来<b>在手机 App 里筛选</b>（点一下「评书」就只看评书），不影响机器上的顺序 ——
+  机器上就是一整串台，转旋钮从头到尾。</p>
+
+  <h3><span class="no">5.2</span>几个容易误会的地方</h3>
+  <div class="warn">
+    <b>第 1 台是「中国之声」</b>，后面紧跟着经济之声、文艺之声、神州之声、台海之声、
+    中国乡村之声、环球资讯广播、音乐之声、中国交通广播这九个中央台。开机默认停在第一个，
+    也就是<b>一开机就在放「中国之声」</b>，不用转旋钮。<br>
+    <b>再往后是各省市台</b>，陕西紧跟在中央台后面（西安新闻广播打头），
+    苏州那 11 个台排在电台段的最后。<br>
+    <b>有声书不堆在末尾</b>：33 部书<b>均匀穿插</b>在电台之间，大约每 6 台一本 ——
+    这样转到哪儿都不会连着十几本书，想听电台随时转得到。
+  </div>
+  <p><b>以前是分组的</b>（新闻 / 评书 / 历史 / 广播剧…，靠点旋钮换组）。
+  长辈记不住「现在在第几组、再点几下能到评书」，经常点过头又绕回来 ——
+  1.15.0 起<b>把组整个去掉</b>，所有台排成一串，转旋钮就是在全国台里翻，
+  一本书也只占一格。</p>
+  <p><b>非汉语的台已经删掉了</b>（蒙古语、朝鲜语、哈萨克语、维吾尔语共 7 个）——
+  这些台老人听不懂，转过去只会以为是坏了。留着的是汉语台，包括内蒙古、延边、伊犁
+  这些地方的<b>汉语</b>综合广播。</p>
+  <p><b>台名里有生僻地名字</b>（亳州、漯河、睢宁、綦江、衢州、阆中、颍上…），
+  这些字是专门做进字库的，屏幕上正常显示。自己加了台发现新台名缺字，看 6.3 节。</p>
+
+  <h3><span class="no">5.3</span>全部电台（可搜索）</h3>
+  <p>点标签可以筛选，也可以直接打台名。序号就是<b>机器上的播放序号</b>（第几台），
+  筛了标签也不会重新编号。多数台的「台号」是蜻蜓台号，播放地址是
+    <code class="inl">http://lhttp.qtfm.cn/live/&lt;台号&gt;/64k.mp3</code>；
+    九个中央台那几行填的是完整地址（<code class="inl">*.cnr.cn/live/*/index.m3u8</code> 这种 HLS 流）。</p>
+
+  <div class="stool">
+    <input id="q" type="search" placeholder="搜台名，例如：交通 / 音乐 / 新闻">
+    <span class="count" id="cnt">—</span>
+  </div>
+  <div class="gchips" id="chips"></div>
+  <div class="card" style="padding:0 8px">
+    <table id="stTable">
+      <thead><tr><th class="num" style="width:44px">#</th><th class="nn">台名</th>
+        <th style="width:104px;white-space:nowrap">标签</th>
+        <th class="id" style="width:104px">台号</th></tr></thead>
+      <tbody id="stBody"></tbody>
+    </table>
+    <div class="empty" id="noHit" style="display:none">没有匹配的台，换个词试试</div>
+    <div class="pager" id="pager" style="display:none;padding:16px 10px 18px;text-align:center">
+      <button id="more">显示全部</button>
+    </div>
+    <div class="print-only">
+      （完整 __STCNT__ 个台的表格太长，打印版从略。完整列表见 <b>台表-全国.md</b> 或 <b>台表-全国.csv</b>。）
+    </div>
+  </div>
+
+  <h3><span class="no">5.4</span>完整台表的另外几种格式</h3>
+  <table>
+    <thead><tr><th style="width:190px">文件</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><code class="inl">台表-全国.md</code></td><td>按播放顺序排的一张总表（带标签列），适合在编辑器 / GitHub 里看</td></tr>
+      <tr><td><code class="inl">台表-全国.csv</code></td><td>Excel 直接打开（带 BOM，中文不乱码），可以自己改完再导回去</td></tr>
+      <tr><td><code class="inl">src/preset_stations.h</code></td><td>编译进固件的那一份（程序生成，别手改）</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 6 ============ -->
+<section id="s6">
+  <h2><span class="no">6</span>出问题了怎么办</h2>
+  <p class="lead">按顺序试，前两步能解决大部分情况。</p>
+
+  <h3><span class="no">6.1</span>没声音</h3>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:56px;white-space:nowrap">步骤</th><th>做什么</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td><b>长按旋钮 0.7 秒</b></td><td>重连当前台</td></tr>
+        <tr><td class="num">2</td><td><b>转一格换个台</b></td><td>可能是这个台今天没开播</td></tr>
+        <tr><td class="num">3</td><td>看顶栏是 <span class="tag">WiFi</span> 还是 <span class="tag rd">断网</span></td>
+          <td>断网 → 路由器关了 / 改密码了。手机连 <span class="kbd">我的收音机</span> 热点，
+            打开 <span class="kbd">192.168.4.1</span> 重新设 WiFi</td></tr>
+        <tr><td class="num">4</td><td>把音量调大</td><td>1.43.0 起没有静音这个状态；按住旋钮转几格让数字变大就行</td></tr>
+        <tr><td class="num">5</td><td><b>断电 10 秒再通电</b></td><td>前面几步都不行才用这招</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><span class="no">6.2</span>屏幕黑着</h3>
+  <p>碰一下旋钮。3 分钟没操作会自动熄屏省电，这是正常的，<b>声音不受影响</b>。</p>
+
+  <h3><span class="no">6.3</span>台名显示空白 / 少字</h3>
+  <p>字库是离线生成的，只收固定的一批字。自己在 App 里加了含生僻字的台名就可能缺字。
+  解决办法：改 <code class="inl">src/</code> 里的中文后重跑一次 <code class="inl">python tools/gen_font.py</code>，再重新编译烧录。</p>
+
+  <h3><span class="no">6.4</span>遥控器不灵</h3>
+  <ul>
+    <li>换电池（红外遥控耗电小，但电池还是会没）</li>
+    <li>对准机器正面的接收头（黑色小凸起），中间别挡东西，距离 5 米内</li>
+    <li>还不行 → 走 3.3 节重新学习一遍</li>
+    <li>机器上<b>没装红外接收头</b>的话遥控功能是关的，只能用旋钮和手机</li>
+  </ul>
+
+  <h3><span class="no">6.5</span>时钟不对</h3>
+  <p>时钟是开机联网后自动对的（网络时间，北京时间）。显示 <code class="inl">--:--</code> 说明还没连上网。
+  没配 WiFi 的话时钟永远不会对，但不影响听台。</p>
+
+  <h3><span class="no">6.6</span>声音断断续续</h3>
+  <ul>
+    <li>路由器离机器太远 → 顶栏信号柱少于 2 格就是信号弱，挪近一点</li>
+    <li>家里网在看视频 / 下载 → 网络台要 64kbps，带宽被占满就会卡</li>
+    <li>台本身的问题 → 换个台试试</li>
+  </ul>
+
+  <h3><span class="no">6.7</span>转到某个台就跳走</h3>
+  <p>那个台的地址失效了（蜻蜓下架或改地址）。机器等 20 秒没声音会自动跳过，<b>这是设计好的行为</b>。
+  在 App 的「电台」里点那个台右边的 ⋯ → 删除，或者改成新的台号。</p>
+
+  <h3><span class="no">6.8</span>别猜了，用 App 的「体检」</h3>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td class="num">1</td><td>打开 App，点最下面中间偏右的 <b>体检</b></td></tr>
+        <tr><td class="num">2</td><td>等两三秒，它把 8 项挨个查一遍，给出分数和每一行的问题</td></tr>
+        <tr><td class="num">3</td><td>有红 / 黄的项，下面就有对应的按钮，点一下就好（危险的那几个会再问一次）</td></tr>
+        <tr><td class="num">4</td><td>全绿还是不对劲 → 点「重启收音机」，等于拔电重插，但不用起身</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>什么时候该来体检：没声音、老是断、改了设置没反应、想知道机器是不是快满了。</p>
+
+  <h3><span class="no">6.9</span>手机打不开 App</h3>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:200px">现象</th><th style="width:190px">原因</th><th>怎么办</th></tr></thead>
+      <tbody>
+        <tr><td>打开就白屏、一直转</td><td>手机没跟机器在同一个网络</td>
+          <td>连 <span class="kbd">我的收音机</span> 热点再进
+          <span class="kbd">192.168.4.1</span>；人在外地就等 App 自己走远程</td></tr>
+        <tr><td>打开就停在 <b>「网页无法打开 / net::ERR_CONNECTION_TIMED_OUT」</b></td><td>手机到不了机器：不在同一个网，或者机器热点已关</td><td>1.26.6 起 App 会自己判断，探不到就<b>自动改走远程控制</b>；想要直连就先连 <span class="kbd">我的收音机</span> 热点，或确认手机和机器连的是同一个 WiFi</td></tr>
+<tr><td>之前能用，突然打不开</td><td>路由器给机器换了 IP</td>
+          <td>用 <span class="kbd">http://myradio.local</span>，或者看机器屏幕上的地址</td></tr>
+        <tr><td>提示要输 6 位数字</td><td>开着配对码保护</td><td>看机器屏幕上的 6 位数字，输进去</td></tr>
+        <tr><td>连了热点但网页打不开</td><td>有的手机会把「无互联网的 WiFi」自动切走</td>
+          <td>关掉手机上的「自动切换网络 / WiFi+」这类开关，或者飞行模式开一下只留 WiFi</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><span class="no">6.10</span>换了路由器 / 换了手机</h3>
+  <ul>
+    <li><b>换路由器或改密码</b>：手机连 <span class="kbd">我的收音机</span> 热点 → 进 App → 设置 → 换一个 WiFi → 重新选一次。
+      新网络连不上会自动退回旧的，输错了再来一次就行。</li>
+    <li><b>换手机控制</b>：新手机按 3.4 的步骤连上就行（配对码保护关着时直接就能用）。
+      想让旧手机失效：设置 → 换一台手机控制，旧令牌当场作废。</li>
+    <li><b>想彻底重来</b>：设置 → 恢复出厂设置。台表、收听记录、配对全部清空，机器重启后跟刚买来一样。</li>
+  </ul>
+
+  <h3><span class="no">6.11</span>在外地控制不了</h3>
+  <ol>
+    <li><b>设置 → 不在家也能控制 → 状态</b>。不是「已连上」就是机器这边没连上服务器：家里断网了、
+      路由器把外网断了，或者机器刚开机还没连上（等 10 秒再看）。</li>
+    <li><b>遥控码对不对</b>。整串是 <span class="kbd">A1B2C3-482913</span> 这种形状：前 6 位字母数字、后 6 位数字。
+      换过密码的话，外地的手机要重新填一次。</li>
+    <li><b>手机自己有没有网</b>。远程版走公网，手机没网当然打不开。</li>
+    <li>还不行：重启收音机（设置 → 这台收音机 → 重启，或拔电重插）。
+      1.42.0 起远程控制恒开、没有开关，重启后它会自己重新连服务器。</li>
+  </ol>
+  <div class="note">远程比在家里慢：在家里 0.9 秒同步一次，在外地 1.6 秒，按一下等半秒才见反应是正常的。</div>
+
+  <h3><span class="no">6.12</span>屏上写着「播放中」，可就是没声音</h3>
+  <p>先看 App 主页屏幕下面那条：</p>
+  <ul>
+    <li>写着 <b>没声音</b> —— 这台解出来是静音（蜻蜓的点播书最常见）。去「电台 → 有问题」
+      把它挑出来，删掉或者换个地址。</li>
+    <li>写着 <b>在出声</b>，可你还是听不见 —— 那是音量或功放的事：调音量，不行就拔电重插一次。</li>
+  </ul>
+  <p>体检页的「台的健康」里能看见每一台是什么时候测的、失败过几次。
+  不想一个个排查，就点「挨个试一遍」，机器自己过一遍。</p>
+
+</section>
+
+<!-- ============ 7 ============ -->
+<section id="s7">
+  <h3><span class="no">6.13</span>电量显示不对 / 刚开机就念「没电了」</h3>
+  <div class="card">
+    <table>
+      <tbody>
+        <tr><td style="width:230px">顶栏根本没有电池图标</td><td>机器没接电量检测线（或者读数不可信）。电量功能自动关掉，不影响听台 —— 这不是故障</td></tr>
+        <tr><td>百分比一直是 100%</td><td>分压电阻装错了（比如没装、或者两个阻值不对）。看串口开机那行 <span class="kbd">[batt]</span> 的实际毫伏</td></tr>
+        <tr><td>刚开机就说没电、直接关</td><td>正常机器<b>不会</b>这样：开机 5 分钟内绝不自动关机，而且要连续 90 秒低于 3550mV。真遇到了，先拔掉电池只用电源适配器试一次</td></tr>
+        <tr><td>念了一句就断电，来不及插充电器</td><td>那是已经真的没电了。想改成「只念不断」：把 <span class="kbd">config.h</span> 里 <span class="kbd">BATT_AUTO_OFF</span> 设成 0 重新编译</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2><span class="no">7</span>给维护的人</h2>
+  <p class="lead">接线、编译、改台表。只想知道怎么用的话，前面六章够了。</p>
+
+  <h3><span class="no">7.1</span>第一次上机：两组引脚必须实测</h3>
+  <p>资料包里没有原理图，下面这些要自己试出来：</p>
+  <div class="card">
+    <table>
+      <thead><tr><th style="width:130px">要确认</th><th>怎么确认</th></tr></thead>
+      <tbody>
+        <tr><td><b>屏幕 SPI</b></td><td>烧 <code class="inl">tools/probe/probe.ino</code>（Arduino IDE 单独烧），屏幕闪红/绿/蓝时记下串口打印的引脚组合，填进 <code class="inl">platformio.ini</code> 的 <code class="inl">-DTFT_*</code></td></tr>
+        <tr><td><b>I2S 音频</b></td><td>改 <code class="inl">src/config.h</code> 的 <code class="inl">PIN_I2S_BCK / PIN_I2S_LCK / PIN_I2S_DIN</code>。PCM5102 对应 BCK / LRCK / DIN</td></tr>
+        <tr><td><b>旋钮</b></td><td>已确认：A=2 B=1 按下=21。方向反了改 <code class="inl">ENC_REVERSE 1</code></td></tr>
+        <tr><td><b>红外</b></td><td><code class="inl">PIN_IR</code> 默认 47，没装接收头就设 <code class="inl">-1</code>（遥控功能自动关闭，其余不受影响）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3><span class="no">7.2</span>编译烧录</h3>
+<pre>pip install platformio
+cd MyRadio-v__FWV__                 <span class="c"># 解压出来的工程目录（源码树里叫 fw-myradio）</span>
+pio run -t upload
+pio device monitor -b 115200      <span class="c"># 看日志</span></pre>
+  <table>
+    <tbody>
+      <tr><td style="width:180px">芯片</td><td>ESP32-S3（16MB flash / 8MB PSRAM）</td></tr>
+      <tr><td>烧完不启动</td><td><code class="inl">platformio.ini</code> 里 <code class="inl">qio_opi</code> 改 <code class="inl">qio_qspi</code></td></tr>
+      <tr><td>屏幕上下颠倒</td><td><code class="inl">config.h</code> 里 <code class="inl">SCR_ROT</code> 改 <code class="inl">1</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3><span class="no">7.3</span>改台表</h3>
+<pre><span class="c"># 平时改台：改 tools/台表-精选.md（一行一个台），书在 tools/有声书源*.json</span>
+python tools/gen_preset_curated.py  <span class="c"># → src/preset_stations.h + src/preset_episodes.h</span>
+python tools/gen_stationlist.py     <span class="c"># 顺便更新 台表-全国.md / .csv</span>
+python tools/gen_font.py            <span class="c"># ★ 必须跑，否则新台名 / 新集名缺字显示空白</span>
+python tools/gen_manual.py          <span class="c"># 这份说明书里的台表跟着换</span></pre>
+  <p><b>一部有声书只写进台表一行</b>（台名＝书名，地址＝第 1 集），它的集进另一张表
+  <code class="inl">src/preset_episodes.h</code>（<code class="inl">kEpisBook</code> 说这本书占哪一段，
+  <code class="inl">kEpisItem</code> 是逐集地址与标题）。两张表都由上面那条命令一次生成，
+  改完源文件重跑就行，别直接改这两个 <code class="inl">.h</code>。</p>
+  <p>改完记得看 <code class="inl">gen_preset_curated.py</code> 顶上的
+  <code class="inl">PRESET_VER</code>：<b>加台 / 删台 / 换顺序就把它 +1</b>。
+  老机器升级固件时靠 <code class="inl">/stamp.txt</code> 里的这个版本号判断要不要重灌台表
+  （不 +1 的话，机器上那份老台表会一直留着）。</p>
+  <p>有声书分<b>五个源文件</b>，各带一个抓取脚本（文件里的 <code class="inl">group</code> 字段决定标签）：
+  <code class="inl">有声书源.json</code>（喜马 RSS / <code class="inl">fetch_books.py</code>）、
+  <code class="inl">有声书源-听书网.json</code>（<code class="inl">fetch_t13.py</code>）、
+  <code class="inl">有声书源-喜马.json</code>（<code class="inl">fetch_xm.py</code>）、
+  <code class="inl">有声书源-云听.json</code>（<code class="inl">fetch_rcn.py</code>）、
+  <code class="inl">有声书源-蜻蜓.json</code>（<code class="inl">fetch_qtfm_album.py</code>）。
+  蜻蜓按专辑号抓，脚本会翻完索引、签好播放地址、逐集发 302 探活，死链直接剔掉：</p>
+<pre>python tools/fetch_qtfm_album.py --channel=140696 --group=科普 --name=原来是这样？！</pre>
+  <div class="warn">
+    <b>蜻蜓的 m4a 有个坑。</b>蜻蜓给的是 <b>m4a（AAC 装在 MP4 里）</b>，可 CDN 回的
+    <code class="inl">Content-Type</code> 是 <code class="inl">audio/mpeg</code>；
+    音频库只看这个头判断编码，于是把 m4a 当 MP3 解 —— <b>连接正常、就是没声音</b>。
+    所以音频库现在是<b>本地 vendored 的那份</b>（<code class="inl">lib/ESP32-audioI2S/</code>，
+    <code class="inl">platformio.ini</code> 的 <code class="inl">lib_deps</code> 已指向它），里面打了两处补丁：
+    地址以 <code class="inl">.m4a</code> 结尾时记住「期望是 M4A」；收到
+    <code class="inl">audio/mpeg</code> 时若期望是 M4A，仍按 M4A 解。
+    <b>别把它改回 GitHub 在线依赖</b>，否则这几部书又会哑。
+  </div>
+  <p>想拿回「按地区分 31 组」的全量抓取（会覆盖上面的精选结果）：</p>
+<pre>python tools/fetch_qtfm.py &amp;&amp; python tools/gen_preset.py</pre>
+  <div class="warn">
+    <b>最后一步不能省。</b>字库只收固定字集，新台名里的生僻字会显示成<b>空白</b>（不是方块，更难发现）。
+  </div>
+
+  <h3><span class="no">7.4</span>改界面：不烧板子先看效果</h3>
+  <p>App 和机器屏幕是两套东西，改哪个看哪个：</p>
+<pre><span class="c"># 改机器屏幕（src/ui.cpp）</span>
+python tools/gen_webpreview.py    <span class="c"># 重新生成 preview/index.html</span>
+
+<span class="c"># 改手机 App（tools/app/）</span>
+python tools/gen_webapp.py        <span class="c"># 拼装 → src/webapp.h（固件里那份）</span></pre>
+  <p>双击 <code class="inl">preview/index.html</code>：左边是 320×170 真实像素模拟（用真字库逐点画），
+  可以拖旋钮、按遥控器按钮；第二个标签页就是手机 App 本身（真代码，不是照着重画的），
+  请求全部接到模拟后端上，所以拖拽排序、换分类、看记录都能在电脑上试。</p>
+  <div class="note">
+    App 的源码在 <code class="inl">tools/app/</code>：<code class="inl">base.html</code>（外壳）+
+    <code class="inl">body.html</code>（五个页签的结构）+ <code class="inl">style.css</code> +
+    <code class="inl">js/</code> 下的 <code class="inl">core.js</code>、<code class="inl">stations.js</code>、
+    <code class="inl">pages.js</code>，图标从 Lucide（MIT）里取了 58 个内联成 sprite。
+    <code class="inl">src/webapp.h</code> 是<b>生成物</b>，别手改。
+  </div>
+
+  <h3><span class="no">7.5</span>文件在哪</h3>
+<pre>fw-myradio/
+├─ 说明书.md / .html      <span class="c">← 你正在看的这份</span>
+├─ CHANGELOG.md           <span class="c">← 每次改了什么</span>
+├─ README.md              <span class="c">← 技术文档（架构 / 接口 / 已知限制）</span>
+├─ 台表-全国.md / .csv    <span class="c">← 全部电台列表</span>
+├─ platformio.ini         <span class="c">← 编译配置</span>
+├─ partitions.csv         <span class="c">← 16MB flash 分区</span>
+├─ preview/index.html     <span class="c">← 离线预览页（双击就开）</span>
+├─ preview/remote.html    <span class="c">← 远程版预览（本地假服务器）</span>
+├─ MyRadio-远程版.html    <span class="c">← 发给在外地的家人：存手机里就能控制这台机器</span>
+├─ src/                   <span class="c">← 固件源码（含生成物 webapp.h / font_cn.h）</span>
+│  ├─ api.cpp/.h          <span class="c">← 动作 + 屏幕 JSON 共用层（局域网与远程都调它）</span>
+│  ├─ cloud.cpp/.h        <span class="c">← 跨网控制（MQTT 公共中转 + 在线广播 + 派生遥控码）</span>
+│  ├─ battery.cpp/.h      <span class="c">← 电量：采样 / 曲线换算 / 低电与没电判定（1.19.0）</span>
+│  ├─ voice.cpp/.h        <span class="c">← 两句播报落到 LittleFS 并按需播（1.19.0）</span>
+│  └─ voice_data.h        <span class="c">← 两条 MP3 的字节数组，142KB（生成物，别手改）</span>
+└─ tools/
+   ├─ app/                <span class="c">← 手机 App 源代码（base/body/css/js，含 cloud.js）</span>
+   ├─ 台表-精选.md        <span class="c">← 出厂台表的真源（人工精选）</span>
+   ├─ icons/lucide.json   <span class="c">← 用到的 Lucide 图标（MIT）</span>
+   ├─ gen_voice.py        <span class="c">← 合成两句播报 MP3 → src/voice_data.h（1.19.0）</span>
+   ├─ gen_webapp.py       <span class="c">← App 源码 → src/webapp.h</span>
+   ├─ gen_remote.py       <span class="c">← 导出 MyRadio-远程版.html</span>
+   ├─ mqtt_broker_sim.js  <span class="c">← 本地假服务器 + 假机器（不用真机也能验远程）</span>
+   └─ …                   <span class="c">← 抓台 / 字库 / 预览 / 引脚探测</span></pre>
+  <p>架构、REST 接口、已知限制的完整说明在 <code class="inl">README.md</code>。</p>
+</section>
+
+<footer>
+  <span>MyRadio 网络收音机 · 说明书对应固件 __FWV__</span>
+  <span>改动记录见 CHANGELOG.md</span>
+</footer>
+</main>
+</div>
+
+<script>
+// 1.15.0：固件不再分组。给的是「整张表」+「标签清单」两份东西：
+//   LIST 的先后就是播放顺序（序号照它印，筛标签也不重新编号）
+//   TAGS 只用来筛选
+const DATA = __STATIONS__;
+const TAGS = DATA.tags || [];
+const LIST = DATA.list || [];
+
+/* ---------- 标签汇总表（两列并排） ---------- */
+(function(){
+  const rows = Math.ceil(TAGS.length / 2);
+  const total = LIST.length;
+  let h = '';
+  for (let r = 0; r < rows; r++) {
+    const a = TAGS[r], b = TAGS[r + rows];
+    h += '<tr>';
+    h += '<td class="num">' + (r + 1) + '</td><td><b>' + esc(a.n) + '</b></td><td class="num">' + a.c + '</td>';
+    if (b) {
+      h += '<td class="num">' + (r + rows + 1) + '</td><td><b>' + esc(b.n) + '</b></td><td class="num">' + b.c + '</td>';
+    } else {
+      h += '<td class="num">合计</td><td><b>' + TAGS.length + ' 个标签</b></td><td class="num"><b>' + total + '</b></td>';
+    }
+    h += '</tr>';
+  }
+  document.getElementById('gsumBody').innerHTML = h;
+})();
+
+/* ---------- 搜索 / 筛选 ---------- */
+const CHIPS = [{n:'全部', i:-1}].concat(TAGS.map((g, i) => ({n:g.n, i:i, c:g.c})));
+let curG = -1, curQ = '', lim = 150;
+
+document.getElementById('chips').innerHTML = CHIPS.map((g, k) =>
+  '<button data-g="' + g.i + '"' + (g.i === -1 ? ' class="on"' : '') + '>' +
+  esc(g.n) + (g.c ? '<small>' + g.c + '</small>' : '') + '</button>'
+).join('');
+
+function render() {
+  const q = curQ.trim();
+  const all = [];
+  for (let k = 0; k < LIST.length; k++) {
+    const s = LIST[k];
+    if (curG >= 0 && s.t !== curG) continue;
+    if (q && s.n.indexOf(q) === -1 && String(s.i).indexOf(q) === -1) continue;
+    all.push({ n: s.n, i: s.i, t: s.t, no: k + 1 });   // no = 全表序号 = 机器上的播放序号
+  }
+  const shown = all.slice(0, lim);
+
+  document.getElementById('cnt').textContent =
+    (curG < 0 ? '全部标签' : TAGS[curG].n) + ' · ' + all.length + ' 个台' +
+    (all.length > shown.length ? '（显示前 ' + shown.length + '）' : '');
+
+  document.getElementById('noHit').style.display = all.length ? 'none' : 'block';
+  document.getElementById('stBody').innerHTML = shown.map(s =>
+    '<tr><td class="num">' + s.no + '</td>' +
+    '<td class="nn">' + esc(s.n) + '</td>' +
+    '<td class="g">' + esc((TAGS[s.t] || {}).n || '') + '</td>' +
+    // 纯数字才是蜻蜓台号；.m3u8 是中央台的直播流；其余 http 直链是有声书的 m4a。
+    // 以前一律印「有声书」，把九个中央台也标成有声书了。
+    '<td class="id">' + (/^\d+$/.test(s.i) ? s.i : (s.i.indexOf('.m3u8') >= 0 ? 'HLS' : '直链')) + '</td></tr>'
+  ).join('');
+
+  const more = document.getElementById('pager');
+  if (all.length > shown.length) {
+    more.style.display = 'block';
+    document.getElementById('more').textContent = '显示全部 ' + all.length + ' 个台';
+  } else {
+    more.style.display = 'none';
+  }
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+document.getElementById('q').addEventListener('input', e => {
+  curQ = e.target.value; lim = 150; render();
+});
+
+document.getElementById('chips').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  curG = +b.dataset.g;
+  lim = 150;
+  document.querySelectorAll('#chips button').forEach(x => x.classList.toggle('on', x === b));
+  render();
+});
+
+document.getElementById('more').addEventListener('click', () => {
+  lim = 5000;
+  render();
+});
+
+/* ---------- 目录高亮 ---------- */
+const secs = [...document.querySelectorAll('section')];
+const links = [...document.querySelectorAll('nav a')];
+function spy() {
+  let best = secs[0], bestD = 1e9;
+  for (const s of secs) {
+    const d = Math.abs(s.getBoundingClientRect().top - 90);
+    if (d < bestD) { bestD = d; best = s; }
+  }
+  links.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + best.id));
+}
+addEventListener('scroll', spy, { passive: true });
+spy();
+render();
+</script>
+</body>
+</html>

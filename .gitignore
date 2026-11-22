@@ -1,0 +1,54 @@
+# ========== PlatformIO / 编译产物 ==========
+.pio/
+.pioenvs/
+.piolibdeps/
+.vscode/
+*.elf
+*.map
+*.hex
+
+# ========== Python ==========
+__pycache__/
+*.pyc
+*.pyo
+
+# ========== 打包 / 临时产物 ==========
+release/
+dist/
+*.zip
+*.tmp
+*.bak
+*.bak-*
+*.log
+
+# 下划线开头 = 临时脚本 / 调试截图 / 中间输出
+_*
+
+# ========== 抓取缓存 / 会话凭证 ==========
+# tools/.t13sig.json 里带 cookies（含公网 IP 的 __51guid__）和签名串，
+# .xm_cache_* / .qtfm_cache_* / .t13cache/ 是抓台时的中间结果。
+# 都属于「本机临时状态」，公开仓库里一个都不能有。
+tools/.*
+tools/.*/
+
+# ========== Android ==========
+**/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/capacitor-cordova-android-plugins/
+
+# ========== 签名密钥，不入库 ==========
+# 公开仓库带上 keystore 等于把签名权交出去：别人能签出同包名的假包覆盖安装。
+# 需要重新出包时用本地这份，别提交。
+*.jks
+*.keystore
+
+# ========== 系统 ==========
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========== 例外：烧写镜像要入库 ==========
+# 注意这里没有全局的 *.bin —— 固件必须能被提交。
+!firmware/*.bin
