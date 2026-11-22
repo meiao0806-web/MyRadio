@@ -25,7 +25,7 @@ ROOT = os.path.dirname(HERE)
 DIRS = ["src", "tools", "preview", "lib", "android"]   # lib = vendored 的 ESP32-audioI2S（含 m4a 补丁）
                                                        # android = APK 外壳工程（1.19.2 起）
 FILES = [
-    "README.md",
+    "开发文档.md",
     "说明书.md",
     "说明书.html",
     "CHANGELOG.md",
@@ -195,7 +195,7 @@ def main():
         "先看这三样：",
         "  说明书.html      使用说明（双击打开，台表可搜索）",
         "  preview/index.html  固件预览页（双击打开，可拖旋钮 / 试手机 App）",
-        "  README.md        技术文档（接线、编译、接口、跨网协议）",
+        "  开发文档.md      技术文档（接线、编译、接口、跨网协议）",
         "",
         "要发给在外地的家人：",
         "  MyRadio-远程版.html  存到手机里（微信收藏 / 文件）就能遥控这台机器。",
